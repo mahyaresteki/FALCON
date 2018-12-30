@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Falcon Leave Management System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap/css/bootstarp.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/LoginStyle.css') }}">
+</head>
+<body>
+    <div id="splash">
+        <div id="login">
+
+            <div class="form-horizontal">
+                <div class="col-md-12" style="margin-bottom:10px;">
+                    <div>
+                        <img src="{{ url_for('static', filename='img/falcon-logo.png') }}" />
+                        <h3>Leave Management System</h3>
+                        <h1>FALCON</h1>
+                        <p>Version: 1.0.0.0</p>
+                    </div>
+                </div>
+                <div id="errorPanel" class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                    <label id="Error"></label>
+                </div>
+                <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                    <input class="form-control" id="username" type="text" placeholder="Username" />
+                </div>
+                <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                    <input id="password" class="form-control" type="password" placeholder="Password" />
+                </div>
+                <div class="col-md-12" style="margin-top:10px;">
+                    <input type="button" id="btnLogin" class="btn btn-primary col-md-12" value="Login" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal1"></div>
+    <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}" asp-append-version="true"></script>
+    <script src="{{ url_for('static', filename='lib/popper/js/popper.min.js') }}" asp-append-version="true"></script>
+    <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js') }}" asp-append-version="true"></script>
+    <script src="{{ url_for('static', filename='js/login.js') }}" asp-append-version="true"></script>
+    <script>
+        $("#btnLogin").click(function () {
+            LogIn($('#username').val(), $('#password').val());
+        });
+    </script>
+</body>
+</html>
