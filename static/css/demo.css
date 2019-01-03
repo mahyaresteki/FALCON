@@ -19,37 +19,37 @@ body {
 	background: #34495e;
 }
 
-.container > header,
+.container1 > header,
 .codrops-top {
 	color: #fff;
 	font-family: 'Lato', Arial, sans-serif;
 }
 
-.container > header {
+.container1 > header {
 	margin: 0 auto;
 	padding: 12em 2em;
 	padding-left: 370px;
 	background: rgba(0,0,0,0.05);
 }
 
-.container > header a {
+.container1 > header a {
 	color: #566473;
 	text-decoration: none;
 	outline: none;
 }
 
-.container > header a:hover {
+.container1 > header a:hover {
 	color: #4f7bab;
 }
 
-.container > header h1 {
+.container1 > header h1 {
 	font-size: 3.2em;
 	line-height: 1.3;
 	margin: 0;
 	font-weight: 300;
 }
 
-.container > header span {
+.container1 > header span {
 	display: block;
 	font-size: 55%;
 	color: #74818e;
@@ -132,7 +132,7 @@ body {
 	color: #89867e;
 }
 
-.content
+.content1
 {
 	background-color: #ccc;
 	min-height: 100vh;

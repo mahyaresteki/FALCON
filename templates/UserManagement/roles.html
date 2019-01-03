@@ -1,0 +1,30 @@
+{% extends 'shared/layout.html'%}
+
+{% block header %}
+<title>Roles</title>
+{% endblock %}
+{% block content %}
+<input id='newRole' type="button" class="btn btn-primary" value="New Role"/>
+<br/>
+<br/>
+<table class="table">
+    <tr>
+        <th>Role Title</th>
+        <th>Description</th>
+        <th></th>
+    </tr>
+    {% for entry in entries %}
+    <tr>
+        <td>{{ entry.RoleTitle }}</td>
+        <td>{{ entry.Description }}</td>
+        <td>
+            <a class="gn-icon gn-icon-detail"></a>
+            <a class="gn-icon gn-icon-edit"></a>
+            <a class="gn-icon gn-icon-delete"></a>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="2">No entries yet. Add some!</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

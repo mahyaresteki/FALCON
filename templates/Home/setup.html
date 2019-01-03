@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Setup</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/bootstrap/css/bootstarp.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/LoginStyle.css') }}">
+</head>
+<body>
+    <div id="splash">
+        <div id="login">
+
+            <div class="form-horizontal">
+                <div class="col-md-12" style="margin-bottom:10px;">
+                    <div>
+                        <img src="{{ url_for('static', filename='img/falcon-logo.png') }}" />
+                        <h1>FALCON</h1>
+                    </div>
+                </div>
+                <div id="errorPanel" class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                    <label id="Error"></label>
+                </div>
+                <div id="setDatabase" class="col-md-12" style="margin-bottom:10px;">
+                    <h3>Database Installation</h3>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input id="host" class="form-control" type="text" placeholder="Host" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input id="database" class="form-control" type="text" placeholder="Database" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input class="form-control" id="user" type="text" placeholder="User" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input id="pass" class="form-control" type="password" placeholder="Password" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <input type="button" id="btnSetDatabase" class="btn btn-primary col-md-12" value="Set Database" />
+                    </div>
+                </div>
+                <div id="setAdministrator" class="col-md-12" style="margin-bottom:10px; display: none;">
+                    <h3>Set Administrator</h3>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input class="form-control" id="FirstName" type="text" placeholder="First Name" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input class="form-control" id="LastName" type="text" placeholder="Last Name" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input class="form-control" id="PersonelCode" type="text" placeholder="Personel Code" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input class="form-control" id="Username" type="text" placeholder="Username" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <input id="UserPassword" class="form-control" type="password" placeholder="Password" />
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px;">
+                        <input type="button" id="btnSetAdministrator" class="btn btn-primary col-md-12" value="Set Administrator" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal1"></div>
+    <script src="{{ url_for('static', filename='lib/jquery/js/jquery.min.js') }}" asp-append-version="true"></script>
+    <script src="{{ url_for('static', filename='lib/popper/js/popper.min.js') }}" asp-append-version="true"></script>
+    <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.min.js') }}" asp-append-version="true"></script>
+    <script src="{{ url_for('static', filename='js/master.js') }}" asp-append-version="true"></script>
+    <script src="{{ url_for('static', filename='js/setup.js') }}" asp-append-version="true"></script>
+    <script>
+       step = getParameterByName('step');
+
+       if(step == 'database' || step == '')
+       {
+            $('#setDatabase').show();
+            $('#setAdministrator').hide();
+       }
+       else{
+            $('#setDatabase').hide();
+            $('#setAdministrator').show();
+       }
+
+       $("#btnSetDatabase").click(function () {
+            setDatabase($('#host').val(),$('#database').val(),$('#user').val(), $('#pass').val());
+        });
+
+        $("#btnSetAdministrator").click(function () {
+            setAdministrator($('#FirstName').val(),$('#LastName').val(),$('#Username').val(), $('#UserPassword').val(), $('#PersonelCode').val());
+        });
+    </script>
+</body>
+</html>

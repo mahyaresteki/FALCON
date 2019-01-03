@@ -1,10 +1,15 @@
 import sys
 from pony.orm import *
 from datetime import datetime
+import configparser
+config = configparser.ConfigParser()
+config.sections()
+config.read('config/conf.ini')
 
 db = Database()
 
-db.bind(provider='postgres', user='postgres', password='123456', host='127.0.0.1', database='FALCON_DB')
+if config['ConnectionString']['host'] != 'NotSet' and config['ConnectionString']['database'] != 'NotSet':
+    db.bind(provider=config['ConnectionString']['provider'], user=config['ConnectionString']['user'], password=config['ConnectionString']['password'], host=config['ConnectionString']['host'], database=config['ConnectionString']['database'])
 
 class AppForms(db.Entity):
     AppFormID = PrimaryKey(int, auto=True)
@@ -14,7 +19,7 @@ class AppForms(db.Entity):
 class Roles(db.Entity):
     RoleID = PrimaryKey(int, auto=True)
     RoleTitle = Required(str)
-    Description = Required(str)
+    Description = Optional(str)
     LatestUpdateDate = Required(datetime)
     UserRole = Set("Users", reverse="RoleID")
     RoleAccess =  Set("RoleAccesses", reverse="RoleID")
@@ -30,22 +35,22 @@ class RoleAccesses(db.Entity):
     PrintGrant = Required(bool)
     LatestUpdateDate = Required(datetime)
 
+
 class Users(db.Entity):
     UserID = PrimaryKey(int, auto=True)
     Username = Required(str)
     Password = Required(str)
     FirstName = Required(str)
     LastName = Required(str)
+    PersonelCode = Required(str, unique=True)
     ManagerID = Optional("Users", reverse="ManagerID")
-    RoleID = Optional("Roles", reverse="UserRole")
+    RoleID = Required("Roles", reverse="UserRole")
     IsActive = Required(bool)
     LatestUpdateDate = Required(datetime)
     LeaveRequester = Set("Leaves", reverse="UserID")
     LeaveApproval = Set("Leaves", reverse="ApprovedBy")
     MissionRequester = Set("Missions", reverse="UserID")
     MissionApproval = Set("Missions", reverse="ApprovedBy")
-
-
 
 
 class Leaves(db.Entity):
@@ -60,7 +65,7 @@ class Leaves(db.Entity):
 class TransportTypes(db.Entity):
     TransportTypeID = PrimaryKey(int, auto=True)
     TransportTypeTitle = Required(str)
-    Description = Required(str)
+    Description = Optional(str)
     LatestUpdateDate = Required(datetime)
     MissionTransportWent = Set("Missions", reverse="TransportTypeWentID")
     MissionTransportReturn = Set("Missions", reverse="TransportTypeReturnID")

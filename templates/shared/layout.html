@@ -5,24 +5,32 @@
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/demo.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/component.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/fontawesome/css/all.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap/css/bootstarp.css') }}" />
+    <script src="{{ url_for('static', filename='lib/popper/js/popper.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/jquery/js/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='js/modernizr.custom.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/fontawesome/js/all.js') }}"></script>
     {% block header %}{% endblock %}
 </head>
 <body>
-        <div class="container">
+        <div class="container1">
                 <ul id="gn-menu" class="gn-menu-main">
                     <li class="gn-trigger">
                         <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
                         <nav class="gn-menu-wrapper">
                             <div class="gn-scroller">
                                 <ul class="gn-menu">
-                                    <li><a class="gn-icon gn-icon-running">Leaves</a></li>
-                                    <li><a class="gn-icon gn-icon-suitecase">Intra City Mission</a></li>
-                                    <li><a class="gn-icon gn-icon-plane">Extra-Urban Mission</a></li>
-                                    <li><a class="gn-icon gn-icon-stopwatch">Hour Off</a></li>
-                                    <li><a class="gn-icon gn-icon-cog">Settings</a></li>
-                                    <li><a class="gn-icon gn-icon-help">Help</a></li>
+                                    <li><a class="gn-icon gn-icon-dashboard" href="/Dashboard">Dashboard</a></li>
+                                    <li><a class="gn-icon gn-icon-role" href="/UserManagement/Roles">Roles</a></li>
+                                    <li><a class="gn-icon gn-icon-roleaccess" href="#">RoleAccess</a></li>
+                                    <li><a class="gn-icon gn-icon-user" href="#">Users</a></li>
+                                    <li><a class="gn-icon gn-icon-running" href="#">Leaves</a></li>
+                                    <li><a class="gn-icon gn-icon-suitecase" href="#">Intra City Mission</a></li>
+                                    <li><a class="gn-icon gn-icon-plane" href="#">Extra-Urban Mission</a></li>
+                                    <li><a class="gn-icon gn-icon-stopwatch" href="#">Hour Off</a></li>
+                                    <li><a class="gn-icon gn-icon-cog" href="#">Settings</a></li>
+                                    <li><a class="gn-icon gn-icon-help" href="#">Help</a></li>
                                 </ul>
                             </div><!-- /gn-scroller -->
                         </nav>
@@ -31,7 +39,7 @@
                     <li><a class="codrops-icon codrops-icon-power" href="/logout"><span>Sign Out</span></a></li>
                     
                 </ul>
-                <div class="content">
+                <div class="content1">
                     {% block content %}{% endblock %}
                 </div>
             </div><!-- /container -->

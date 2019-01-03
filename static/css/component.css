@@ -245,6 +245,22 @@ input.gn-search:focus {
 		content: "\f128"
 }
 
+.gn-icon-dashboard::before {
+	content: "\f3fd"
+}
+
+.gn-icon-role::before {
+	content: "\f6fa"
+}
+
+.gn-icon-roleaccess::before {
+	content: "\f084"
+}
+
+.gn-icon-user::before {
+	content: "\f007"
+}
+
 .gn-icon-running::before {
 		content: "\f70c"
 }
@@ -263,6 +279,18 @@ input.gn-search:focus {
 
 .gn-icon-stopwatch::before {
 		content: "\f2f2"
+}
+
+.gn-icon-edit::before {
+	content: "\f044"
+}
+
+.gn-icon-delete::before {
+	content: "\f2ed"
+}
+
+.gn-icon-detail::before {
+	content: "\f15c"
 }
 
 /* if an icon anchor has a span, hide the span */
@@ -323,4 +351,18 @@ input.gn-search:focus {
 	.gn-menu-wrapper.gn-open-all .gn-scroller {
 			width: 130%
 	}
+}
+
+.action-icon::before {
+	display: inline-block;
+	width: 60px;
+	text-align: center;
+	text-transform: none;
+	font-weight: normal;
+	font-style: normal;
+	font-variant: normal;
+	font-family: 'fontawesome';
+	line-height: 1;
+	speak: none;
+	-webkit-font-smoothing: antialiased;
 }
