@@ -5452,6 +5452,8 @@ button.close {
 .modal-title {
   margin-bottom: 0;
   line-height: 1.5;
+  display: block;
+  float: left;
 }
 
 .modal-body {
