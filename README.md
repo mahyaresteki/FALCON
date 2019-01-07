@@ -1,4 +1,4 @@
-# FALCON Leave Management System
+# FALCON: Leave Management System
 FALCON is super light information system to manage history of leaves and missions in any type of company. It is so simple and easy to use.
 
 # Architecture
