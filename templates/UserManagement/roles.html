@@ -18,7 +18,7 @@
         <td>{{ entry.RoleTitle }}</td>
         <td>{{ entry.Description }}</td>
         <td>
-            <a class="gn-icon gn-icon-detail" href="#" data-id="{{ entry.RoleID }}"></a>
+            <a class="gn-icon gn-icon-detail" href="#" data-id="{{ entry.RoleID }}" data-toggle="modal" data-target="#DetailModal"></a>
             <a class="gn-icon gn-icon-edit" href="#" data-id="{{ entry.RoleID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
             <a class="gn-icon gn-icon-delete" href="#" data-id="{{ entry.RoleID }}" data-toggle="modal" data-target="#DeleteModal"></a>
         </td>
@@ -32,7 +32,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="gridSystemModalLabel">Role Info</h4>
+                <h4 class="modal-title" id="gridSystemModalLabel"></h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 
             </div>
@@ -106,11 +106,51 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Role Info</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <input type="hidden" id="selectedID"/>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-3">Role Title</label>
+                            <div class="col-md-6" >
+                                <label id="RoleTitle"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-3">Description</label>
+                            <div class="col-md-6" >
+                                <label id="Description"></label>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="{{ url_for('static', filename='js/roles.js') }}"></script>
 <script>
     $(document).on("click", ".table .gn-icon-edit", function () {
+        $('#CreateEditModal #gridSystemModalLabel').html("Edit Role");
         var id = $(this).data('id');
         $("#CreateEditModal #selectedID").val(id);
+
+        GetRole(id);
+        setTimeout(function(){
+            $('#CreateEditModal #RoleTitle').val(result['RoleTitle']);
+            $('#CreateEditModal #Description').val(result['Description']);
+        }, 500);
     });
 
     $(document).on("click", ".table .gn-icon-delete", function () {
@@ -126,8 +166,35 @@
         
     });
 
+    $(document).on("click", ".table .gn-icon-detail", function () {
+        var id = $(this).data('id');
+        $("#DetailModal #selectedID").val(id);
+
+        GetRole(id);
+        setTimeout(function(){
+            $('#DetailModal #RoleTitle').html(result['RoleTitle']);
+            $('#DetailModal #Description').html(result['Description']);
+        }, 500);
+        
+        
+    });
+
+    $(document).on("click", "#newRole", function () {
+        $('#CreateEditModal #gridSystemModalLabel').html("New Role");
+        $("#CreateEditModal #selectedID").val('');
+        $('#CreateEditModal #RoleTitle').val('');
+        $('#CreateEditModal #Description').val('');
+    });
+
     $(document).on("click", "#CreateEditModal .btn-primary", function () {
-        CreateRole($('#CreateEditModal #RoleTitle').val(), $('#CreateEditModal #Description').val());
+        if($("#CreateEditModal #selectedID").val()=='')
+        {
+            CreateRole($('#CreateEditModal #RoleTitle').val(), $('#CreateEditModal #Description').val());
+        }
+        else
+        {
+            EditRole($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #RoleTitle').val(), $('#CreateEditModal #Description').val());
+        }
     });
 
     $(document).on("click", "#DeleteModal .btn-primary", function () {

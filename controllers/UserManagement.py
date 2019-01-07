@@ -51,4 +51,18 @@ def DeleteRole():
             return jsonify({'message': message})
     else:
         return redirect("/", code=302)
+
+
+@App.app.route('/UserManagement/EditRole', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def EditRole():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        with db_session:
+            data = request.get_json()
+            role = Roles[int(data['RoleID'])]
+            role.set(RoleTitle = data['RoleTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
+            message = "Success"
+            return jsonify({'message': message})
+    else:
+        return redirect("/", code=302)
             
