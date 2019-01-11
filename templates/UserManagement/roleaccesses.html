@@ -35,5 +35,9 @@
     $(document).on("change", "#RoleID", function () {
         GetRoleAccesses($('#RoleID').val());
     });
+
+    $(document).on("click", ".btn-primary", function () {
+        SaveAccesses();
+    });
 </script>
 {% endblock %}
