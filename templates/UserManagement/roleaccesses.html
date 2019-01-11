@@ -1,0 +1,39 @@
+{% extends 'shared/layout.html'%}
+
+{% block header %}
+<title>Role Accesses</title>
+{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-md-1" >
+        <labe>Role Title</label>
+    </div>
+    <div class="col-md-2" >
+        <select id="RoleID" name="RoleID" class="form-control">
+            {% for r in roles %}
+                <option value="{{ r.RoleID }}">{{ r.RoleTitle }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-1" >
+        <input type="button" class="btn btn-primary" value="Save"/>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-md-12" >
+        <table class="table">
+        </table>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/roleaccesses.js') }}"></script>
+<script>
+    $(document).ready(function () {
+        GetRoleAccesses($('#RoleID').val());
+    });
+
+    $(document).on("change", "#RoleID", function () {
+        GetRoleAccesses($('#RoleID').val());
+    });
+</script>
+{% endblock %}
