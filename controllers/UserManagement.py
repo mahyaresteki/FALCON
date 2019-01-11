@@ -93,3 +93,24 @@ def GetRoleAccesses():
             return jsonify(mylist)
     else:
         return redirect("/", code=302)
+
+
+@App.app.route('/UserManagement/SetRoleAccesses', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def SetRoleAccesses():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        with db_session:
+            data = request.get_json()
+            Accesses = data["Accesses"]
+            for item in Accesses:
+                query = RoleAccesses.select(lambda u: u.RoleID.RoleID == int(item['roleId']) and u.AppFormID.AppFormID == int(item['formId']))
+                mylist = list(query)
+                if len(mylist) > 0:
+                        roleAccess = RoleAccesses[mylist[0].RoleAccessID]
+                        roleAccess.set(CreateGrant = bool(item["create"]), ReadGrant = bool(item["read"]), UpdateGrant = bool(item["update"]), DeleteGrant = bool(item["delete"]), PrintGrant = bool(item["print"]), LatestUpdateDate = datetime.now() )
+                else:
+                        RoleAccesses(RoleID = int(item["roleId"]), AppFormID = int(item["formId"]), CreateGrant = bool(item["create"]), ReadGrant = bool(item["read"]), UpdateGrant = bool(item["update"]), DeleteGrant = bool(item["delete"]), PrintGrant = bool(item["print"]), LatestUpdateDate = datetime.now() )
+            message = "Success"
+            return jsonify({'message': message})
+    else:
+        return redirect("/", code=302)

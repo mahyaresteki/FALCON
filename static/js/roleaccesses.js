@@ -43,11 +43,70 @@ function GetRoleAccesses(roleID)
 
 function SaveAccesses(){
     var accesses = [];
+    var grants = [];
+    var roleId = "0";
+    var formId = "0";
     $(".table input:checkbox").each(function() {
-        accesses.push(
-            {roleId: $(this).attr("data-role-id"), fromId: $(this).attr("data-form-id"), grant: $(this).attr("data-grant"), value: $(this).prop("checked")}
-        );
+        //alert(formId +"."+ roleId+ "  "+$(this).attr("data-form-id") +'.'+$(this).attr("data-role-id"));
+        if(formId != $(this).attr("data-form-id"))
+        {
+            
+            if(formId!="0" && roleId!="0")
+            {
+                accesses.push(
+                    {roleId: roleId, formId: formId, create: grants[0], read: grants[1], update: grants[2], delete:grants[3], print:grants[4]}
+                );
+            }
+            formId = $(this).attr("data-form-id");
+            roleId = $(this).attr("data-role-id");
+            grants = [];
+        }
+        grants.push($(this).prop("checked"));
+        
     });
+
+    accesses.push(
+        {roleId: roleId, formId: formId, create: grants[0], read: grants[1], update: grants[2], delete:grants[3], print:grants[4]}
+    );
+
     console.log(accesses);
+
+    $.ajaxSetup({
+        type: "POST",
+        data: {},
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true,
+        contentType: 'application/json; charset=utf-8'
+    });
+
+    var jsondata =	{
+        "Accesses": accesses
+    };
+    var a = JSON.stringify(jsondata);
+
+    $.ajax({
+        url: '/UserManagement/SetRoleAccesses',
+        type: 'POST',
+        dataType: 'json',
+        crossDomain: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            "Accept" : "application/json"
+        },
+        contentType: "application/json; charset=utf-8",
+        data: a,
+        success: function (data) {
+            if (data['message'] == "Success") {
+                GetRoleAccesses($('#RoleID').val());
+                alert("Changes are successfully applied!");
+            }
+        },
+        error: function (data, xmlHttpRequest, errorText, thrownError) {
+            result = errorText;
+        }
+    });
 
 }
