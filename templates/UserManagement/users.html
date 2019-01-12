@@ -1,0 +1,331 @@
+{% extends 'shared/layout.html'%}
+
+{% block header %}
+<title>Users</title>
+{% endblock %}
+{% block content %}
+<input id='newUser' type="button" class="btn btn-primary" value="New User" data-toggle="modal" data-target="#CreateEditModal"/>
+<br/>
+<br/>
+<table class="table">
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Username</th>
+        <th>Role Title</th>
+        <th>Personel Code</th>
+        <th></th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.FirstName }}</td>
+        <td>{{ user.LastName }}</td>
+        <td>{{ user.Username }}</td>
+        <td>{{ user.RoleID.RoleTitle }}</td>
+        <td>{{ user.PersonelCode }}</td>
+        <td>
+            <a class="gn-icon gn-icon-detail" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#DetailModal"></a>
+            <a class="gn-icon gn-icon-edit" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+            <a class="gn-icon gn-icon-delete" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="2">No entries yet. Add some!</td></tr>
+    {% endfor %}
+</table>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                
+            </div>
+            <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label id="caption"></label>
+                            <input type="hidden" id="selectedID"/>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>First Name</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="text" class="form-control" id="FirstName" name="FirstName"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Last Name</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="text" class="form-control" id="LastName" name="LastName"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Username</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="text" class="form-control" id="Username" name="Username"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Password</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="password" class="form-control" id="Password" name="Password"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Confirm Password</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="password" class="form-control" id="Confirm Password" name="Confirm Password"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Personel Code</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="text" class="form-control" id="PersonelCode" name="PersonelCode"/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Role Title</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <select class="form-control" id="RoleID" name="RoleID">
+                                    {% for r in roles %}
+                                        <option value="{{ r.RoleID }}">{{ r.RoleTitle }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DeleteModal" style="overflow:hidden;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Delete Role</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <input type="hidden" id="selectedID"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-10">Are you sure to delete this role?</label>
+                        </div>
+                        <div class="form-group">
+                            <label id="caption"></label>
+                            <input type="hidden" id="selectedID"/>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>First Name</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="FirstName"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Last Name</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="LastName"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Username</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="Username"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Personel Code</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="PersonelCode"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Role Title</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="RoleTitle"></label>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Role Info</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <input type="hidden" id="selectedID"/>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>First Name</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="FirstName"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Last Name</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="LastName"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Username</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="Username"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Personel Code</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="PersonelCode"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Role Title</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <label id="RoleTitle"></label>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/users.js') }}"></script>
+<script>
+    $(document).on("click", ".table .gn-icon-edit", function () {
+        $('#CreateEditModal #gridSystemModalLabel').html("Edit Role");
+        var id = $(this).data('id');
+        $("#CreateEditModal #selectedID").val(id);
+
+        GetRole(id);
+        setTimeout(function(){
+            ("#CreateEditModal #selectedID").val(id);
+            $('#CreateEditModal #FirstName').val(result['FirstName']);
+            $('#CreateEditModal #LastName').val(result['LastName']);
+            $('#CreateEditModal #PersonelCode').val(result['PersonalCode']);
+            $("#CreateEditModal #Username").val(result['Username']);
+            $('#CreateEditModal #RoleID').val(result['RoleID']);
+        }, 500);
+    });
+
+    $(document).on("click", ".table .gn-icon-delete", function () {
+        var id = $(this).data('id');
+        $("#DeleteModal #selectedID").val(id);
+
+        GetRole(id);
+        setTimeout(function(){
+            $("#DeleteModal #selectedID").val(id);
+            $('#DeleteModal #FirstName').val(result['FirstName']);
+            $('#DeleteModal #LastName').val(result['LastName']);
+            $('#DeleteModal #PersonelCode').val(result['PersonalCode']);
+            $("#DeleteModal #Username").val(result['Username']);
+            $('#DeleteModal #RoleID').val(result['RoleID']);
+        }, 500);
+        
+        
+    });
+
+    $(document).on("click", ".table .gn-icon-detail", function () {
+        var id = $(this).data('id');
+        $("#DetailModal #selectedID").val(id);
+
+        GetRole(id);
+        setTimeout(function(){
+            $("#CreateEditModal #selectedID").val(id);
+            $('#CreateEditModal #FirstName').val(result['FirstName']);
+            $('#CreateEditModal #LastName').val(result['LastName']);
+            $('#CreateEditModal #PersonelCode').val(result['PersonalCode']);
+            $("#CreateEditModal #Username").val(result['Username']);
+            $('#CreateEditModal #RoleID').val(result['RoleID']);
+        }, 500);
+        
+        
+    });
+
+    $(document).on("click", "#newRole", function () {
+        $('#CreateEditModal #gridSystemModalLabel').html("New Role");
+        $("#CreateEditModal #selectedID").val('');
+        $('#CreateEditModal #FirstName').val('');
+        $('#CreateEditModal #LastName').val('');
+        $('#CreateEditModal #PersonelCode').val('');
+        $("#CreateEditModal #Username").val('');
+        $("#CreateEditModal #Password").val('');
+        $('#CreateEditModal #RoleID').val('');
+        $('#CreateEditModal #PersonelCode').val('');
+    });
+
+    $(document).on("click", "#CreateEditModal .btn-primary", function () {
+        if($("#CreateEditModal #selectedID").val()=='')
+        {
+            CreateUser($('#CreateEditModal #FirstName').val(), $('#CreateEditModal #LastName').val(), , $('#CreateEditModal #Username').val(), $('#CreateEditModal #password').val(), $('#CreateEditModal #RoleID').val(), $('#CreateEditModal #PersonelCode').val());
+        }
+        else
+        {
+            EditUser($('#CreateEditModal #FirstName').val(), $('#CreateEditModal #LastName').val(), , $('#CreateEditModal #Username').val(), $('#CreateEditModal #RoleID').val(), $('#CreateEditModal #PersonelCode').val());
+        }
+    });
+
+    $(document).on("click", "#DeleteModal .btn-primary", function () {
+        DeleteUser($('#DeleteModal #selectedID').val());
+    });
+</script>
+{% endblock %}

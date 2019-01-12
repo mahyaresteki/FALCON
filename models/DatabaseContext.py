@@ -38,7 +38,7 @@ class RoleAccesses(db.Entity):
 
 class Users(db.Entity):
     UserID = PrimaryKey(int, auto=True)
-    Username = Required(str)
+    Username = Required(str, unique=True)
     Password = Required(str)
     FirstName = Required(str)
     LastName = Required(str)

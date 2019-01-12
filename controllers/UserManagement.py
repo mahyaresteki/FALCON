@@ -5,6 +5,7 @@ from flask import *
 from flask_cors import *
 import App
 from models.DatabaseContext import *
+import hashlib
 from datetime import datetime
 
 @App.app.route('/UserManagement/Roles')
@@ -114,3 +115,104 @@ def SetRoleAccesses():
             return jsonify({'message': message})
     else:
         return redirect("/", code=302)
+
+
+@App.app.route('/UserManagement/Users')
+def user_page():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        with db_session:
+            users = Users.select()
+            roles = Roles.select()
+            return render_template('UserManagement/users.html', users = users, roles = roles)
+    else:
+        return redirect("/", code=302)
+
+
+@App.app.route('/UserManagement/CreateUser', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def CreateUser():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        with db_session:
+            data = request.get_json()
+            password = hashlib.sha512(str(data['Password']).encode('utf-8')).hexdigest()
+            Users(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), Password=password, RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), IsActive=True, LatestUpdateDate = datetime.now() )
+            message = "Success"
+            return jsonify({'message': message})
+    else:
+        return redirect("/", code=302)
+
+
+@App.app.route('/UserManagement/GetUser', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def GetUser():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        with db_session:
+            data = request.get_json()
+            query= Users.select(lambda u: u.UserID == int(data['UserID']))
+            mylist = list(query)
+            return jsonify({'UserID': mylist[0].UserID, 'FirstName': mylist[0].FirstName, 'LastName': mylist[0].LastName, 'Username': mylist[0].Username, 'RoleID': mylist[0].RoleID.RoleID, 'RoleTitle': mylist[0].RoleID.RoleTitle, 'PersonelCode': mylist[0].PersonelCode})
+    else:
+        return redirect("/", code=302)
+
+
+
+@App.app.route('/UserManagement/DeleteUser', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def DeleteUser():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        with db_session:
+            data = request.get_json()
+            delete(p for p in Users if p.UserID == int(data["UserID"]))
+            message = "Success"
+            return jsonify({'message': message})
+    else:
+        return redirect("/", code=302)
+
+
+@App.app.route('/UserManagement/EditUser', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def EditUser():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        with db_session:
+            data = request.get_json()
+            user = Users[int(data['UserID'])]
+            user.set(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), IsActive=True, LatestUpdateDate = datetime.now())
+            message = "Success"
+            return jsonify({'message': message})
+    else:
+        return redirect("/", code=302)
+
+@App.app.route('/UserManagement/UserActivation', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def UserActivation():
+        if session.get("user_id") is not None and session.get("fullname") is not None:
+                with db_session:
+                        data = request.get_json()
+                        user = Users[int(data['UserID'])]
+                        if user.IsActive:
+                                user.set(IsActive=False, LatestUpdateDate = datetime.now())
+                        else:
+                                user.set(IsActive=True, LatestUpdateDate = datetime.now())
+                        message = "Success"
+                        return jsonify({'message': message})
+        else:
+                return redirect("/", code=302)
+
+@App.app.route('/UserManagement/ChangePasswordByAdmin', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def ChangePasswordByAdmin():
+        if session.get("user_id") is not None and session.get("fullname") is not None:
+                with db_session:
+                        data = request.get_json()
+                        user = Users[int(data['UserID'])]
+                        oldPassword = hashlib.sha512(str(data['OldPassword']).encode('utf-8')).hexdigest()
+                        message = ""
+                        if user.Password == oldPassword:
+                                newPassword = hashlib.sha512(str(data['NewPassword']).encode('utf-8')).hexdigest()
+                                user.set(Password = newPassword, LatestUpdateDate = datetime.now())
+                                message = "Success"
+                        else:
+                                message = "The old password is not correct"
+                        return jsonify({'message': message})
+        else:
+                return redirect("/", code=302)
