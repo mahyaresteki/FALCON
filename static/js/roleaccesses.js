@@ -103,6 +103,10 @@ function SaveAccesses(){
                 GetRoleAccesses($('#RoleID').val());
                 alert("Changes are successfully applied!");
             }
+            else
+            {
+                alert(data['message']);
+            }
         },
         error: function (data, xmlHttpRequest, errorText, thrownError) {
             result = errorText;

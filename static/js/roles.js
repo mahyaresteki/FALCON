@@ -40,7 +40,7 @@ function CreateRole(roleTitle, description)
             }
             else
             {
-                $("#Error").text(data['message']);
+                alert(data['message']);
             }
         },
         error: function (data, xmlHttpRequest, errorText, thrownError) {
@@ -127,7 +127,7 @@ function DeleteRole(roleID)
             }
             else
             {
-                $("#Error").text(data['message']);
+                alert(data['message']);
             }
         },
         error: function (data, xmlHttpRequest, errorText, thrownError) {
@@ -177,7 +177,7 @@ function EditRole(roleId, roleTitle, description)
             }
             else
             {
-                $("#Error").text(data['message']);
+                alert(data['message']);
             }
         },
         error: function (data, xmlHttpRequest, errorText, thrownError) {
