@@ -153,7 +153,7 @@ def CreateUser():
                                 data = request.get_json()
                                 print(data['Password'])
                                 password = hashlib.sha512(str(data['Password']).encode('utf-8')).hexdigest()
-                                Users(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), Password=password, RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), IsActive=True, LatestUpdateDate = datetime.now() )
+                                Users(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), Password=password, RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), ManagerID=str(data['ManagerID']), IsActive=True, LatestUpdateDate = datetime.now() )
                                 message = "Success"
                                 return jsonify({'message': message})
                 else:
@@ -171,7 +171,11 @@ def GetUser():
             data = request.get_json()
             query= Users.select(lambda u: u.UserID == int(data['UserID']))
             mylist = list(query)
-            return jsonify({'UserID': mylist[0].UserID, 'FirstName': mylist[0].FirstName, 'LastName': mylist[0].LastName, 'Username': mylist[0].Username, 'RoleID': mylist[0].RoleID.RoleID, 'RoleTitle': mylist[0].RoleID.RoleTitle, 'PersonelCode': mylist[0].PersonelCode})
+            managerID = mylist[0].ManagerID.UserID if mylist[0].ManagerID is not None else ''
+            print(managerID)
+            managerName = mylist[0].ManagerID.FirstName+' '+mylist[0].ManagerID.LastName if mylist[0].ManagerID is not None else ''
+            print(managerName)
+            return jsonify({'UserID': mylist[0].UserID, 'FirstName': mylist[0].FirstName, 'LastName': mylist[0].LastName, 'Username': mylist[0].Username, 'RoleID': mylist[0].RoleID.RoleID, 'RoleTitle': mylist[0].RoleID.RoleTitle, 'PersonelCode': mylist[0].PersonelCode, 'IsActive': mylist[0].IsActive, 'ManagerID': managerID , 'ManagerName': managerName})
     else:
         return redirect("/", code=302)
 
@@ -202,7 +206,7 @@ def EditUser():
                         with db_session:
                                 data = request.get_json()
                                 user = Users[int(data['UserID'])]
-                                user.set(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), IsActive=True, LatestUpdateDate = datetime.now())
+                                user.set(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), ManagerID=str(data['ManagerID']), IsActive=True, LatestUpdateDate = datetime.now())
                                 message = "Success"
                                 return jsonify({'message': message})
                 else:
@@ -232,9 +236,9 @@ def UserActivation():
                 message = str(e)
                 return jsonify({'message': message})
 
-@App.app.route('/UserManagement/ChangePasswordByAdmin', methods=['GET', 'POST'])
+@App.app.route('/UserManagement/ChangePasswordByUser', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
-def ChangePasswordByAdmin():
+def ChangePasswordByUser():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         with db_session:
@@ -248,6 +252,25 @@ def ChangePasswordByAdmin():
                                         message = "Success"
                                 else:
                                         message = "The old password is not correct"
+                                return jsonify({'message': message})
+                else:
+                        return redirect("/", code=302)
+        except Exception as e:
+                message = str(e)
+                return jsonify({'message': message})
+
+
+@App.app.route('/UserManagement/ChangePasswordByAdmin', methods=['GET', 'POST'])
+@cross_origin(supports_credentials=True)
+def ChangePasswordByAdmin():
+        try:
+                if session.get("user_id") is not None and session.get("fullname") is not None:
+                        with db_session:
+                                data = request.get_json()
+                                user = Users[int(data['UserID'])]
+                                newPassword = hashlib.sha512(str(data['Password']).encode('utf-8')).hexdigest()
+                                user.set(Password = newPassword, LatestUpdateDate = datetime.now())
+                                message = "Success"
                                 return jsonify({'message': message})
                 else:
                         return redirect("/", code=302)

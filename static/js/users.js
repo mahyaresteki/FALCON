@@ -1,6 +1,6 @@
 var result = {};
 
-function CreateUser(FirstName, LastName, Username, Password, RoleID, PersonelCode)
+function CreateUser(FirstName, LastName, Username, Password, RoleID, PersonelCode, ManagerID)
 {
     $.ajaxSetup({
         type: "POST",
@@ -19,7 +19,8 @@ function CreateUser(FirstName, LastName, Username, Password, RoleID, PersonelCod
         "Username": Username,
         "Password": Password,
         "RoleID": RoleID,
-        "PersonelCode": PersonelCode
+        "PersonelCode": PersonelCode,
+        "ManagerID": ManagerID
     };
     var a = JSON.stringify(jsondata);
 
@@ -44,6 +45,55 @@ function CreateUser(FirstName, LastName, Username, Password, RoleID, PersonelCod
                 $('#CreateEditModal #Password').val('');
                 $('#CreateEditModal #ConfirmPassword').val('');
                 $('#CreateEditModal #PersonelCode').val('');
+                $('#CreateEditModal #ManagerID').val('');
+                location.reload();
+            }
+            else
+            {
+                alert(data['message']);
+            }
+        },
+        error: function (data, xmlHttpRequest, errorText, thrownError) {
+            alert(errorText);
+        }
+    });
+}
+
+function ChangePassword(UserID, Password)
+{
+    $.ajaxSetup({
+        type: "POST",
+        data: {},
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true,
+        contentType: 'application/json; charset=utf-8'
+    });
+
+    var jsondata =	{
+        "UserID": UserID,
+        "Password": Password
+    };
+    var a = JSON.stringify(jsondata);
+
+    $.ajax({
+        url: '/UserManagement/ChangePasswordByAdmin',
+        type: 'POST',
+        dataType: 'json',
+        crossDomain: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            "Accept" : "application/json"
+        },
+        contentType: "application/json; charset=utf-8",
+        data: a,
+        success: function (data) {
+            if (data['message'] == "Success") {
+                $('#ChangePasswordModal').hide();
+                $('#ChangePasswordModal #Password').val('');
+                $('#ChangePasswordModal #ConfirmPassword').val('');
                 location.reload();
             }
             else
@@ -128,9 +178,13 @@ function DeleteUser(UserID)
         success: function (data) {
             if (data['message'] == "Success") {
                 $('#DeleteModal').hide();
-                $('#DeleteModal #RoleTitle').val('');
-                $('#DeleteModal #Description').val('');
-                $('#DeleteModal #selectedID').val('');
+                $('#DeleteModal #RoleTitle').html('');
+                $('#DeleteModal #FirstName').html('');
+                $('#DeleteModal #LastName').html('');
+                $('#DeleteModal #RoleTitle').html('');
+                $('#DeleteModal #ManagerName').html('');
+                $('#DeleteModal #Username').html('');
+                $('#DeleteModal #PersonelCode').html('');
                 location.reload();
             }
             else
@@ -144,7 +198,7 @@ function DeleteUser(UserID)
     });
 }
 
-function EditUser(UserID, FirstName, LastName, Username, RoleID, PersonelCode)
+function EditUser(UserID, FirstName, LastName, Username, RoleID, PersonelCode, ManagerID)
 {
     $.ajaxSetup({
         type: "POST",
@@ -162,7 +216,8 @@ function EditUser(UserID, FirstName, LastName, Username, RoleID, PersonelCode)
         "LastName": LastName,
         "Username": Username,
         "RoleID": RoleID,
-        "PersonelCode": PersonelCode
+        "PersonelCode": PersonelCode,
+        "ManagerID": ManagerID
     };
     var a = JSON.stringify(jsondata);
 
@@ -183,6 +238,7 @@ function EditUser(UserID, FirstName, LastName, Username, RoleID, PersonelCode)
                 $('#CreateEditModal #FirstName').val('');
                 $('#CreateEditModal #LastName').val('');
                 $('#CreateEditModal #RoleID').val('');
+                $('#CreateEditModal #ManagerID').val('');
                 $('#CreateEditModal #Username').val('');
                 $('#CreateEditModal #Password').val('');
                 $('#CreateEditModal #ConfirmPassword').val('');
@@ -196,6 +252,59 @@ function EditUser(UserID, FirstName, LastName, Username, RoleID, PersonelCode)
         },
         error: function (data, xmlHttpRequest, errorText, thrownError) {
             alert(data.responseText);
+        }
+    });
+}
+
+
+function UserActivate(UserID)
+{
+    $.ajaxSetup({
+        type: "POST",
+        data: {},
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true,
+        contentType: 'application/json; charset=utf-8'
+    });
+
+    var jsondata =	{
+        "UserID": UserID
+    };
+    var a = JSON.stringify(jsondata);
+
+    $.ajax({
+        url: '/UserManagement/UserActivation',
+        type: 'POST',
+        dataType: 'json',
+        crossDomain: true,
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            "Accept" : "application/json"
+        },
+        contentType: "application/json; charset=utf-8",
+        data: a,
+        success: function (data) {
+            if (data['message'] == "Success") {
+                $('#UserActivateModal').hide();
+                $('#UserActivateModal #RoleTitle').html('');
+                $('#UserActivateModal #FirstName').html('');
+                $('#UserActivateModal #LastName').html('');
+                $('#UserActivateModal #RoleTitle').html('');
+                $('#UserActivateModal #ManagerName').html('');
+                $('#UserActivateModal #Username').html('');
+                $('#UserActivateModal #PersonelCode').html('');
+                location.reload();
+            }
+            else
+            {
+                alert(data['message']);
+            }
+        },
+        error: function (data, xmlHttpRequest, errorText, thrownError) {
+            alert(errorText);
         }
     });
 }

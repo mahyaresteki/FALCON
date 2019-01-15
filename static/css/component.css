@@ -293,6 +293,18 @@ input.gn-search:focus {
 	content: "\f15c"
 }
 
+.gn-icon-user-deactivate::before {
+	content: "\f4fa"
+}
+
+.gn-icon-user-activate::before {
+	content: "\f4fc"
+}
+
+.gn-icon-change-password::before {
+	content: "\f084"
+}
+
 /* if an icon anchor has a span, hide the span */
 
 .gn-icon span {
