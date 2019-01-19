@@ -4,5 +4,133 @@
 <title>Dashboard</title>
 {% endblock %}
 {% block content %}
-page content
+<div>
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1">User Profile</a></li>
+            <li><a href="#tabs-2">Leave Statistics</a></li>
+            <li><a href="#tabs-3">Mission Statistics</a></li>
+        </ul>
+        <div id="tabs-1">
+            <h2>User Profile</h2>
+            <div class="form-horizontal">
+                <div class="form-group row">
+                    <div class="col-md-2" >
+                        <label class="control-label" style="font-weight: bold">First Name</label>
+                    </div>
+                    <div class="col-md-2" >
+                        <label>{{ user.FirstName }}</label>
+                    </div>
+                    <div class="col-md-2" >
+                        <label class="control-label" style="font-weight: bold">Last Name</label>
+                    </div>
+                    <div class="col-md-2" >
+                        <label>{{ user.LastName }}</label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-2" >
+                        <label class="control-label" style="font-weight: bold">Personel Code</label>
+                    </div>
+                    <div class="col-md-2" >
+                        <label>{{ user.PersonelCode }}</label>
+                    </div>
+                    <div class="col-md-2" >
+                        <label class="control-label" style="font-weight: bold">Manager Name</label>
+                    </div>
+                    <div class="col-md-2" >
+                            <label>
+                                {% if user.ManagerID %} 
+                                    {{ user.ManagerID.FirstName +' '+user.ManagerID.LastName }}
+                                {% endif %}
+                            </label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-2" >
+                        <label class="control-label" style="font-weight: bold">Username</label>
+                    </div>
+                    <div class="col-md-2" >
+                        <label>{{ user.Username }}</label>
+                    </div>
+                    <div class="col-md-2" >
+                        <label class="control-label" style="font-weight: bold">Role Title</label>
+                    </div>
+                    <div class="col-md-2" >
+                        <label>{{ user.RoleID.RoleTitle }}</label>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-2" >
+                            <input id='changePassword' type="button" class="btn btn-primary" value="Change Password" data-toggle="modal" data-target="#ChangePasswordModal"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tabs-2">
+            <h2>Leave Statistics</h2>
+        </div>
+        <div id="tabs-3">
+            <h2>Mission Statistics</h2>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="ChangePasswordModal" style="overflow:hidden;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Change Password</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                
+            </div>
+            <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label id="caption"></label>
+                            <input type="hidden" id="selectedID" value="{{ user.UserID }}"/>
+                        </div>
+                        <div id="PasswordBox1" class="form-group row">
+                            <div class="col-md-5" >
+                                <labe>New Password</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="password" class="form-control" id="OldPassword" name="OldPassword"/>
+                            </div>
+                        </div>
+                        <div id="PasswordBox1" class="form-group row">
+                            <div class="col-md-5" >
+                                <labe>New Password</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="password" class="form-control" id="NewPassword" name="NewPassword"/>
+                            </div>
+                        </div>
+                        <div id="PasswordBox2" class="form-group row">
+                            <div class="col-md-5" >
+                                <labe>Confirm Password</label>
+                            </div>
+                            <div class="col-md-6" >
+                                <input type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword"/>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/Dashboard.js') }}"></script>
+<script>
+    $("#tabs").tabs({
+        active: 0
+    });
+    $(document).on("click", "#ChangePasswordModal .btn-primary", function () {
+        ChangePassword($('#ChangePasswordModal #selectedID').val(), $('#ChangePasswordModal #OldPassword').val(), $('#ChangePasswordModal #NewPassword').val());
+    });
+</script>
 {% endblock %}

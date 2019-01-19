@@ -1,0 +1,95 @@
+{% extends 'shared/layout.html'%}
+
+{% block header %}
+<title>Leaves</title>
+{% endblock %}
+{% block content %}
+<input id='newLeave' type="button" class="btn btn-primary" value="New Leave" data-toggle="modal" data-target="#CreateEditModal"/>
+<br/>
+<br/>
+<div class="table-responsive-sm">
+    <table class="table table-striped">
+        <tr class="thead-dark">
+            <th>User Name</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Approved By</th>
+            <th>Approve Date</th>
+            <th></th>
+        </tr>
+        {% for leave in leaves %}
+        <tr>
+            <td>{{ leave.UserID.FirstName +' '+user.UserID.LastName }}</td>
+            <td>{{ leave.StartDate }}</td>
+            <td>{{ leave.EndDate }}</td>
+            <td>
+                {% if leave.ApprovedBy %} 
+                    {{ leave.ApprovedBy.FirstName + ' ' + leave.ApprovedBy.LastName }}
+                {% endif %}
+            </td>
+            <td>{{ leave.ApproveDate }}</td>
+            <td>
+                <a class="gn-icon gn-icon-detail" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                <a class="gn-icon gn-icon-edit" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                <a class="gn-icon gn-icon-delete" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">No entries yet. Add some!</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label id="caption"></label>
+                        <input type="hidden" id="selectedID"/>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-2" >
+                            <label>Start</label>
+                        </div>
+                        <div class="col-md-5" >
+                            <input type="date" class="form-control" id="StartDate" name="StartDate"/>
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="time" class="form-control" id="StartTime" name="StartTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-2" >
+                            <label>End</label>
+                        </div>
+                        <div class="col-md-5" >
+                            <input type="date" class="form-control" id="EndDate" name="EndDate"/>
+                        </div>
+                        <div class="col-md-4" >
+                            <input type="time" class="form-control" id="EndTime" name="EndTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-2" >
+                            <label>Reason</label>
+                        </div>
+                        <div class="col-md-9" >
+                            <input type="text" class="form-control" id="Reason" name="Reason"/>
+                        </div>
+                    </div>        
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

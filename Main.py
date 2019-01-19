@@ -4,6 +4,7 @@ from models.DatabaseContext import *
 import controllers.Security
 import controllers.Home
 import controllers.UserManagement
+import controllers.LeaveManagement
 from datetime import datetime
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin

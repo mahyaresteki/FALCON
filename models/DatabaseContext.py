@@ -60,6 +60,7 @@ class Leaves(db.Entity):
     StartDate = Required(datetime)
     EndDate = Required(datetime)
     ApprovedBy = Optional(Users, reverse="LeaveApproval")
+    ApproveDate = Optional(datetime)
     LatestUpdateDate = Required(datetime)
     
 

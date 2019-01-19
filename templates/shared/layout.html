@@ -6,9 +6,11 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/component.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/fontawesome/css/all.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap/css/bootstarp.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/jquery-ui/css/jquery-ui.css') }}" />
     <script src="{{ url_for('static', filename='lib/popper/js/popper.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/jquery/js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/jquery-ui/js/jquery-ui.js') }}"></script>
     <script src="{{ url_for('static', filename='js/modernizr.custom.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/fontawesome/js/all.js') }}"></script>
     {% block header %}{% endblock %}
@@ -25,7 +27,7 @@
                                     <li><a class="gn-icon gn-icon-role" href="/UserManagement/Roles">Roles</a></li>
                                     <li><a class="gn-icon gn-icon-roleaccess"  href="/UserManagement/RoleAccesses">RoleAccess</a></li>
                                     <li><a class="gn-icon gn-icon-user" href="/UserManagement/Users">Users</a></li>
-                                    <li><a class="gn-icon gn-icon-running" href="#">Leaves</a></li>
+                                    <li><a class="gn-icon gn-icon-running" href="/LeaveManagement/Leaves">Leaves</a></li>
                                     <li><a class="gn-icon gn-icon-suitecase" href="#">Intra City Mission</a></li>
                                     <li><a class="gn-icon gn-icon-plane" href="#">Extra-Urban Mission</a></li>
                                     <li><a class="gn-icon gn-icon-stopwatch" href="#">Hour Off</a></li>

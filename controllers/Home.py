@@ -22,7 +22,10 @@ def login_page():
 @App.app.route('/Dashboard')
 def dashboard_page():
     if session.get("user_id") is not None and session.get("fullname") is not None:
-        return render_template('Home/home.html')
+         with db_session:
+            query= Users.select(lambda u: u.UserID == int(session.get("user_id")))
+            mylist = list(query)
+            return render_template('Home/home.html', user = mylist[0])
     else:
         return redirect("/", code=302)
 
