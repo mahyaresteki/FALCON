@@ -10,18 +10,20 @@
 <div class="table-responsive-sm">
     <table class="table table-striped">
         <tr class="thead-dark">
-            <th>User Name</th>
+            <th>User Fullname</th>
             <th>Start Date</th>
             <th>End Date</th>
+            <th>Reason</th>
             <th>Approved By</th>
             <th>Approve Date</th>
             <th></th>
         </tr>
-        {% for leave in leaves %}
+        {% for leave in myleaves %}
         <tr>
-            <td>{{ leave.UserID.FirstName +' '+user.UserID.LastName }}</td>
+            <td>{{ leave.UserID.FirstName +' '+leave.UserID.LastName }}</td>
             <td>{{ leave.StartDate }}</td>
             <td>{{ leave.EndDate }}</td>
+            <td>{{ leave.Reason }}</td>
             <td>
                 {% if leave.ApprovedBy %} 
                     {{ leave.ApprovedBy.FirstName + ' ' + leave.ApprovedBy.LastName }}
@@ -92,4 +94,154 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DeleteModal" style="overflow:hidden;">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Delete Leave</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <input type="hidden" id="selectedID"/>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-10">Are you sure to delete this role?</label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-3">Start Date</label>
+                            <div class="col-md-6" >
+                                <label id="StartDate"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-3">End Date</label>
+                            <div class="col-md-6" >
+                                <label id="EndDate"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-3">Reason</label>
+                            <div class="col-md-6" >
+                                <label id="Reason"></label>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="gridSystemModalLabel">Leave Info</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <input type="hidden" id="selectedID"/>
+                            </div>
+                            <div class="form-group row">
+                                    <label class="control-label col-md-3">Start Date</label>
+                                    <div class="col-md-6" >
+                                        <label id="StartDate"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-3">End Date</label>
+                                    <div class="col-md-6" >
+                                        <label id="EndDate"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-3">Reason</label>
+                                    <div class="col-md-6" >
+                                        <label id="Reason"></label>
+                                    </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/leaves.js') }}"></script>
+<script>
+    $(document).on("click", ".table .gn-icon-edit", function () {
+        $('#CreateEditModal #gridSystemModalLabel').html("Edit Leave");
+        var id = $(this).data('id');
+        $("#CreateEditModal #selectedID").val(id);
+
+        GetLeave(id);
+        setTimeout(function(){
+            $('#CreateEditModal #StartDate').val(result['StartDate']);
+            $('#CreateEditModal #StartTime').val(result['StartTime']);
+            $('#CreateEditModal #EndDate').val(result['EndDate']);
+            $('#CreateEditModal #EndTime').val(result['EndTime']);
+            $('#CreateEditModal #Reason').val(result['Reason']);
+            $('#CreateEditModal #Description').val(result['Description']);
+        }, 500);
+    });
+
+    $(document).on("click", ".table .gn-icon-delete", function () {
+        var id = $(this).data('id');
+        $("#DeleteModal #selectedID").val(id);
+
+        GetLeave(id);
+        setTimeout(function(){
+            $('#DeleteModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
+            $('#DeleteModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
+            $('#DeleteModal #Reason').html(result['Reason']);
+        }, 500);
+    });
+
+    $(document).on("click", ".table .gn-icon-detail", function () {
+        var id = $(this).data('id');
+        $("#DetailModal #selectedID").val(id);
+
+        GetLeave(id);
+        setTimeout(function(){
+            $('#DetailModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
+            $('#DetailModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
+            $('#DetailModal #Reason').html(result['Reason']);
+        }, 500);
+    });
+
+    $(document).on("click", "#newLeave", function () {
+        $('#CreateEditModal #gridSystemModalLabel').html("New Role");
+        $("#CreateEditModal #selectedID").val('');
+        $('#CreateEditModal #StartDate').val('');
+        $('#CreateEditModal #StartTime').val('');
+        $('#CreateEditModal #EndDate').val('');
+        $('#CreateEditModal #EndTime').val('');
+        $('#CreateEditModal #Reason').val('');
+    });
+
+    $(document).on("click", "#CreateEditModal .btn-primary", function () {
+        if($("#CreateEditModal #selectedID").val()=='')
+        {
+            CreateLeave($('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
+        }
+        else
+        {
+            EditLeave($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
+        }
+    });
+
+    $(document).on("click", "#DeleteModal .btn-primary", function () {
+        DeleteLeave($('#DeleteModal #selectedID').val());
+    });
+</script>
 {% endblock %}

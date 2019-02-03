@@ -248,6 +248,10 @@ input.gn-search:focus {
 		content: "\f128"
 }
 
+.gn-icon-bus::before {
+	content: "\f207"
+}
+
 .gn-icon-dashboard::before {
 	content: "\f3fd"
 }

@@ -51,6 +51,7 @@ def SetDatabase():
         AppForms(AppFormTitle='Roles')
         AppForms(AppFormTitle='Role Accesses')
         AppForms(AppFormTitle='Users')
+        AppForms(AppFormTitle='Transport Types')
         AppForms(AppFormTitle='Leaves')
         AppForms(AppFormTitle='Intra City Mission')
         AppForms(AppFormTitle='Extra-Urban Mission')

@@ -172,9 +172,7 @@ def GetUser():
             query= Users.select(lambda u: u.UserID == int(data['UserID']))
             mylist = list(query)
             managerID = mylist[0].ManagerID.UserID if mylist[0].ManagerID is not None else ''
-            print(managerID)
             managerName = mylist[0].ManagerID.FirstName+' '+mylist[0].ManagerID.LastName if mylist[0].ManagerID is not None else ''
-            print(managerName)
             return jsonify({'UserID': mylist[0].UserID, 'FirstName': mylist[0].FirstName, 'LastName': mylist[0].LastName, 'Username': mylist[0].Username, 'RoleID': mylist[0].RoleID.RoleID, 'RoleTitle': mylist[0].RoleID.RoleTitle, 'PersonelCode': mylist[0].PersonelCode, 'IsActive': mylist[0].IsActive, 'ManagerID': managerID , 'ManagerName': managerName})
     else:
         return redirect("/", code=302)
