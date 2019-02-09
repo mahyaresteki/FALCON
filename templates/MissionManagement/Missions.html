@@ -1,0 +1,440 @@
+{% extends 'shared/layout.html'%}
+
+{% block header %}
+<title>Missions</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='lib/leafletMap/leaflet.css') }}""/>
+<script src="{{ url_for('static', filename='lib/leafletMap/leaflet.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/leafletMap/Control.OSMGeocoder.js') }}"></script>
+{% endblock %}
+{% block content %}
+<input id='newMission' type="button" class="btn btn-primary" value="New Mission" data-toggle="modal" data-target="#CreateEditModal"/>
+<br/>
+<br/>
+<div class="table-responsive-sm">
+    <table class="table table-striped">
+        <tr class="thead-dark">
+            <th>User Fullname</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Mission Title</th>
+            <th>Approval Result</th>
+            <th>Approved By</th>
+            <th>Approve Date</th>
+            <th></th>
+        </tr>
+        {% for mission in mymissions %}
+        <tr>
+            <td>{{ mission.UserID.FirstName +' '+mission.UserID.LastName }}</td>
+            <td>{{ mission.StartDate }}</td>
+            <td>{{ mission.EndDate }}</td>
+            <td>{{ mission.MissionTitle }}</td>
+            <td>
+                {% if mission.IsApproved %} 
+                    Approved
+                {% elif mission.IsApproved == false %}
+                    Rejected
+                {% else %}
+                    Not Anwsered
+                {% endif %}
+            </td>
+            <td>
+                {% if mission.ApprovedBy %} 
+                    {{ mission.ApprovedBy.FirstName + ' ' + mission.ApprovedBy.LastName }}
+                {% endif %}
+            </td>
+            <td>{{ mission.ApproveDate }}</td>
+            <td>
+                <a class="gn-icon gn-icon-detail" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                <a class="gn-icon gn-icon-edit" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                <a class="gn-icon gn-icon-delete" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">No entries yet. Add some!</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;" style="width:95%;">
+    <div class="modal-dialog modal-lg" role="document" style="width:95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-horizontal">
+                    <input type="hidden" id="selectedID"/>
+                    <input type="hidden" id="Latitude"/>
+                    <input type="hidden" id="Longitude"/>
+                    <div class="form-group row">
+                        <div class="col-md-1" >
+                            <label>Start</label>
+                        </div>
+                        <div class="col-md-3" >
+                            <input type="date" class="form-control" id="StartDate" name="StartDate"/>
+                        </div>
+                        <div class="col-md-2" >
+                            <input type="time" class="form-control" id="StartTime" name="StartTime"/>
+                        </div>
+                        <div class="col-md-1" >
+                            <label>End</label>
+                        </div>
+                        <div class="col-md-3" >
+                            <input type="date" class="form-control" id="EndDate" name="EndDate"/>
+                        </div>
+                        <div class="col-md-2" >
+                            <input type="time" class="form-control" id="EndTime" name="EndTime"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-2" >
+                            <label>Mission Title</label>
+                        </div>
+                        <div class="col-md-10" >
+                            <input type="text" class="form-control" id="MissionTitle" name="MissionTitle"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-3" >
+                            <labe>Went Transport</label>
+                        </div>
+                        <div class="col-md-4" >
+                            <select class="form-control" id="TransportTypeWentID" name="TransportTypeWentID">
+                                <option value="">Select Transport Type</option>
+                                {% for t in transporttypes %}
+                                    <option value="{{ t.TransportTypeID }}">{{ t.TransportTypeTitle }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2" >
+                            <label>Went Payment</label>
+                        </div>
+                        <div class="col-md-3" >
+                            <input type="number" class="form-control" id="WentPayment" name="WentPayment" step="0.01"/>
+                        </div>
+                    </div> 
+                    <div class="form-group row">
+                        <div class="col-md-3" >
+                            <labe>Return Transport</label>
+                        </div>
+                        <div class="col-md-4" >
+                            <select class="form-control" id="TransportTypeReturnID" name="TransportTypeReturnID">
+                                <option value="">Select Transport Type</option>
+                                {% for t in transporttypes %}
+                                    <option value="{{ t.TransportTypeID }}">{{ t.TransportTypeTitle }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2" >
+                            <label>Return Payment</label>
+                        </div>
+                        <div class="col-md-3" >
+                            <input type="number" class="form-control" id="ReturnPayment" name="ReturnPayment" step="0.01"/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12" >
+                            <div id="mapid" style="width: 100%; height: 200px;"></div>
+                        </div>
+                    </div>         
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DeleteModal" style="overflow:hidden;"  style="width:95%;">
+    <div class="modal-dialog modal-lg" role="document"  style="width:95%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="gridSystemModalLabel">Delete Mission</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                    <div class="form-horizontal">
+                        <input type="hidden" id="selectedID"/>
+                        <div class="form-group">
+                            <label class="control-label col-md-10">Are you sure to delete this role?</label>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-2">Start Date</label>
+                            <div class="col-md-4" >
+                                <label id="StartDate"></label>
+                            </div>
+                            <label class="control-label col-md-2">End Date</label>
+                            <div class="col-md-4" >
+                                <label id="EndDate"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="control-label col-md-3">Mission Title</label>
+                            <div class="col-md-9" >
+                                <label id="MissionTitle"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                                <div class="col-md-3" >
+                                    <labe>Went Transport</label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label id="TransportTypeWentTitle"></label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label>Went Payment</label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label id="WentPayment"></label>
+                                </div>
+                            </div>
+                        <div class="form-group row">
+                            <div class="col-md-3" >
+                                <labe>Return Transport</label>
+                            </div>
+                            <div class="col-md-3" >
+                                <label id="TransportTypeReturnTitle"></label>
+                            </div>
+                            <div class="col-md-3" >
+                                <label>Return Payment</label>
+                            </div>
+                            <div class="col-md-3" >
+                                <label id="ReturnPayment"></label>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-12" >
+                                <div id="mapid2" style="width: 100%; height: 200px;"></div>
+                            </div>
+                        </div> 
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;" style="width:95%;">
+        <div class="modal-dialog modal-lg" role="document" style="width:95%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="gridSystemModalLabel">Mission Info</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                        <div class="form-horizontal">
+                            <input type="hidden" id="selectedID"/>
+                            <div class="form-group row">
+                                <label class="control-label col-md-2">Start Date</label>
+                                <div class="col-md-5" >
+                                    <label id="StartDate"></label>
+                                </div>
+                                <label class="control-label col-md-2">End Date</label>
+                                <div class="col-md-5" >
+                                    <label id="EndDate"></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="control-label col-md-3">Mission Title</label>
+                                <div class="col-md-9" >
+                                    <label id="MissionTitle"></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3" >
+                                    <labe>Went Transport</label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label id="TransportTypeWentTitle"></label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label>Went Payment</label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label id="WentPayment"></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3" >
+                                        <label>Return Transport</label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label id="TransportTypeReturnTitle"></label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label>Return Payment</label>
+                                </div>
+                                <div class="col-md-3" >
+                                    <label id="ReturnPayment"></label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-12" >
+                                    <div id="mapid3" style="width: 100%; height: 200px;"></div>
+                                </div>
+                            </div> 
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/missions.js') }}"></script>
+<script>
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Falcon Leave Management System';
+    var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+    var osm2 = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+    var osm3 = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+    var mymap = new L.Map('mapid').addLayer(osm).setView([35.7309, 51.4328], 18);
+    var mymap2 = new L.Map('mapid2').addLayer(osm2).setView([35.7309, 51.4328], 18);
+    var mymap3 = new L.Map('mapid3').addLayer(osm3).setView([35.7309, 51.4328], 18);
+    var osmGeocoder = new L.Control.OSMGeocoder();
+    var osmGeocoder2 = new L.Control.OSMGeocoder();
+    var osmGeocoder3 = new L.Control.OSMGeocoder();
+    mymap.addControl(osmGeocoder);
+    mymap2.addControl(osmGeocoder2);
+    mymap3.addControl(osmGeocoder3);
+
+    var markerGroup = L.layerGroup().addTo(mymap);
+    var markerGroup2 = L.layerGroup().addTo(mymap2);
+    var markerGroup3 = L.layerGroup().addTo(mymap3);
+
+    var marker = L.marker([35.73096138196363, 51.432843112140745]).addTo(markerGroup);
+
+    function onMapClick(e) {
+        markerGroup.clearLayers();
+        var marker = L.marker(e.latlng).addTo(markerGroup);
+        $('#CreateEditModal #Latitude').val(e.latlng.lat);
+        $('#CreateEditModal #Longitude').val(e.latlng.lng);
+    }
+
+    mymap.on('click', onMapClick);
+
+    $(document).on("click", ".table .gn-icon-edit", function () {
+        $('#CreateEditModal #gridSystemModalLabel').html("Edit Mission");
+        var id = $(this).data('id');
+        $("#CreateEditModal #selectedID").val(id);
+
+        GetMission(id);
+        setTimeout(function(){
+            $('#CreateEditModal #StartDate').val(result['StartDate']);
+            $('#CreateEditModal #StartTime').val(result['StartTime']);
+            $('#CreateEditModal #EndDate').val(result['EndDate']);
+            $('#CreateEditModal #EndTime').val(result['EndTime']);
+            $('#CreateEditModal #MissionTitle').val(result['MissionTitle']);
+            $('#CreateEditModal #Latitude').val(result['Latitude']);
+            $('#CreateEditModal #Longitude').val(result['Longitude']);
+            mymap.panTo(new L.LatLng(parseFloat(result['Latitude']), parseFloat(result['Longitude'])));
+            markerGroup.clearLayers();
+            var marker = L.marker([parseFloat(result['Latitude']), parseFloat(result['Longitude'])]).addTo(markerGroup);
+            $('#CreateEditModal #TransportTypeWentID').val(result['TransportTypeWentID']);
+            $('#CreateEditModal #WentPayment').val(result['WentPayment']);
+            $('#CreateEditModal #TransportTypeReturnID').val(result['TransportTypeReturnID']);
+            $('#CreateEditModal #ReturnPayment').val(result['ReturnPayment']);
+            $('#CreateEditModal #Description').val(result['Description']);
+        }, 500);
+    });
+
+    $(document).on("click", ".table .gn-icon-delete", function () {
+        var id = $(this).data('id');
+        $("#DeleteModal #selectedID").val(id);
+
+        GetMission(id);
+        setTimeout(function(){
+            $('#DeleteModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
+            $('#DeleteModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
+            $('#DeleteModal #MissionTitle').html(result['MissionTitle']);
+            mymap2.panTo(new L.LatLng(parseFloat(result['Latitude']), parseFloat(result['Longitude'])));
+            markerGroup2.clearLayers();
+            var marker2 = L.marker([parseFloat(result['Latitude']), parseFloat(result['Longitude'])]).addTo(markerGroup2);
+            $('#DeleteModal #TransportTypeWentTitle').html(result['TransportTypeWentTitle']);
+            $('#DeleteModal #WentPayment').html(result['WentPayment']);
+            $('#DeleteModal #TransportTypeReturnID').html(result['TransportTypeReturnID']);
+            $('#DeleteModal #ReturnPayment').html(result['ReturnPayment']);
+            $('#DeleteModal #Description').html(result['Description']);
+        }, 500);
+    });
+
+    $(document).on("click", ".table .gn-icon-detail", function () {
+        var id = $(this).data('id');
+        $("#DetailModal #selectedID").val(id);
+
+        GetMission(id);
+        setTimeout(function(){
+            $('#DetailModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
+            $('#DetailModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
+            $('#DetailModal #MissionTitle').html(result['MissionTitle']);
+            mymap3.panTo(new L.LatLng(parseFloat(result['Latitude']), parseFloat(result['Longitude'])));
+            markerGroup3.clearLayers();
+            var marker3 = L.marker([parseFloat(result['Latitude']), parseFloat(result['Longitude'])]).addTo(markerGroup3);
+            $('#DetailModal #TransportTypeWentTitle').html(result['TransportTypeWentTitle']);
+            $('#DetailModal #WentPayment').html(result['WentPayment']);
+            $('#DetailModal #TransportTypeReturnID').html(result['TransportTypeReturnID']);
+            $('#DetailModal #ReturnPayment').html(result['ReturnPayment']);
+            $('#DetailModal #Description').html(result['Description']);
+        }, 500);
+    });
+
+    $(document).on("click", "#newMission", function () {
+        $('#CreateEditModal #gridSystemModalLabel').html("New Mission");
+        $("#CreateEditModal #selectedID").val('');
+        $('#CreateEditModal #StartDate').val('');
+        $('#CreateEditModal #StartTime').val('');
+        $('#CreateEditModal #EndDate').val('');
+        $('#CreateEditModal #EndTime').val('');
+        $('#CreateEditModal #MissionTitle').val('');
+        $('#CreateEditModal #Latitude').val('35.73096138196363');
+        $('#CreateEditModal #Longitude').val('51.432843112140745');
+        markerGroup.clearLayers();
+        var marker = L.marker([35.73096138196363, 51.432843112140745]).addTo(markerGroup);
+        $('#CreateEditModal #TransportTypeWentID').val('');
+        $('#CreateEditModal #WentPayment').val('');
+        $('#CreateEditModal #TransportTypeReturnID').val('');
+        $('#CreateEditModal #ReturnPayment').val('');
+        $('#CreateEditModal #Description').val('');
+    });
+
+    $('#CreateEditModal').on('show.bs.modal', function(){
+        setTimeout(function() {
+            mymap.invalidateSize();
+        }, 1000);
+    });
+
+    $('#DeleteModal').on('show.bs.modal', function(){
+        setTimeout(function() {
+            mymap2.invalidateSize();
+        }, 1000);
+    });
+
+    $('#DetailModal').on('show.bs.modal', function(){
+        setTimeout(function() {
+            mymap3.invalidateSize();
+        }, 1000);
+    });
+
+    $(document).on("click", "#CreateEditModal .btn-primary", function () {
+        if($("#CreateEditModal #selectedID").val()=='')
+        {
+            CreateMission($('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #MissionTitle').val(), $('#CreateEditModal #Latitude').val(), $('#CreateEditModal #Longitude').val(), $('#CreateEditModal #TransportTypeWentID').val(), $('#CreateEditModal #WentPayment').val(), $('#CreateEditModal #TransportTypeReturnID').val(), $('#CreateEditModal #ReturnPayment').val());
+        }
+        else
+        {
+            EditMission($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(), $('#CreateEditModal #MissionTitle').val(), $('#CreateEditModal #Latitude').val(), $('#CreateEditModal #Longitude').val(), $('#CreateEditModal #TransportTypeWentID').val(), $('#CreateEditModal #WentPayment').val(), $('#CreateEditModal #TransportTypeReturnID').val(), $('#CreateEditModal #ReturnPayment').val());
+        }
+    });
+
+    $(document).on("click", "#DeleteModal .btn-primary", function () {
+        DeleteMission($('#DeleteModal #selectedID').val());
+    });
+</script>
+{% endblock %}

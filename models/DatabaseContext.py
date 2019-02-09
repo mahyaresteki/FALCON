@@ -76,13 +76,18 @@ class TransportTypes(db.Entity):
 
 
 class Missions(db.Entity):
-    MessionID = PrimaryKey(int, auto=True)
+    MissionID = PrimaryKey(int, auto=True)
     UserID = Required(Users, reverse="MissionRequester")
+    MissionTitle = Required(str)
     StartDate = Required(datetime)
     EndDate = Required(datetime)
+    Latitude = Optional(float)
+    Longitude = Optional(float)
     TransportTypeWentID = Optional(TransportTypes, reverse="MissionTransportWent")
     WentPayment = Optional(float)
     TransportTypeReturnID = Optional(TransportTypes, reverse="MissionTransportReturn")
     ReturnPayment = Optional(float)
+    IsApproved = Optional(bool)
     ApprovedBy = Optional(Users, reverse="MissionApproval")
+    ApproveDate = Optional(datetime)
     LatestUpdateDate = Required(datetime)

@@ -1,6 +1,6 @@
 var result = {};
 
-function CreateLeave(StartDate, EndDate, Reason)
+function CreateMission(StartDate, EndDate, MissionTitle, Latitude, Longitude, TransportTypeWentID, WentPayment, TransportTypeReturnID, ReturnPayment)
 {
     $.ajaxSetup({
         type: "POST",
@@ -16,12 +16,18 @@ function CreateLeave(StartDate, EndDate, Reason)
     var jsondata =	{
         "StartDate": StartDate,
         "EndDate": EndDate,
-        "Reason": Reason
+        "MissionTitle": MissionTitle,
+        "Latitude": Latitude,
+        "Longitude": Longitude,
+        "TransportTypeWentID": TransportTypeWentID,
+        "WentPayment": WentPayment,
+        "TransportTypeReturnID": TransportTypeReturnID,
+        "ReturnPayment": ReturnPayment
     };
     var a = JSON.stringify(jsondata);
 
     $.ajax({
-        url: '/LeaveManagement/CreateLeave',
+        url: '/MissionManagement/CreateMission',
         type: 'POST',
         dataType: 'json',
         crossDomain: true,
@@ -38,7 +44,13 @@ function CreateLeave(StartDate, EndDate, Reason)
                 $('#CreateEditModal #StartTime').val('');
                 $('#CreateEditModal #EndDate').val('');
                 $('#CreateEditModal #EndTime').val('');
-                $('#CreateEditModal #Reason').val('');
+                $('#CreateEditModal #MissionTitle').val('');
+                $('#CreateEditModal #Latitude').val('');
+                $('#CreateEditModal #Longitude').val('');
+                $('#CreateEditModal #TransportTypeWentID').val('');
+                $('#CreateEditModal #WentPayment').val('');
+                $('#CreateEditModal #TransportTypeReturnID').val('');
+                $('#CreateEditModal #ReturnPayment').val('');
                 $('#CreateEditModal #selectedID').val('');
                 location.reload();
             }
@@ -53,7 +65,7 @@ function CreateLeave(StartDate, EndDate, Reason)
     });
 }
 
-function GetLeave(LeaveID)
+function GetMission(MissionID)
 {
     $.ajaxSetup({
         type: "POST",
@@ -67,12 +79,12 @@ function GetLeave(LeaveID)
     });
 
     var jsondata =	{
-        "LeaveID": LeaveID
+        "MissionID": MissionID
     };
     var a = JSON.stringify(jsondata);
 
     $.ajax({
-        url: '/LeaveManagement/GetLeave',
+        url: '/MissionManagement/GetMission',
         type: 'POST',
         dataType: 'json',
         crossDomain: true,
@@ -84,6 +96,7 @@ function GetLeave(LeaveID)
         data: a,
         success: function (data) {
             result = data;
+            console.log(result);
         },
         error: function (data, xmlHttpRequest, errorText, thrownError) {
             result = errorText;
@@ -92,7 +105,7 @@ function GetLeave(LeaveID)
 }
 
 
-function DeleteLeave(LeaveID)
+function DeleteMission(MissionID)
 {
     $.ajaxSetup({
         type: "POST",
@@ -106,12 +119,12 @@ function DeleteLeave(LeaveID)
     });
 
     var jsondata =	{
-        "LeaveID": LeaveID
+        "MissionID": MissionID
     };
     var a = JSON.stringify(jsondata);
 
     $.ajax({
-        url: '/LeaveManagement/DeleteLeave',
+        url: '/MissionManagement/DeleteMission',
         type: 'POST',
         dataType: 'json',
         crossDomain: true,
@@ -126,7 +139,13 @@ function DeleteLeave(LeaveID)
                 $('#DeleteModal').hide();
                 $('#DeleteModal #StartDate').html('');
                 $('#DeleteModal #EndDate').html('');
-                $('#DeleteModal #Reason').html('');
+                $('#DeleteModal #MissionTitle').html('');
+                $('#DeleteModal #Latitude').val('');
+                $('#DeleteModal #Longitude').val('');
+                $('#DeleteModal #TransportTypeWentTitle').html('');
+                $('#DeleteModal #WentPayment').html('');
+                $('#DeleteModal #TransportTypeReturnTitle').html('');
+                $('#DeleteModal #ReturnPayment').html('');
                 $('#DeleteModal #selectedID').val('');
                 location.reload();
             }
@@ -141,7 +160,7 @@ function DeleteLeave(LeaveID)
     });
 }
 
-function EditLeave(LeaveID,StartDate, EndDate, Reason)
+function EditMission(MissionID, StartDate, EndDate, MissionTitle, Latitude, Longitude, TransportTypeWentID, WentPayment, TransportTypeReturnID, ReturnPayment)
 {
     $.ajaxSetup({
         type: "POST",
@@ -155,15 +174,21 @@ function EditLeave(LeaveID,StartDate, EndDate, Reason)
     });
 
     var jsondata =	{
-        "LeaveID": LeaveID,
+        "MissionID": MissionID,
         "StartDate": StartDate,
         "EndDate": EndDate,
-        "Reason": Reason
+        "MissionTitle": MissionTitle,
+        "Latitude": Latitude,
+        "Longitude": Longitude,
+        "TransportTypeWentID": TransportTypeWentID,
+        "WentPayment": WentPayment,
+        "TransportTypeReturnID": TransportTypeReturnID,
+        "ReturnPayment": ReturnPayment
     };
     var a = JSON.stringify(jsondata);
 
     $.ajax({
-        url: '/LeaveManagement/EditLeave',
+        url: '/MissionManagement/EditMission',
         type: 'POST',
         dataType: 'json',
         crossDomain: true,
@@ -177,10 +202,16 @@ function EditLeave(LeaveID,StartDate, EndDate, Reason)
             if (data['message'] == "Success") {
                 $('#CreateEditModal').hide();
                 $('#CreateEditModal #StartDate').val('');
-                $('#CreateEditModal #EndDate').val('');
                 $('#CreateEditModal #StartTime').val('');
+                $('#CreateEditModal #EndDate').val('');
                 $('#CreateEditModal #EndTime').val('');
-                $('#CreateEditModal #Reason').val('');
+                $('#CreateEditModal #MissionTitle').val('');
+                $('#CreateEditModal #Latitude').val('');
+                $('#CreateEditModal #Longitude').val('');
+                $('#CreateEditModal #TransportTypeWentID').val('');
+                $('#CreateEditModal #WentPayment').val('');
+                $('#CreateEditModal #TransportTypeReturnID').val('');
+                $('#CreateEditModal #ReturnPayment').val('');
                 $('#CreateEditModal #selectedID').val('');
                 location.reload();
             }

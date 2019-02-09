@@ -24,9 +24,6 @@ def CreateLeave():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         with db_session:
                                 data = request.get_json()
-                                print(data['StartDate'])
-                                print(data['EndDate'])
-                                print(session.get("user_id"))
                                 Leaves(UserID = int(session.get("user_id")), StartDate = datetime.strptime(data['StartDate'], '%Y-%m-%d %H:%M'), EndDate = datetime.strptime(data['EndDate'], '%Y-%m-%d %H:%M'), Reason = str(data['Reason']), LatestUpdateDate = datetime.now())
                                 message = "Success"
                                 return jsonify({'message': message})
