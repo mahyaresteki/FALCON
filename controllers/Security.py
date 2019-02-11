@@ -1,5 +1,4 @@
 import sys
-
 import random, json
 from flask import *
 from flask_cors import CORS, cross_origin

@@ -1,0 +1,87 @@
+{% extends 'shared/layout.html'%}
+
+{% block header %}
+<title>Settings</title>
+<style>
+    #Password {
+        text-security:disc;
+        -webkit-text-security:disc;
+        -mox-text-security:disc;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div id="accordion">
+    <h3>Application Settings</h3>
+    <div>
+        <div class="form-horizontal">
+            <div class="form-group row">
+                <div class="col-md-2" >
+                    <label>Server</label>
+                </div>
+                <div class="col-md-4" >
+                    <input type="text" class="form-control" id="Server" name="Server" value="{{ settings.server }}"/>
+                </div>
+                <div class="col-md-2" >
+                    <label>Port</label>
+                </div>
+                <div class="col-md-4" >
+                    <input type="text" class="form-control" id="Port" name="Port" value="{{ settings.port }}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h3>Database Settings</h3>
+    <div>
+        <div class="form-horizontal">
+            <div class="form-group row">
+                <div class="col-md-2" >
+                    <label>Host</label>
+                </div>
+                <div class="col-md-4" >
+                    <input type="text" class="form-control" id="Host" name="Host" value="{{ settings.host }}"/>
+                </div>
+                <div class="col-md-2" >
+                    <label>Database</label>
+                </div>
+                <div class="col-md-4" >
+                    <input type="text" class="form-control" id="Database" name="Database" value="{{ settings.database }}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-2" >
+                    <label>User</label>
+                </div>
+                <div class="col-md-4" >
+                    <input type="text" class="form-control" id="User" name="User" value="{{ settings.user }}"/>
+                </div>
+                <div class="col-md-2" >
+                    <label>Password</label>
+                </div>
+                <div class="col-md-4" >
+                    <input type="text" class="form-control" id="Password" name="Password" value="{{ settings.password }}"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-horizontal">
+    <div class="form-group row">
+        <div class="col-md-12" >
+            <input id='btnSave' type="button" class="btn btn-primary" value="Save"/>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/settings.js') }}"></script>
+<script>
+    $(function(){
+        $( "#accordion" ).accordion();
+    });
+    $(document).on("click", "#btnSave", function () {
+        SaveSettings($('#Server').val(), $('#Port').val(), $('#Host').val(), $('#Database').val(), $('#User').val(), $('#Password').val());
+        setTimeout(function() {
+            open('http://'+$('#Server').val()+':'+$('#Port').val()+'/SettingsManagement/Settings', '_self');
+        }, 2000);
+    });
+</script>
+{% endblock %}
