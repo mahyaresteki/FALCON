@@ -20,26 +20,34 @@ The leadership of the project is follow "<a href="https://en.wikipedia.org/wiki/
 # Getting Started
 <h2>Install Python</h2>
 Download python 3.7.2 form the following link and install on your app server.
+<br/>
 https://www.python.org/downloads/
 
-<h2>Install PostgresSQL</h2>
+<h2>Setp 1: Install PostgresSQL</h2>
 Download PostgreSQL RDBMS from the follwing system on install it on your database server.
+<br/>
 https://www.postgresql.org/download/
 <br/><br/>
 Note: Mybe app server and database server will be install on same machine
 
-<h2>Install Flask</h2>
+<h2>Setp 2: Install Flask</h2>
 Install Flask by the following command.
+<br/>
 pip install Flask
 
-<h2>Install Flask-Cors</h2>
+<h2>Setp 3: Install Flask-Cors</h2>
 Install Flask by the following command.
+<br/>
 pip install Flask-Cors
 
-<h2>Install PonyORM</h2>
+<h2>Step 4: Install PonyORM</h2>
 Install PonyORM by the following command.
+<br/>
 pip install pony
 
-<h2>Install PostgreSQL Data Provider</h2>
+<h2>Setp 5: Install PostgreSQL Data Provider</h2>
 Install PosgreSQL data provider by the following command.
+<br/>
 pip install psycopg2
+<br/><br/>
+Note: be sure that installed PIP on server machine is updated
