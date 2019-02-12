@@ -1,0 +1,13 @@
+'35.73096138196363');
+        $('#CreateEditModal #Longitude').val('51.432843112140745');
+        markerGroup.clearLayers();
+        var marker = L.marker([35.73096138196363, 51.432843112140745]).addTo(markerGroup);
+        $('#CreateEditModal #TransportTypeWentID').val('');
+        $('#CreateEditModal #WentPayment').val('');
+        $('#CreateEditModal #TransportTypeReturnID').val('');
+        $('#CreateEditModal #ReturnPayment').val('');
+        $('#CreateEditModal #Description').val('');
+    });
+
+    $('#CreateEditModal').on('show.bs.modal', function(){
+        setTimeout(function

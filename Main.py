@@ -1,6 +1,24 @@
-from pony.orm import *
-from App import *
+import sys
+import time
+
+try:
+    from pip import main as pipmain
+except ImportError:
+    from pip._internal import main as pipmain
+
+try:
+    from flask import Flask, request, jsonify
+    from flask_cors import CORS, cross_origin
+    from pony.orm import *
+    import psycopg2
+except ImportError:
+    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2'])
+
+import configparser
+import random, threading, webbrowser
+from datetime import datetime
 from models.DatabaseContext import *
+from App import *
 import controllers.Security
 import controllers.Home
 import controllers.UserManagement
@@ -8,11 +26,8 @@ import controllers.LeaveManagement
 import controllers.TransportTypeManagement
 import controllers.MissionManagement
 import controllers.SettingsManagement
-from datetime import datetime
-from flask import Flask, request, jsonify
-from flask_cors import CORS, cross_origin
-import configparser
-import random, threading, webbrowser
+
+
 
 if __name__ == "__main__":
     app.debug = False
