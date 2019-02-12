@@ -27,3 +27,19 @@ Download PostgreSQL RDBMS from the follwing system on install it on your databas
 https://www.postgresql.org/download/
 <br/><br/>
 Note: Mybe app server and database server will be install on same machine
+
+<h2>Install Flask</h2>
+Install Flask by the following command.
+pip install Flask
+
+<h2>Install Flask-Cors</h2>
+Install Flask by the following command.
+pip install Flask-Cors
+
+<h2>Install PonyORM</h2>
+Install PonyORM by the following command.
+pip install pony
+
+<h2>Install PostgreSQL Data Provider</h2>
+Install PosgreSQL data provider by the following command.
+pip install psycopg2
