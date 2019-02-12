@@ -25,5 +25,5 @@ https://www.python.org/downloads/
 <h2>Install PostgresSQL</h2>
 Download PostgreSQL RDBMS from the follwing system on install it on your database server.
 https://www.postgresql.org/download/
-
+<br/>
 Note: Mybe app server and database server will be install on same machine
