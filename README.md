@@ -19,9 +19,11 @@ The leadership of the project is follow "<a href="https://en.wikipedia.org/wiki/
 
 # Getting Start
 <h2>Install Python</h2>
-Download python 3.7.2 form the following link and install on your server.
-
+Download python 3.7.2 form the following link and install on your app server.
 https://www.python.org/downloads/
 
 <h2>Install PostgresSQL</h2>
+Download PostgreSQL RDBMS from the follwing system on install it on your database server.
+https://www.postgresql.org/download/
 
+Note: Mybe app server and database server will be install on same machine
