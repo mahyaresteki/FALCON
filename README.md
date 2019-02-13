@@ -2,7 +2,7 @@
 FALCON is super light information system to manage history of leaves and missions in any type of company. It is so simple and easy to use.
 
 # License
-FALCON follows GNU General Public License v3.0. It is copletely free to use, changw the code and repulish for anyone.
+FALCON follows GNU General Public License v3.0. It is copletely free to use, changw the code and republish for anyone.
 
 # Architecture
 The project is design based on Model-View-Controller (MVC) architecture. 
