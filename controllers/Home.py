@@ -6,6 +6,7 @@ from flask_cors import *
 import App
 from models.DatabaseContext import *
 from models.AppInfoModel import *
+import xml.etree.ElementTree as ET
 
 @App.app.route('/')
 def login_page():
@@ -41,7 +42,9 @@ def about_page():
         config.sections()
         config.read('config/conf.ini')
         appinfo = AppInfoModel(config['AppInfo']['name'], config['AppInfo']['description'], config['AppInfo']['publisher'], config['AppInfo']['version'], config['AppInfo']['license'])
-        return render_template('Home/about.html', appinfo = appinfo)
+        mydoc = ET.parse('config/releases.xml') 
+        releases = mydoc.getroot()
+        return render_template('Home/about.html', appinfo = appinfo, releases = releases)
     else:
         return redirect("/", code=302)
 

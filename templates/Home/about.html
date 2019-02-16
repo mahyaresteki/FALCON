@@ -27,4 +27,14 @@
         <td>{{ appinfo.license }}</td>
     </tr>
 </table>
+<h2>Detail of Releases</h2>
+{% for release in releases %}
+<h3>Version: {{ release.attrib['version'] }}</h3>
+<ul>
+    {% for change in release %}
+        <li>{{ change.text }}</li>
+    {% endfor %}
+</ul>
+{% endfor %}
+<br/>
 {% endblock %}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Releases>
+    <Release version="0.9.13">
+        <Change>Presenting Detail of Releases in About Page</Change>
+    </Release>
+    <Release version="0.9.12">
+        <Change>Providing Infrastructure</Change>
+        <Change>Login Page</Change>
+        <Change>Role Management</Change>
+        <Change>Role Access Management</Change>
+        <Change>User Management</Change>
+        <Change>Transport Type Management</Change>
+        <Change>Leave Management</Change>
+        <Change>Mission Management</Change>
+        <Change>Settings Management</Change>
+        <Change>User Profile</Change>
+        <Change>About Page</Change>
+        <Change>Role Management</Change>
+    </Release>
+</Releases>
