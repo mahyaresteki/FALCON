@@ -5,6 +5,7 @@ from flask import *
 from flask_cors import *
 import App
 from models.DatabaseContext import *
+from models.AppInfoModel import *
 
 @App.app.route('/')
 def login_page():
@@ -15,7 +16,11 @@ def login_page():
             query= Users.select()
             mylist = list(query)
             if len(mylist) > 0:
-                return render_template('Home/index.html')
+                config = configparser.ConfigParser()
+                config.sections()
+                config.read('config/conf.ini')
+                appinfo = AppInfoModel(config['AppInfo']['name'], config['AppInfo']['description'], config['AppInfo']['publisher'], config['AppInfo']['version'], config['AppInfo']['license'])
+                return render_template('Home/index.html', appinfo = appinfo)
             else:
                 return redirect("/Setup?step=admin", code=302)
 
@@ -26,6 +31,17 @@ def dashboard_page():
             query= Users.select(lambda u: u.UserID == int(session.get("user_id")))
             mylist = list(query)
             return render_template('Home/home.html', user = mylist[0])
+    else:
+        return redirect("/", code=302)
+
+@App.app.route('/About')
+def about_page():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        config = configparser.ConfigParser()
+        config.sections()
+        config.read('config/conf.ini')
+        appinfo = AppInfoModel(config['AppInfo']['name'], config['AppInfo']['description'], config['AppInfo']['publisher'], config['AppInfo']['version'], config['AppInfo']['license'])
+        return render_template('Home/about.html', appinfo = appinfo)
     else:
         return redirect("/", code=302)
 

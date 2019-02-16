@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/normalize.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/demo.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/component.css') }}" />
@@ -33,7 +33,7 @@
                                     <li><a class="gn-icon gn-icon-plane" href="#">Extra-Urban Mission</a></li>
                                     <li><a class="gn-icon gn-icon-stopwatch" href="#">Hour Off</a></li>
                                     <li><a class="gn-icon gn-icon-cog" href="/SettingsManagement/Settings">Settings</a></li>
-                                    <li><a class="gn-icon gn-icon-help" href="#">Help</a></li>
+                                    <li><a class="gn-icon gn-icon-help" href="/About">About</a></li>
                                 </ul>
                             </div><!-- /gn-scroller -->
                         </nav>

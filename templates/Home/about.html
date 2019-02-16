@@ -1,0 +1,30 @@
+{% extends 'shared/layout.html'%}
+
+{% block header %}
+<title>About</title>
+{% endblock %}
+{% block content %}
+<h2>Application Information</h2>
+<table class="table">
+    <tr>
+        <th>Name:</th>
+        <td>{{ appinfo.name }}</td>
+    </tr>
+    <tr>
+        <th>Description:</th>
+        <td>{{ appinfo.description }}</td>
+    </tr>
+    <tr>
+        <th>Publisher:</th>
+        <td>{{ appinfo.publisher }}</td>
+    </tr>
+    <tr>
+        <th>Version:</th>
+        <td>{{ appinfo.version }}</td>
+    </tr>
+    <tr>
+        <th>License:</th>
+        <td>{{ appinfo.license }}</td>
+    </tr>
+</table>
+{% endblock %}
