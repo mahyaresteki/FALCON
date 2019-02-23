@@ -295,9 +295,9 @@
     var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
     var osm2 = new L.TileLayer(osmUrl, {attribution: osmAttrib});
     var osm3 = new L.TileLayer(osmUrl, {attribution: osmAttrib});
-    var mymap = new L.Map('mapid').addLayer(osm).setView([35.7309, 51.4328], 18);
-    var mymap2 = new L.Map('mapid2').addLayer(osm2).setView([35.7309, 51.4328], 18);
-    var mymap3 = new L.Map('mapid3').addLayer(osm3).setView([35.7309, 51.4328], 18);
+    var mymap = new L.Map('mapid').addLayer(osm).setView([parseFloat('{{ orglat }}'), parseFloat('{{ orglong }}')], 18);
+    var mymap2 = new L.Map('mapid2').addLayer(osm2).setView([parseFloat('{{ orglat }}'), parseFloat('{{ orglong }}')], 18);
+    var mymap3 = new L.Map('mapid3').addLayer(osm3).setView([parseFloat('{{ orglat }}'), parseFloat('{{ orglong }}')], 18);
     var osmGeocoder = new L.Control.OSMGeocoder();
     var osmGeocoder2 = new L.Control.OSMGeocoder();
     var osmGeocoder3 = new L.Control.OSMGeocoder();
@@ -393,10 +393,10 @@
         $('#CreateEditModal #EndDate').val('');
         $('#CreateEditModal #EndTime').val('');
         $('#CreateEditModal #MissionTitle').val('');
-        $('#CreateEditModal #Latitude').val('35.73096138196363');
-        $('#CreateEditModal #Longitude').val('51.432843112140745');
+        $('#CreateEditModal #Latitude').val('{{orglat}}');
+        $('#CreateEditModal #Longitude').val('{{orglong}}');
         markerGroup.clearLayers();
-        var marker = L.marker([35.73096138196363, 51.432843112140745]).addTo(markerGroup);
+        var marker = L.marker([parseFloat('{{ orglat }}'), parseFloat('{{ orglong }}')]).addTo(markerGroup);
         $('#CreateEditModal #TransportTypeWentID').val('');
         $('#CreateEditModal #WentPayment').val('');
         $('#CreateEditModal #TransportTypeReturnID').val('');

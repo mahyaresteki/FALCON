@@ -1,4 +1,4 @@
-function SaveSettings(ServerIP, Port, Host, Database, User, Password)
+function SaveSettings(ServerIP, Port, Host, Database, User, Password, OrganizationName, Latitude, Longitude)
 {
     $.ajaxSetup({
         type: "POST",
@@ -17,7 +17,10 @@ function SaveSettings(ServerIP, Port, Host, Database, User, Password)
         "Host": Host,
         "Database": Database,
         "User": User,
-        "Password": Password
+        "Password": Password,
+        "OrganizationName": OrganizationName,
+        "Latitude": Latitude,
+        "Longitude": Longitude
     };
     var a = JSON.stringify(jsondata);
 

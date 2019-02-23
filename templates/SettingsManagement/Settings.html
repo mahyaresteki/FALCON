@@ -2,6 +2,9 @@
 
 {% block header %}
 <title>Settings</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='lib/leafletMap/leaflet.css') }}""/>
+<script src="{{ url_for('static', filename='lib/leafletMap/leaflet.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/leafletMap/Control.OSMGeocoder.js') }}"></script>
 <style>
     #Password {
         text-security:disc;
@@ -64,6 +67,26 @@
             </div>
         </div>
     </div>
+    <h3>Organization Profile</h3>
+    <div>
+        <div class="form-horizontal">
+            <div class="form-group row">
+                <div class="col-md-2" >
+                    <label>Organization Name</label>
+                </div>
+                <div class="col-md-4" >
+                    <input type="text" class="form-control" id="OrganizationName" name="OrganizationName" value="{{ settings.organizationName }}"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-md-12" >
+                    <div id="mapid" style="width: 100%; height: 400px;"></div>
+                    <input type="hidden" id="Latitude" value="{{ settings.latitude }}"/>
+                    <input type="hidden" id="Longitude" value="{{ settings.longitude }}""/>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div class="form-horizontal">
     <div class="form-group row">
@@ -75,13 +98,32 @@
 <script src="{{ url_for('static', filename='js/settings.js') }}"></script>
 <script>
     $(function(){
-        $( "#accordion" ).accordion();
+        $( "#accordion" ).accordion({ heightStyle: "content"});
     });
     $(document).on("click", "#btnSave", function () {
-        SaveSettings($('#Server').val(), $('#Port').val(), $('#Host').val(), $('#Database').val(), $('#User').val(), $('#Password').val());
+        SaveSettings($('#Server').val(), $('#Port').val(), $('#Host').val(), $('#Database').val(), $('#User').val(), $('#Password').val(), $('#OrganizationName').val(), $('#Latitude').val(), $('#Longitude').val());
         setTimeout(function() {
             open('http://'+$('#Server').val()+':'+$('#Port').val()+'/SettingsManagement/Settings', '_self');
         }, 2000);
     });
+
+    var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    var osmAttrib='Falcon Leave Management System';
+    var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
+    var mymap = new L.Map('mapid').addLayer(osm).setView([parseFloat($('#Latitude').val()), parseFloat($('#Longitude').val())], 18);
+    var osmGeocoder = new L.Control.OSMGeocoder();
+    var markerGroup = L.layerGroup().addTo(mymap);
+    mymap.panTo(new L.LatLng(parseFloat($('#Latitude').val()), parseFloat($('#Longitude').val())));
+    markerGroup.clearLayers();
+    var marker = L.marker([parseFloat($('#Latitude').val()), parseFloat($('#Longitude').val())]).addTo(markerGroup);
+
+    function onMapClick(e) {
+        markerGroup.clearLayers();
+        var marker = L.marker(e.latlng).addTo(markerGroup);
+        $('#Latitude').val(e.latlng.lat);
+        $('#Longitude').val(e.latlng.lng);
+    }
+
+    mymap.on('click', onMapClick);
 </script>
 {% endblock %}

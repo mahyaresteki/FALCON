@@ -12,9 +12,12 @@ from datetime import datetime
 def mission_page():
     if session.get("user_id") is not None and session.get("fullname") is not None:
         with db_session:
-            mymissions = Missions.select(lambda l: l.UserID.UserID == int(session.get("user_id")))
-            transporttypes = TransportTypes.select()
-            return render_template('MissionManagement/Missions.html', mymissions = mymissions, transporttypes = transporttypes)
+                config = configparser.ConfigParser()
+                config.sections()
+                config.read('config/conf.ini')
+                mymissions = Missions.select(lambda l: l.UserID.UserID == int(session.get("user_id")))
+                transporttypes = TransportTypes.select()
+                return render_template('MissionManagement/Missions.html', mymissions = mymissions, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'])
     else:
         return redirect("/", code=302)
 

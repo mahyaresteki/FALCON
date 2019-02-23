@@ -15,7 +15,7 @@ def settings_page():
             config = configparser.ConfigParser()
             config.sections()
             config.read('config/conf.ini')
-            settings = SettingsModel(config['DEFAULT']['server'], config['DEFAULT']['port'], config['ConnectionString']['user'], config['ConnectionString']['password'], config['ConnectionString']['database'], config['ConnectionString']['host']) 
+            settings = SettingsModel(config['DEFAULT']['server'], config['DEFAULT']['port'], config['ConnectionString']['user'], config['ConnectionString']['password'], config['ConnectionString']['database'], config['ConnectionString']['host'], config['OrganizationInfo']['name'], config['OrganizationInfo']['latitude'], config['OrganizationInfo']['longitude']) 
             return render_template('SettingsManagement/Settings.html', settings = settings)
     else:
         return redirect("/", code=302)
@@ -35,6 +35,9 @@ def SaveSettings():
                 config.set('ConnectionString', 'database', str(data['Database']))
                 config.set('ConnectionString', 'user', str(data['User']))
                 config.set('ConnectionString', 'password', str(data['Password']))
+                config.set('OrganizationInfo', 'name', str(data['OrganizationName']))
+                config.set('OrganizationInfo', 'latitude', str(data['Latitude']))
+                config.set('OrganizationInfo', 'longitude', str(data['Longitude']))
                 with open('config/conf.ini', 'w') as configfile:
                     config.write(configfile)
                 os.execl(sys.executable, os.path.abspath(__file__), *sys.argv)
