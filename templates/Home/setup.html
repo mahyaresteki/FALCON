@@ -24,6 +24,12 @@
                 <div id="setDatabase" class="col-md-12" style="margin-bottom:10px;">
                     <h3>Database Installation</h3>
                     <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
+                        <select id="provider" class="form-control">
+                            <option value="postgres">PostgrSQL</option>
+                            <option value="mysql">MySQL</option>
+                        </select>
+                    </div>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
                         <input id="host" class="form-control" type="text" placeholder="Host" />
                     </div>
                     <div class="col-md-12" style="margin-top:10px; margin-bottom:10px;">
@@ -87,7 +93,7 @@
         });
 
         $("#btnSetAdministrator").click(function () {
-            setAdministrator($('#FirstName').val(),$('#LastName').val(),$('#Username').val(), $('#UserPassword').val(), $('#PersonelCode').val());
+            setAdministrator($('#provider').val(),$('#FirstName').val(),$('#LastName').val(),$('#Username').val(), $('#UserPassword').val(), $('#PersonelCode').val());
         });
     </script>
 </body>

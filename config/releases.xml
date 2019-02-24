@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Releases>
+    <Release version="0.9.16">
+        <Change>Support MySQL Database</Change>
+    </Release>
     <Release version="0.9.15">
         <Change>Get Organization Location in First Load of Mission Page</Change>
         <Change>Organization Profile in Settings</Change>

@@ -11,8 +11,10 @@ try:
     from flask_cors import CORS, cross_origin
     from pony.orm import *
     import psycopg2
+    import pymysql
+    pymysql.install_as_MySQLdb()
 except ImportError:
-    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2'])
+    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2', 'pymysql'])
 
 import configparser
 import random, threading, webbrowser

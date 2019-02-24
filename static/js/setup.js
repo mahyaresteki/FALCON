@@ -1,4 +1,4 @@
-function setDatabase(host, database,username, password) {
+function setDatabase(provider, host, database,username, password) {
     $.ajaxSetup({
         type: "POST",
         data: {},
@@ -11,6 +11,7 @@ function setDatabase(host, database,username, password) {
     });
 
     var jsondata =	{
+        "provider": provider,
         "host": host,
         "database": database,
         "username": username,

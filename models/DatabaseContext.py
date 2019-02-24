@@ -9,7 +9,10 @@ config.read('config/conf.ini')
 db = Database()
 
 if config['ConnectionString']['host'] != 'NotSet' and config['ConnectionString']['database'] != 'NotSet':
-    db.bind(provider=config['ConnectionString']['provider'], user=config['ConnectionString']['user'], password=config['ConnectionString']['password'], host=config['ConnectionString']['host'], database=config['ConnectionString']['database'])
+    if config['ConnectionString']['provider'] == 'postgres':
+        db.bind(provider=config['ConnectionString']['provider'], user=config['ConnectionString']['user'], password=config['ConnectionString']['password'], host=config['ConnectionString']['host'], database=config['ConnectionString']['database'])
+    elif config['ConnectionString']['provider'] == 'mysql':
+        db.bind(provider=config['ConnectionString']['provider'], host=config['ConnectionString']['host'], user=config['ConnectionString']['user'], passwd=config['ConnectionString']['password'], db=config['ConnectionString']['database'])
 
 class AppForms(db.Entity):
     AppFormID = PrimaryKey(int, auto=True)

@@ -1,6 +1,7 @@
 import sys
 from psycopg2 import connect
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+import pymysql
 import random, json
 from flask import *
 from flask_cors import CORS, cross_origin
@@ -36,12 +37,17 @@ def Login():
 @cross_origin(supports_credentials=True)
 def SetDatabase():
     data = request.get_json()
-    con = connect(dbname='postgres', user=str(data['username']), host=str(data['host']), password=str(data['password']))
-    con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    cur = con.cursor()
-    cur.execute('CREATE DATABASE ' + str(data['database']).lower())
-    cur.close()
-    con.close()
+    if str(data['provider']) == 'postgres':
+        con = connect(dbname='postgres', user=str(data['username']), host=str(data['host']), password=str(data['password']))
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+        cur.execute('CREATE DATABASE ' + str(data['database']).lower())
+        cur.close()
+        con.close()
+    elif str(data['provider']) == 'mysql':
+        conn = pymysql.connect(host=str(data['host']), user=str(data['username']), password=str(data['password']))
+        conn.cursor().execute('create database '+str(data['database']))
+        conn.close()
     config = configparser.ConfigParser()
     config.sections()
     config.read('config/conf.ini')
