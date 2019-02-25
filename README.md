@@ -1,8 +1,19 @@
 # FALCON: Leave Management System
-FALCON is super light information system to manage history of leaves and missions in any type of company. It is so simple and easy to use.
+FALCON is super light information system to manage history of leaves and missions in any type of company. It is so simple and easy to install, config and use.
+
+# Most Advanced Feature
+<ul>
+  <li>Cross Platform</li>
+  <li>Support PostgresSQL and MySQL Databases</li>
+  <li>Using Open Street Map to Set Location of Organization and Missions</li>
+  <li>Easy to Use</li>
+  <li>Easy to Install</li>
+  <li>Easy to Config</li>
+  <li>Full Free</li>
+</ul>
 
 # License
-FALCON follows GNU General Public License v3.0. It is copletely free to use, changw the code and republish for anyone.
+FALCON follows GNU General Public License v3.0. It is copletely free to use, change the code and republish for anyone.
 
 # Architecture
 The project is design based on Model-View-Controller (MVC) architecture. 
@@ -12,7 +23,7 @@ The project is design based on Model-View-Controller (MVC) architecture.
   <li>Python</li>
   <li>Flask</li>
   <li>Pony ORM</li>
-  <li>PostgreSQL</li>
+  <li>PostgreSQL or MySQL</li>
   <li>JQuery</li>
   <li>Bootstrap</li>
 </ul>
