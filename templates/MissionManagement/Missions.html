@@ -311,11 +311,46 @@
 
     var marker = L.marker([35.73096138196363, 51.432843112140745]).addTo(markerGroup);
 
+    mymap.addControl(osmGeocoder);
+
+    var hometownArea = {{ hometown|tojson|safe }};
+
+    var area = L.polygon(hometownArea, 
+    {
+        color: 'red',
+        fillColor: '#f03',
+        fillOpacity: 0.1
+    }).addTo(mymap);
+
     function onMapClick(e) {
-        markerGroup.clearLayers();
-        var marker = L.marker(e.latlng).addTo(markerGroup);
-        $('#CreateEditModal #Latitude').val(e.latlng.lat);
-        $('#CreateEditModal #Longitude').val(e.latlng.lng);
+        var markerPoint = L.marker(e.latlng);
+        if(isMarkerInsideHometownArea(markerPoint, area))
+        {
+            markerGroup.clearLayers();
+            var marker = L.marker(e.latlng).addTo(markerGroup);
+            $('#CreateEditModal #Latitude').val(e.latlng.lat);
+            $('#CreateEditModal #Longitude').val(e.latlng.lng);
+        }
+        else{
+            alert('Your selected Location is not in hometwon area. So you have to insert this mission into "Extra-Urban Mission".');
+        }
+
+    }
+
+    function isMarkerInsideHometownArea(marker, poly) {
+        var polyPoints = poly.getLatLngs();
+        var x = marker.getLatLng().lat, y = marker.getLatLng().lng;
+
+        var inside = false;
+        for (var i = 0, j = polyPoints[0].length - 1; i < polyPoints[0].length; j = i++) {
+            var xi = polyPoints[0][i].lat, yi = polyPoints[0][i].lng;
+            var xj = polyPoints[0][j].lat, yj = polyPoints[0][j].lng;
+
+            var intersect = ((yi > y) != (yj > y))
+                && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+            if (intersect) inside = !inside;
+        }
+        return inside;
     }
 
     mymap.on('click', onMapClick);

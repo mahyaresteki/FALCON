@@ -9,12 +9,13 @@ except ImportError:
 try:
     from flask import Flask, request, jsonify
     from flask_cors import CORS, cross_origin
+    import numpy
     from pony.orm import *
     import psycopg2
     import pymysql
     pymysql.install_as_MySQLdb()
 except ImportError:
-    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2', 'pymysql'])
+    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2', 'pymysql', 'numpy'])
 
 import configparser
 import random, threading, webbrowser

@@ -38,7 +38,6 @@ class RoleAccesses(db.Entity):
     PrintGrant = Required(bool)
     LatestUpdateDate = Required(datetime)
 
-
 class Users(db.Entity):
     UserID = PrimaryKey(int, auto=True)
     Username = Required(str, unique=True)

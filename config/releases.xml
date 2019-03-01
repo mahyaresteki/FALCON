@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Releases>
+    <Release version="0.9.18">
+        <Change>Controlling Selected Point is inside Hometown Area in Intra City Mission</Change>
+        <Change>Selecting Hometown Area in Settings</Change>
+    </Release>
     <Release version="0.9.16">
         <Change>Support MySQL Database</Change>
     </Release>

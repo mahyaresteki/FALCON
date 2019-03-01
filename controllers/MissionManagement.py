@@ -7,17 +7,19 @@ import App
 from models.DatabaseContext import *
 import hashlib
 from datetime import datetime
+import numpy as np
 
 @App.app.route('/MissionManagement/Missions')
 def mission_page():
     if session.get("user_id") is not None and session.get("fullname") is not None:
         with db_session:
+                hometownarea = np.loadtxt('config/hometownarea.txt', dtype=np.object)
                 config = configparser.ConfigParser()
                 config.sections()
                 config.read('config/conf.ini')
                 mymissions = Missions.select(lambda l: l.UserID.UserID == int(session.get("user_id")))
                 transporttypes = TransportTypes.select()
-                return render_template('MissionManagement/Missions.html', mymissions = mymissions, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'])
+                return render_template('MissionManagement/Missions.html', mymissions = mymissions, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist())
     else:
         return redirect("/", code=302)
 
