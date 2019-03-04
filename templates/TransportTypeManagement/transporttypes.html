@@ -4,7 +4,9 @@
 <title>Transport Types</title>
 {% endblock %}
 {% block content %}
+{% if formAccess["Create"] == 'True' %}
 <input id='newTransportType' type="button" class="btn btn-primary" value="New Transport Type" data-toggle="modal" data-target="#CreateEditModal"/>
+{% endif %}
 <br/>
 <br/>
 <table class="table table-striped">
@@ -19,15 +21,19 @@
         <td>{{ entry.Description }}</td>
         <td>
             <a class="gn-icon gn-icon-detail" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DetailModal"></a>
-            <a class="gn-icon gn-icon-edit" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
-            <a class="gn-icon gn-icon-delete" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+            {% if formAccess["Update"] == 'True' %}
+                <a class="gn-icon gn-icon-edit" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+            {% endif %}
+            {% if formAccess["Delete"] == 'True' %}
+                <a class="gn-icon gn-icon-delete" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+            {% endif %}
         </td>
     </tr>
     {% else %}
     <tr><td colspan="2">No entries yet. Add some!</td></tr>
     {% endfor %}
 </table>
-
+{% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -67,9 +73,9 @@
         </div>
     </div>
 </div>
+{% endif %}
 
-
-
+{% if formAccess["Delete"] == 'True' %} 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DeleteModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -106,6 +112,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">
@@ -140,65 +147,4 @@
     </div>
 </div>
 <script src="{{ url_for('static', filename='js/transporttypes.js') }}"></script>
-<script>
-    $(document).on("click", ".table .gn-icon-edit", function () {
-        $('#CreateEditModal #gridSystemModalLabel').html("Edit Transport Type");
-        var id = $(this).data('id');
-        $("#CreateEditModal #selectedID").val(id);
-
-        GetTransportType(id);
-        setTimeout(function(){
-            $('#CreateEditModal #TransportTypeTitle').val(result['TransportTypeTitle']);
-            $('#CreateEditModal #Description').val(result['Description']);
-        }, 500);
-    });
-
-    $(document).on("click", ".table .gn-icon-delete", function () {
-        var id = $(this).data('id');
-        $("#DeleteModal #selectedID").val(id);
-
-        GetTransportType(id);
-        setTimeout(function(){
-            $('#DeleteModal #TransportTypeTitle').html(result['TransportTypeTitle']);
-            $('#DeleteModal #Description').html(result['Description']);
-        }, 500);
-        
-        
-    });
-
-    $(document).on("click", ".table .gn-icon-detail", function () {
-        var id = $(this).data('id');
-        $("#DetailModal #selectedID").val(id);
-
-        GetTransportType(id);
-        setTimeout(function(){
-            $('#DetailModal #TransportTypeTitle').html(result['TransportTypeTitle']);
-            $('#DetailModal #Description').html(result['Description']);
-        }, 500);
-        
-        
-    });
-
-    $(document).on("click", "#newTransportType", function () {
-        $('#CreateEditModal #gridSystemModalLabel').html("New Transport Type");
-        $("#CreateEditModal #selectedID").val('');
-        $('#CreateEditModal #TransportTypeTitle').val('');
-        $('#CreateEditModal #Description').val('');
-    });
-
-    $(document).on("click", "#CreateEditModal .btn-primary", function () {
-        if($("#CreateEditModal #selectedID").val()=='')
-        {
-            CreateTransportType($('#CreateEditModal #TransportTypeTitle').val(), $('#CreateEditModal #Description').val());
-        }
-        else
-        {
-            EditTransportType($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #TransportTypeTitle').val(), $('#CreateEditModal #Description').val());
-        }
-    });
-
-    $(document).on("click", "#DeleteModal .btn-primary", function () {
-        DeleteTransportType($('#DeleteModal #selectedID').val());
-    });
-</script>
 {% endblock %}

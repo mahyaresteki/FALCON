@@ -1,3 +1,15 @@
+$(document).ready(function () {
+    GetRoleAccesses($('#RoleID').val());
+});
+
+$(document).on("change", "#RoleID", function () {
+    GetRoleAccesses($('#RoleID').val());
+});
+
+$(document).on("click", ".btn-primary", function () {
+    SaveAccesses();
+});
+
 function GetRoleAccesses(roleID)
 {
     $.ajaxSetup({

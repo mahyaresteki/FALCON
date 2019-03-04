@@ -1,5 +1,65 @@
 var result = {};
 
+$(document).on("click", ".table .gn-icon-edit", function () {
+    $('#CreateEditModal #gridSystemModalLabel').html("Edit Role");
+    var id = $(this).data('id');
+    $("#CreateEditModal #selectedID").val(id);
+
+    GetRole(id);
+    setTimeout(function(){
+        $('#CreateEditModal #RoleTitle').val(result['RoleTitle']);
+        $('#CreateEditModal #Description').val(result['Description']);
+    }, 500);
+});
+
+$(document).on("click", ".table .gn-icon-delete", function () {
+    var id = $(this).data('id');
+    $("#DeleteModal #selectedID").val(id);
+
+    GetRole(id);
+    setTimeout(function(){
+        $('#DeleteModal #RoleTitle').html(result['RoleTitle']);
+        $('#DeleteModal #Description').html(result['Description']);
+    }, 500);
+    
+    
+});
+
+$(document).on("click", ".table .gn-icon-detail", function () {
+    var id = $(this).data('id');
+    $("#DetailModal #selectedID").val(id);
+
+    GetRole(id);
+    setTimeout(function(){
+        $('#DetailModal #RoleTitle').html(result['RoleTitle']);
+        $('#DetailModal #Description').html(result['Description']);
+    }, 500);
+    
+    
+});
+
+$(document).on("click", "#newRole", function () {
+    $('#CreateEditModal #gridSystemModalLabel').html("New Role");
+    $("#CreateEditModal #selectedID").val('');
+    $('#CreateEditModal #RoleTitle').val('');
+    $('#CreateEditModal #Description').val('');
+});
+
+$(document).on("click", "#CreateEditModal .btn-primary", function () {
+    if($("#CreateEditModal #selectedID").val()=='')
+    {
+        CreateRole($('#CreateEditModal #RoleTitle').val(), $('#CreateEditModal #Description').val());
+    }
+    else
+    {
+        EditRole($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #RoleTitle').val(), $('#CreateEditModal #Description').val());
+    }
+});
+
+$(document).on("click", "#DeleteModal .btn-primary", function () {
+    DeleteRole($('#DeleteModal #selectedID').val());
+});
+
 function CreateRole(roleTitle, description)
 {
     $.ajaxSetup({

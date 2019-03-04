@@ -4,7 +4,9 @@
 <title>Leaves</title>
 {% endblock %}
 {% block content %}
+{% if formAccess["Create"] == 'True' %}
 <input id='newLeave' type="button" class="btn btn-primary" value="New Leave" data-toggle="modal" data-target="#CreateEditModal"/>
+{% endif %}
 <br/>
 <br/>
 <div class="table-responsive-sm">
@@ -42,8 +44,12 @@
             <td>{{ leave.ApproveDate }}</td>
             <td>
                 <a class="gn-icon gn-icon-detail" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DetailModal"></a>
-                <a class="gn-icon gn-icon-edit" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
-                <a class="gn-icon gn-icon-delete" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+                {% if formAccess["Update"] == 'True' %}
+                    <a class="gn-icon gn-icon-edit" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                {% endif %}
+                {% if formAccess["Delete"] == 'True' %}
+                    <a class="gn-icon gn-icon-delete" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+                {% endif %}
             </td>
         </tr>
         {% else %}
@@ -52,6 +58,7 @@
     </table>
 </div>
 
+{% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -104,7 +111,9 @@
         </div>
     </div>
 </div>
+{% endif %}
 
+{% if formAccess["Delete"] == 'True' %} 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DeleteModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -147,6 +156,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;">
         <div class="modal-dialog" role="document">
@@ -188,70 +198,4 @@
 </div>
 
 <script src="{{ url_for('static', filename='js/leaves.js') }}"></script>
-<script>
-    $(document).on("click", ".table .gn-icon-edit", function () {
-        $('#CreateEditModal #gridSystemModalLabel').html("Edit Leave");
-        var id = $(this).data('id');
-        $("#CreateEditModal #selectedID").val(id);
-
-        GetLeave(id);
-        setTimeout(function(){
-            $('#CreateEditModal #StartDate').val(result['StartDate']);
-            $('#CreateEditModal #StartTime').val(result['StartTime']);
-            $('#CreateEditModal #EndDate').val(result['EndDate']);
-            $('#CreateEditModal #EndTime').val(result['EndTime']);
-            $('#CreateEditModal #Reason').val(result['Reason']);
-            $('#CreateEditModal #Description').val(result['Description']);
-        }, 500);
-    });
-
-    $(document).on("click", ".table .gn-icon-delete", function () {
-        var id = $(this).data('id');
-        $("#DeleteModal #selectedID").val(id);
-
-        GetLeave(id);
-        setTimeout(function(){
-            $('#DeleteModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
-            $('#DeleteModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
-            $('#DeleteModal #Reason').html(result['Reason']);
-        }, 500);
-    });
-
-    $(document).on("click", ".table .gn-icon-detail", function () {
-        var id = $(this).data('id');
-        $("#DetailModal #selectedID").val(id);
-
-        GetLeave(id);
-        setTimeout(function(){
-            $('#DetailModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
-            $('#DetailModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
-            $('#DetailModal #Reason').html(result['Reason']);
-        }, 500);
-    });
-
-    $(document).on("click", "#newLeave", function () {
-        $('#CreateEditModal #gridSystemModalLabel').html("New Leave");
-        $("#CreateEditModal #selectedID").val('');
-        $('#CreateEditModal #StartDate').val('');
-        $('#CreateEditModal #StartTime').val('');
-        $('#CreateEditModal #EndDate').val('');
-        $('#CreateEditModal #EndTime').val('');
-        $('#CreateEditModal #Reason').val('');
-    });
-
-    $(document).on("click", "#CreateEditModal .btn-primary", function () {
-        if($("#CreateEditModal #selectedID").val()=='')
-        {
-            CreateLeave($('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
-        }
-        else
-        {
-            EditLeave($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
-        }
-    });
-
-    $(document).on("click", "#DeleteModal .btn-primary", function () {
-        DeleteLeave($('#DeleteModal #selectedID').val());
-    });
-</script>
 {% endblock %}

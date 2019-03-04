@@ -51,3 +51,10 @@ def about_page():
 @App.app.route('/Setup')
 def setup_page():
     return render_template('Home/setup.html')
+
+@App.app.route('/AccessDenied')
+def access_denied_page():
+    if session.get("user_id") is not None and session.get("fullname") is not None:
+        return render_template('Home/accessdenied.html')
+    else:
+        return redirect("/", code=302)

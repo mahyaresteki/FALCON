@@ -4,9 +4,11 @@
 <title>Roles</title>
 {% endblock %}
 {% block content %}
+{% if formAccess["Create"] == 'True' %}
 <input id='newRole' type="button" class="btn btn-primary" value="New Role" data-toggle="modal" data-target="#CreateEditModal"/>
 <br/>
 <br/>
+{% endif %}
 <table class="table table-striped">
     <tr class="thead-dark">
         <th>Role Title</th>
@@ -19,8 +21,12 @@
         <td>{{ entry.Description }}</td>
         <td>
             <a class="gn-icon gn-icon-detail" href="#" data-id="{{ entry.RoleID }}" data-toggle="modal" data-target="#DetailModal"></a>
-            <a class="gn-icon gn-icon-edit" href="#" data-id="{{ entry.RoleID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
-            <a class="gn-icon gn-icon-delete" href="#" data-id="{{ entry.RoleID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+            {% if formAccess["Update"] == 'True' %}
+                <a class="gn-icon gn-icon-edit" href="#" data-id="{{ entry.RoleID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+            {% endif %}
+            {% if formAccess["Delete"] == 'True' %}
+                <a class="gn-icon gn-icon-delete" href="#" data-id="{{ entry.RoleID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+            {% endif %}
         </td>
     </tr>
     {% else %}
@@ -28,6 +34,7 @@
     {% endfor %}
 </table>
 
+{% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -67,9 +74,9 @@
         </div>
     </div>
 </div>
+{% endif %}
 
-
-
+{% if formAccess["Delete"] == 'True' %} 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DeleteModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -106,6 +113,7 @@
         </div>
     </div>
 </div>
+{% endif %}
 
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">
@@ -140,65 +148,4 @@
     </div>
 </div>
 <script src="{{ url_for('static', filename='js/roles.js') }}"></script>
-<script>
-    $(document).on("click", ".table .gn-icon-edit", function () {
-        $('#CreateEditModal #gridSystemModalLabel').html("Edit Role");
-        var id = $(this).data('id');
-        $("#CreateEditModal #selectedID").val(id);
-
-        GetRole(id);
-        setTimeout(function(){
-            $('#CreateEditModal #RoleTitle').val(result['RoleTitle']);
-            $('#CreateEditModal #Description').val(result['Description']);
-        }, 500);
-    });
-
-    $(document).on("click", ".table .gn-icon-delete", function () {
-        var id = $(this).data('id');
-        $("#DeleteModal #selectedID").val(id);
-
-        GetRole(id);
-        setTimeout(function(){
-            $('#DeleteModal #RoleTitle').html(result['RoleTitle']);
-            $('#DeleteModal #Description').html(result['Description']);
-        }, 500);
-        
-        
-    });
-
-    $(document).on("click", ".table .gn-icon-detail", function () {
-        var id = $(this).data('id');
-        $("#DetailModal #selectedID").val(id);
-
-        GetRole(id);
-        setTimeout(function(){
-            $('#DetailModal #RoleTitle').html(result['RoleTitle']);
-            $('#DetailModal #Description').html(result['Description']);
-        }, 500);
-        
-        
-    });
-
-    $(document).on("click", "#newRole", function () {
-        $('#CreateEditModal #gridSystemModalLabel').html("New Role");
-        $("#CreateEditModal #selectedID").val('');
-        $('#CreateEditModal #RoleTitle').val('');
-        $('#CreateEditModal #Description').val('');
-    });
-
-    $(document).on("click", "#CreateEditModal .btn-primary", function () {
-        if($("#CreateEditModal #selectedID").val()=='')
-        {
-            CreateRole($('#CreateEditModal #RoleTitle').val(), $('#CreateEditModal #Description').val());
-        }
-        else
-        {
-            EditRole($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #RoleTitle').val(), $('#CreateEditModal #Description').val());
-        }
-    });
-
-    $(document).on("click", "#DeleteModal .btn-primary", function () {
-        DeleteRole($('#DeleteModal #selectedID').val());
-    });
-</script>
 {% endblock %}

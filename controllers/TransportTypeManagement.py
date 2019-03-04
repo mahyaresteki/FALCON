@@ -7,13 +7,17 @@ import App
 from models.DatabaseContext import *
 import hashlib
 from datetime import datetime
+from controllers.Security import CheckAccess, GetFormAccessControl
 
 @App.app.route('/TransportTypeManagement/TransportTypes')
 def transporttype_page():
     if session.get("user_id") is not None and session.get("fullname") is not None:
-        with db_session:
-            transportTypes = TransportTypes.select()
-            return render_template('TransportTypeManagement/transporttypes.html', entries = transportTypes)
+        if CheckAccess("Transport Types", "Read"):
+                with db_session:
+                        transportTypes = TransportTypes.select()
+                        return render_template('TransportTypeManagement/transporttypes.html', entries = transportTypes, formAccess = GetFormAccessControl("Transport Types"))
+        else:
+                return redirect("/AccessDenied", code=302)
     else:
         return redirect("/", code=302)
 
@@ -22,11 +26,14 @@ def transporttype_page():
 def CreateTransportType():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
-                        with db_session:
-                                data = request.get_json()
-                                TransportTypes(TransportTypeTitle = data['TransportTypeTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
-                                message = "Success"
-                                return jsonify({'message': message})
+                        if CheckAccess("Transport Types", "Create"):
+                                with db_session:
+                                        data = request.get_json()
+                                        TransportTypes(TransportTypeTitle = data['TransportTypeTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
+                                        message = "Success"
+                                        return jsonify({'message': message})
+                        else:
+                                return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
@@ -51,11 +58,14 @@ def GetTransportType():
 def DeleteTransportType():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
-                        with db_session:
-                                data = request.get_json()
-                                delete(p for p in TransportTypes if p.TransportTypeID == int(data["TransportTypeID"]))
-                                message = "Success"
-                                return jsonify({'message': message})
+                        if CheckAccess("Transport Types", "Delete"):
+                                with db_session:
+                                        data = request.get_json()
+                                        delete(p for p in TransportTypes if p.TransportTypeID == int(data["TransportTypeID"]))
+                                        message = "Success"
+                                        return jsonify({'message': message})
+                        else:
+                                return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
@@ -68,12 +78,15 @@ def DeleteTransportType():
 def EditTransportType():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
-                        with db_session:
-                                data = request.get_json()
-                                role = TransportTypes[int(data['TransportTypeID'])]
-                                role.set(TransportTypeTitle = data['TransportTypeTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
-                                message = "Success"
-                                return jsonify({'message': message})
+                        if CheckAccess("Transport Types", "Update"):
+                                with db_session:
+                                        data = request.get_json()
+                                        role = TransportTypes[int(data['TransportTypeID'])]
+                                        role.set(TransportTypeTitle = data['TransportTypeTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
+                                        message = "Success"
+                                        return jsonify({'message': message})
+                        else:
+                                return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:

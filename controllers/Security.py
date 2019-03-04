@@ -1,8 +1,8 @@
 import sys
+import random, json
 from psycopg2 import connect
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import pymysql
-import random, json
 from flask import *
 from flask_cors import CORS, cross_origin
 import App
@@ -18,14 +18,21 @@ def Login():
         data = request.get_json()
         username = str(data['username'])
         password = hashlib.sha512(str(data['password']).encode('utf-8')).hexdigest()
-        query= Users.select(lambda u: u.Username == str(username) and u.Password == str(password))
+        query = Users.select(lambda u: u.Username == str(username) and u.Password == str(password))
         mylist = list(query)
         message=""
         if len(mylist) > 0:
             if mylist[0].IsActive : 
                 message = "Success"
+                query2 = list(RoleAccesses.select(lambda ra: ra.RoleID == mylist[0].RoleID))
+                result = '{'
+                for r in query2[:-1]:
+                    result += '"' + r.AppFormID.AppFormTitle + '" : "' + str(r.ReadGrant)+'", '
+                result += '"' + query2[-1].AppFormID.AppFormTitle + '" : "' + str(query2[-1].ReadGrant) + '"'
+                result += '}'
                 session["user_id"] = mylist[0].UserID
                 session["fullname"] = mylist[0].FirstName +' '+mylist[0].LastName
+                session["menu_access"] = json.loads(str(result))
             else:
                 message = "User is deactivated"
         else:
@@ -95,3 +102,24 @@ def logout():
     session.pop('user_id', None)
     session.pop('fullname', None)
     return redirect("/", code=302)
+
+def CheckAccess(appFormTitle, accessType):
+    with db_session:
+        user = list(Users.select(lambda u: u.UserID == int(session["user_id"])))
+        roleAccess = list(RoleAccesses.select(lambda ra: ra.RoleID == user[0].RoleID and ra.AppFormID.AppFormTitle == str(appFormTitle)))
+        if accessType == 'Read':
+            return roleAccess[0].ReadGrant
+        elif accessType == 'Create':
+            return roleAccess[0].CreateGrant
+        elif accessType == 'Update':
+            return roleAccess[0].UpdateGrant 
+        elif accessType == 'Delete':
+            return roleAccess[0].DeleteGrant
+        else:
+            return roleAccess[0].PrintGrant
+
+def GetFormAccessControl(appFormTitle):
+    user = list(Users.select(lambda u: u.UserID == int(session["user_id"])))
+    roleAccess = list(RoleAccesses.select(lambda ra: ra.RoleID == user[0].RoleID and ra.AppFormID.AppFormTitle == str(appFormTitle)))
+    result = '{"Read": "'+ str(roleAccess[0].ReadGrant) +'", "Create":"'+ str(roleAccess[0].CreateGrant) +'", "Update":"'+ str(roleAccess[0].UpdateGrant) +'", "Delete":"'+ str(roleAccess[0].DeleteGrant) +'", "Print":"'+ str(roleAccess[0].PrintGrant) +'"}'
+    return json.loads(str(result))

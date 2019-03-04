@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Releases>
+    <Release version="0.9.21">
+        <Change>Appling Role Access on Buttons</Change>
+        <Change>Appling Role Access on Forms, Menus and Actions </Change>
+        <Change>Moving all JavaScript codes from views to JS files. (Inferastructure)</Change>
+    </Release>
     <Release version="0.9.18">
         <Change>Controlling Selected Point is inside Hometown Area in Intra City Mission</Change>
         <Change>Selecting Hometown Area in Settings</Change>

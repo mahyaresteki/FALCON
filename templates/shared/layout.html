@@ -24,15 +24,33 @@
                             <div class="gn-scroller">
                                 <ul class="gn-menu">
                                     <li><a class="gn-icon gn-icon-dashboard" href="/Dashboard">Dashboard</a></li>
+                                    {% if session['menu_access']['Roles'] == 'True' %}
                                     <li><a class="gn-icon gn-icon-role" href="/UserManagement/Roles">Roles</a></li>
-                                    <li><a class="gn-icon gn-icon-roleaccess"  href="/UserManagement/RoleAccesses">RoleAccess</a></li>
-                                    <li><a class="gn-icon gn-icon-user" href="/UserManagement/Users">Users</a></li>
-                                    <li><a class="gn-icon gn-icon-bus" href="/TransportTypeManagement/TransportTypes">Transport Types</a></li>
+                                    {% endif %}
+                                    {% if session['menu_access']['Role Accesses'] == 'True' %}
+                                    <li><a class="gn-icon gn-icon-roleaccess"  href="/UserManagement/RoleAccesses">Role Accesses</a></li>
+                                    {% endif %}
+                                    {% if session['menu_access']['Users'] == 'True' %}
+                                        <li><a class="gn-icon gn-icon-user" href="/UserManagement/Users">Users</a></li>
+                                    {% endif %}
+                                    {% if session['menu_access']['Transport Types'] == 'True' %}
+                                        <li><a class="gn-icon gn-icon-bus" href="/TransportTypeManagement/TransportTypes">Transport Types</a></li>
+                                    {% endif %}
+                                    {% if session['menu_access']['Roles'] == 'True' %}
                                     <li><a class="gn-icon gn-icon-running" href="/LeaveManagement/Leaves">Leaves</a></li>
+                                    {% endif %}
+                                    {% if session['menu_access']['Intra City Mission'] == 'True' %}
                                     <li><a class="gn-icon gn-icon-suitecase" href="/MissionManagement/Missions">Intra City Mission</a></li>
+                                    {% endif %}
+                                    {% if session['menu_access']['Extra-Urban Mission'] == 'True' %}
                                     <li><a class="gn-icon gn-icon-plane" href="#">Extra-Urban Mission</a></li>
+                                    {% endif %}
+                                    {% if session['menu_access']['Hour Off'] == 'True' %}
                                     <li><a class="gn-icon gn-icon-stopwatch" href="#">Hour Off</a></li>
+                                    {% endif %}
+                                    {% if session['menu_access']['Settings'] == 'True' %}
                                     <li><a class="gn-icon gn-icon-cog" href="/SettingsManagement/Settings">Settings</a></li>
+                                    {% endif %}
                                     <li><a class="gn-icon gn-icon-help" href="/About">About</a></li>
                                 </ul>
                             </div><!-- /gn-scroller -->

@@ -1,5 +1,70 @@
 var result = {};
 
+$(document).on("click", ".table .gn-icon-edit", function () {
+    $('#CreateEditModal #gridSystemModalLabel').html("Edit Leave");
+    var id = $(this).data('id');
+    $("#CreateEditModal #selectedID").val(id);
+
+    GetLeave(id);
+    setTimeout(function(){
+        $('#CreateEditModal #StartDate').val(result['StartDate']);
+        $('#CreateEditModal #StartTime').val(result['StartTime']);
+        $('#CreateEditModal #EndDate').val(result['EndDate']);
+        $('#CreateEditModal #EndTime').val(result['EndTime']);
+        $('#CreateEditModal #Reason').val(result['Reason']);
+        $('#CreateEditModal #Description').val(result['Description']);
+    }, 500);
+});
+
+$(document).on("click", ".table .gn-icon-delete", function () {
+    var id = $(this).data('id');
+    $("#DeleteModal #selectedID").val(id);
+
+    GetLeave(id);
+    setTimeout(function(){
+        $('#DeleteModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
+        $('#DeleteModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
+        $('#DeleteModal #Reason').html(result['Reason']);
+    }, 500);
+});
+
+$(document).on("click", ".table .gn-icon-detail", function () {
+    var id = $(this).data('id');
+    $("#DetailModal #selectedID").val(id);
+
+    GetLeave(id);
+    setTimeout(function(){
+        $('#DetailModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
+        $('#DetailModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
+        $('#DetailModal #Reason').html(result['Reason']);
+    }, 500);
+});
+
+$(document).on("click", "#newLeave", function () {
+    $('#CreateEditModal #gridSystemModalLabel').html("New Leave");
+    $("#CreateEditModal #selectedID").val('');
+    $('#CreateEditModal #StartDate').val('');
+    $('#CreateEditModal #StartTime').val('');
+    $('#CreateEditModal #EndDate').val('');
+    $('#CreateEditModal #EndTime').val('');
+    $('#CreateEditModal #Reason').val('');
+});
+
+$(document).on("click", "#CreateEditModal .btn-primary", function () {
+    if($("#CreateEditModal #selectedID").val()=='')
+    {
+        CreateLeave($('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
+    }
+    else
+    {
+        EditLeave($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
+    }
+});
+
+$(document).on("click", "#DeleteModal .btn-primary", function () {
+    DeleteLeave($('#DeleteModal #selectedID').val());
+});
+
 function CreateLeave(StartDate, EndDate, Reason)
 {
     $.ajaxSetup({

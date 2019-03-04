@@ -15,9 +15,11 @@
             {% endfor %}
         </select>
     </div>
+    {% if formAccess["Update"] == 'True' %}
     <div class="col-md-1" >
         <input type="button" class="btn btn-primary" value="Save"/>
     </div>
+    {% endif %}
 </div>
 <hr/>
 <div class="row">
@@ -27,17 +29,4 @@
     </div>
 </div>
 <script src="{{ url_for('static', filename='js/roleaccesses.js') }}"></script>
-<script>
-    $(document).ready(function () {
-        GetRoleAccesses($('#RoleID').val());
-    });
-
-    $(document).on("change", "#RoleID", function () {
-        GetRoleAccesses($('#RoleID').val());
-    });
-
-    $(document).on("click", ".btn-primary", function () {
-        SaveAccesses();
-    });
-</script>
 {% endblock %}
