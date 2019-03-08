@@ -3,6 +3,7 @@ import random, json
 from pony import orm
 from flask import *
 from flask_cors import *
+from flask_paginate import Pagination, get_page_parameter
 import App
 from models.DatabaseContext import *
 import hashlib
@@ -14,8 +15,11 @@ def role_page():
     if session.get("user_id") is not None and session.get("fullname") is not None:
         if CheckAccess("Roles", "Read"):
                 with db_session:
+                        search = False
+                        page = request.args.get(get_page_parameter(), type=int, default=1)
                         roles = Roles.select()
-                        return render_template('UserManagement/roles.html', entries = roles, formAccess = GetFormAccessControl("Roles"))
+                        pagination = Pagination(page=page, total=roles.count(), search=search, record_name='roles', css_framework='bootstrap4')
+                        return render_template('UserManagement/roles.html', entries = roles.page(page, 10), pagination=pagination, formAccess = GetFormAccessControl("Roles"))
         else:
                 return redirect("/AccessDenied", code=302)
     else:
@@ -161,9 +165,12 @@ def user_page():
         if session.get("user_id") is not None and session.get("fullname") is not None:
                 if CheckAccess("Users", "Read"):
                         with db_session:
+                                search = False
+                                page = request.args.get(get_page_parameter(), type=int, default=1)
                                 users = Users.select()
                                 roles = Roles.select()
-                                return render_template('UserManagement/users.html', users = users, roles = roles, formAccess = GetFormAccessControl("Users"))
+                                pagination = Pagination(page=page, total=users.count(), search=search, record_name='users', css_framework='bootstrap4')
+                                return render_template('UserManagement/users.html', users = users.page(page, 10), pagination = pagination, roles = roles, formAccess = GetFormAccessControl("Users"))
                 else:
                         return redirect("/AccessDenied", code=302)
         else:

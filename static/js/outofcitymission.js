@@ -32,7 +32,7 @@ var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     function onMapClick(e) {
         var markerPoint = L.marker(e.latlng);
-        if(isMarkerInsideHometownArea(markerPoint, area))
+        if(!isMarkerInsideHometownArea(markerPoint, area))
         {
             markerGroup.clearLayers();
             var marker = L.marker(e.latlng).addTo(markerGroup);
@@ -40,7 +40,7 @@ var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
             $('#CreateEditModal #Longitude').val(e.latlng.lng);
         }
         else{
-            alert('Your selected Location is not in hometwon area. So you have to insert this mission into "Out of City Mission".');
+            alert('Your selected Location is in hometwon area. So you have to insert this mission into "Intra City Mission".');
         }
 
     }
@@ -64,7 +64,7 @@ var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     mymap.on('click', onMapClick);
 
     $(document).on("click", ".table .gn-icon-edit", function () {
-        $('#CreateEditModal #gridSystemModalLabel').html("Edit Intra City Mission");
+        $('#CreateEditModal #gridSystemModalLabel').html("Edit Out of City Mission");
         var id = $(this).data('id');
         $("#CreateEditModal #selectedID").val(id);
 
@@ -129,7 +129,7 @@ var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
     });
 
     $(document).on("click", "#newMission", function () {
-        $('#CreateEditModal #gridSystemModalLabel').html("New Intra City Mission");
+        $('#CreateEditModal #gridSystemModalLabel').html("New Out of City Mission");
         $("#CreateEditModal #selectedID").val('');
         $('#CreateEditModal #StartDate').val('');
         $('#CreateEditModal #StartTime').val('');

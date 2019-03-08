@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <head>
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap/css/bootstarp.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/jquery-ui/css/jquery-ui.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/normalize.css') }}" />
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/demo.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/component.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/fontawesome/css/all.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap/css/bootstarp.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/jquery-ui/css/jquery-ui.css') }}" />
+    
     <script src="{{ url_for('static', filename='lib/popper/js/popper.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/jquery/js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.js') }}"></script>
@@ -42,11 +43,11 @@
                                     {% if session['menu_access']['Intra City Mission'] == 'True' %}
                                     <li><a class="gn-icon gn-icon-suitecase" href="/MissionManagement/Missions">Intra City Mission</a></li>
                                     {% endif %}
-                                    {% if session['menu_access']['Extra-Urban Mission'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-plane" href="#">Extra-Urban Mission</a></li>
+                                    {% if session['menu_access']['Out of City Mission'] == 'True' %}
+                                    <li><a class="gn-icon gn-icon-plane" href="/MissionManagement/OutOfCityMission">Out of City Mission</a></li>
                                     {% endif %}
                                     {% if session['menu_access']['Hour Off'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-stopwatch" href="#">Hour Off</a></li>
+                                    <li><a class="gn-icon gn-icon-stopwatch" href="/LeaveManagement/HourOff">Hour Off Laeve</a></li>
                                     {% endif %}
                                     {% if session['menu_access']['Settings'] == 'True' %}
                                     <li><a class="gn-icon gn-icon-cog" href="/SettingsManagement/Settings">Settings</a></li>

@@ -6,17 +6,20 @@
 {% block content %}
 {% if formAccess["Create"] == 'True' %}
 <input id='newTransportType' type="button" class="btn btn-primary" value="New Transport Type" data-toggle="modal" data-target="#CreateEditModal"/>
+<br/>
+<br/>
 {% endif %}
-<br/>
-<br/>
+{{ pagination.info }}
 <table class="table table-striped">
     <tr class="thead-dark">
+        <th>#</th>
         <th>Transport Type Title</th>
         <th>Description</th>
         <th></th>
     </tr>
-    {% for entry in entries %}
+    {% for entry in transportTypes %}
     <tr>
+        <td>{{ loop.index + pagination.skip }}</td>
         <td>{{ entry.TransportTypeTitle }}</td>
         <td>{{ entry.Description }}</td>
         <td>
@@ -30,9 +33,10 @@
         </td>
     </tr>
     {% else %}
-    <tr><td colspan="2">No entries yet. Add some!</td></tr>
+    <tr><td colspan="4">No entries yet. Add some!</td></tr>
     {% endfor %}
 </table>
+{{ pagination.links }}
 {% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">

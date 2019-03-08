@@ -3,6 +3,7 @@ import random, json
 from pony import orm
 from flask import *
 from flask_cors import *
+from flask_paginate import Pagination, get_page_parameter
 import App
 from models.DatabaseContext import *
 import hashlib
@@ -14,8 +15,11 @@ def transporttype_page():
     if session.get("user_id") is not None and session.get("fullname") is not None:
         if CheckAccess("Transport Types", "Read"):
                 with db_session:
+                        search = False
+                        page = request.args.get(get_page_parameter(), type=int, default=1)
                         transportTypes = TransportTypes.select()
-                        return render_template('TransportTypeManagement/transporttypes.html', entries = transportTypes, formAccess = GetFormAccessControl("Transport Types"))
+                        pagination = Pagination(page=page, total=transportTypes.count(), search=search, record_name='transport types', css_framework='bootstrap4')
+                        return render_template('TransportTypeManagement/transporttypes.html', transportTypes = transportTypes.page(page, 10), pagination=pagination, formAccess = GetFormAccessControl("Transport Types"))
         else:
                 return redirect("/AccessDenied", code=302)
     else:

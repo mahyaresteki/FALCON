@@ -3,6 +3,7 @@ import random, json
 from pony import orm
 from flask import *
 from flask_cors import *
+from flask_paginate import Pagination, get_page_parameter
 import App
 from models.DatabaseContext import *
 import hashlib
@@ -14,8 +15,26 @@ def leave_page():
         if session.get("user_id") is not None and session.get("fullname") is not None:
                 if CheckAccess("Leaves", "Read"):
                         with db_session:
-                                myleaves = Leaves.select(lambda l: l.UserID.UserID == int(session.get("user_id")))
-                                return render_template('LeaveManagement/Leaves.html', myleaves = myleaves, formAccess = GetFormAccessControl("Leaves"))
+                                search = False
+                                page = request.args.get(get_page_parameter(), type=int, default=1)
+                                myleaves = Leaves.select(lambda l: l.UserID.UserID == int(session.get("user_id")) and l.StartDate.date() < l.EndDate.date())
+                                pagination = Pagination(page=page, total=myleaves.count(), search=search, record_name='leaves', css_framework='bootstrap4')
+                                return render_template('LeaveManagement/Leaves.html', myleaves = myleaves.page(page, 10), pagination = pagination, formAccess = GetFormAccessControl("Leaves"))
+                else:
+                        return redirect("/AccessDenied", code=302)
+        else:
+                return redirect("/", code=302)
+
+@App.app.route('/LeaveManagement/HourOff')
+def houroff_page():
+        if session.get("user_id") is not None and session.get("fullname") is not None:
+                if CheckAccess("Hour Off Leave", "Read"):
+                        with db_session:
+                                search = False
+                                page = request.args.get(get_page_parameter(), type=int, default=1)
+                                myleaves = Leaves.select(lambda l: l.UserID.UserID == int(session.get("user_id") and l.StartDate.date() == l.EndDate.date()))
+                                pagination = Pagination(page=page, total=myleaves.count(), search=search, record_name='hour off leaves', css_framework='bootstrap4')
+                                return render_template('LeaveManagement/houroff.html', myleaves = myleaves.page(page, 10), pagination = pagination, formAccess = GetFormAccessControl("Hour Off Leave"))
                 else:
                         return redirect("/AccessDenied", code=302)
         else:

@@ -9,9 +9,11 @@
 <br/>
 <br/>
 {% endif %}
+{{ pagination.info }}
 <div class="table-responsive-sm">
     <table class="table table-striped">
         <tr class="thead-dark">
+            <th>#</th>
             <th>First Name</th>
             <th>Last Name</th>
             <th>Username</th>
@@ -23,6 +25,7 @@
         </tr>
         {% for user in users %}
         <tr>
+            <td>{{ loop.index + pagination.skip }}</td>
             <td>{{ user.FirstName }}</td>
             <td>{{ user.LastName }}</td>
             <td>{{ user.Username }}</td>
@@ -53,10 +56,11 @@
             </td>
         </tr>
         {% else %}
-        <tr><td colspan="8">No entries yet. Add some!</td></tr>
+        <tr><td colspan="9">No entries yet. Add some!</td></tr>
         {% endfor %}
     </table>
 </div>
+{{ pagination.links }}
 
 {% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">

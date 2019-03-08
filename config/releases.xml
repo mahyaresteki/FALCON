@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Releases>
+    <Release version="0.9.24">
+        <Change>Applying Pagination on Grids</Change>
+        <Change>Hour Off Leave Management</Change>
+        <Change>Out of City Mission Management</Change>
+    </Release>
     <Release version="0.9.21">
         <Change>Applying Role Access on Buttons</Change>
         <Change>Applying Role Access on Forms, Menus and Actions </Change>

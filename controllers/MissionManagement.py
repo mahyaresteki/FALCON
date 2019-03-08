@@ -3,6 +3,7 @@ import random, json
 from pony import orm
 from flask import *
 from flask_cors import *
+from flask_paginate import Pagination, get_page_parameter
 import App
 from models.DatabaseContext import *
 import hashlib
@@ -19,9 +20,32 @@ def mission_page():
                                 config = configparser.ConfigParser()
                                 config.sections()
                                 config.read('config/conf.ini')
+                                search = False
+                                page = request.args.get(get_page_parameter(), type=int, default=1)
                                 mymissions = Missions.select(lambda l: l.UserID.UserID == int(session.get("user_id")))
                                 transporttypes = TransportTypes.select()
-                                return render_template('MissionManagement/Missions.html', mymissions = mymissions, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Intra City Mission"))
+                                pagination = Pagination(page=page, total=mymissions.count(), search=search, record_name='intra city missions', css_framework='bootstrap4')
+                                return render_template('MissionManagement/Missions.html', mymissions = mymissions.page(page, 10), pagination = pagination, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Intra City Mission"))
+                else:
+                        return redirect("/AccessDenied", code=302)
+        else:
+                return redirect("/", code=302)
+
+@App.app.route('/MissionManagement/OutOfCityMission')
+def out_of_city_mission_page():
+        if session.get("user_id") is not None and session.get("fullname") is not None:
+                if CheckAccess("Out of City Mission", "Read"):
+                        with db_session:
+                                hometownarea = np.loadtxt('config/hometownarea.txt', dtype=np.object)
+                                config = configparser.ConfigParser()
+                                config.sections()
+                                config.read('config/conf.ini')
+                                search = False
+                                page = request.args.get(get_page_parameter(), type=int, default=1)
+                                mymissions = Missions.select(lambda l: l.UserID.UserID == int(session.get("user_id")))
+                                transporttypes = TransportTypes.select()
+                                pagination = Pagination(page=page, total=mymissions.count(), search=search, record_name='out of city missions', css_framework='bootstrap4')
+                                return render_template('MissionManagement/OutOfCityMission.html', mymissions = mymissions.page(page, 10), pagination = pagination, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Out of City Mission"))
                 else:
                         return redirect("/AccessDenied", code=302)
         else:
