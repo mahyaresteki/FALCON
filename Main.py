@@ -11,12 +11,15 @@ try:
     from flask_cors import CORS, cross_origin
     from flask_paginate import Pagination, get_page_parameter
     import numpy
+    import xlsxwriter
+    import pandas
     from pony.orm import *
     import psycopg2
     import pymysql
     pymysql.install_as_MySQLdb()
+    
 except ImportError:
-    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2', 'pymysql', 'numpy', 'flask-paginate'])
+    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2', 'pymysql', 'numpy', 'flask-paginate', 'XlsxWriter', 'pandas'])
 
 import configparser
 import random, threading, webbrowser

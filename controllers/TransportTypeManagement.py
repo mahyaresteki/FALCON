@@ -9,6 +9,10 @@ from models.DatabaseContext import *
 import hashlib
 from datetime import datetime
 from controllers.Security import CheckAccess, GetFormAccessControl
+from ConfigLogging import *
+from io import BytesIO
+import pandas as pd
+import numpy as np
 
 @App.app.route('/TransportTypeManagement/TransportTypes')
 def transporttype_page():
@@ -31,16 +35,22 @@ def CreateTransportType():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Transport Types", "Create"):
-                                with db_session:
-                                        data = request.get_json()
-                                        TransportTypes(TransportTypeTitle = data['TransportTypeTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                with db.set_perms_for(TransportTypes):
+                                        perm('edit create delete view', group='anybody')
+                                        with db_session:
+                                                data = request.get_json()
+                                                transportTypes = TransportTypes(TransportTypeTitle = data['TransportTypeTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
+                                                commit()
+                                                message = "Success"
+                                                j = json.loads(transportTypes.to_json())
+                                                InsertInfoLog('create', 'transport type', 'TransportTypes', j, str(transportTypes.TransportTypeID))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('transport type', 'create')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -64,15 +74,22 @@ def DeleteTransportType():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Transport Types", "Delete"):
                                 with db_session:
-                                        data = request.get_json()
-                                        delete(p for p in TransportTypes if p.TransportTypeID == int(data["TransportTypeID"]))
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                        with db.set_perms_for(TransportTypes):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                transportTypes = TransportTypes.select(lambda tt: tt.TransportTypeID == int(data["TransportTypeID"]))
+                                                j = json.loads(transportTypes.to_json())
+                                                delete(p for p in TransportTypes if p.TransportTypeID == int(data["TransportTypeID"]))
+                                                commit()
+                                                message = "Success"
+                                                InsertInfoLog('delete', 'transport type', 'TransportTypes', j,str(data["TransportTypeID"]))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('transport type', 'delete')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -84,15 +101,50 @@ def EditTransportType():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Transport Types", "Update"):
                                 with db_session:
-                                        data = request.get_json()
-                                        role = TransportTypes[int(data['TransportTypeID'])]
-                                        role.set(TransportTypeTitle = data['TransportTypeTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                        with db.set_perms_for(TransportTypes):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                transportTypes = TransportTypes[int(data['TransportTypeID'])]
+                                                transportTypes.set(TransportTypeTitle = data['TransportTypeTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
+                                                commit()
+                                                j = json.loads(transportTypes.to_json())
+                                                InsertInfoLog('update', 'transport type', 'TransportTypes', j,str(data["TransportTypeID"]))
+                                                message = "Success"
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('transport type', 'update')
                 message = str(e)
                 return jsonify({'message': message})
+
+@App.app.route('/TransportTypeManagement/ExportExcel', methods=['GET', 'POST'])
+def ExportExcel():
+        if session.get("user_id") is not None and session.get("fullname") is not None:
+                if CheckAccess("Transport Types", "Print"):
+                        with db_session:
+                                output = BytesIO()
+                                writer = pd.ExcelWriter(output, engine='xlsxwriter')
+                                workbook = writer.book
+                                worksheet = workbook.add_worksheet()
+                                bold = workbook.add_format({'bold': True})
+                                worksheet.write('A1', 'No.', bold)
+                                worksheet.write('B1', 'Transport Type Title', bold)
+                                worksheet.write('C1', 'Description', bold)
+                                row = 1
+                                col = 0
+                                transportTypes = TransportTypes.select()
+                                for item in transportTypes:
+                                        worksheet.write(row, col, row)
+                                        worksheet.write(row, col + 1, item.TransportTypeTitle)
+                                        worksheet.write(row, col + 2, item.Description)
+                                        row += 1
+                                writer.close()
+                                output.seek(0)
+                                return send_file(output, attachment_filename="TransportTypes-"+datetime.now().strftime("%Y%m%d%H%M%S")+".xlsx", as_attachment=True)
+                else:
+                        return redirect("/AccessDenied", code=302)
+        else:
+                return redirect("/", code=302)

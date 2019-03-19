@@ -9,6 +9,7 @@ from models.DatabaseContext import *
 import hashlib
 from datetime import datetime
 from controllers.Security import CheckAccess, GetFormAccessControl
+from ConfigLogging import *
 
 @App.app.route('/UserManagement/Roles')
 def role_page():
@@ -32,15 +33,21 @@ def CreateRole():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Roles", "Create"):
                                 with db_session:
-                                        data = request.get_json()
-                                        Roles(RoleTitle = data['RoleTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                        with db.set_perms_for(Roles):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                role = Roles(RoleTitle = data['RoleTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
+                                                commit()
+                                                message = "Success"
+                                                j = json.loads(role.to_json())
+                                                InsertInfoLog('create', 'role', 'Roles', j, str(role.RoleID))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('role', 'create')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -67,15 +74,22 @@ def DeleteRole():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Roles", "Delete"):
                                 with db_session:
-                                        data = request.get_json()
-                                        delete(p for p in Roles if p.RoleID == int(data["RoleID"]))
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                        with db.set_perms_for(Roles):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                role = Roles.select(lambda r: r.RoleID == int(data["RoleID"]))
+                                                j = json.loads(role.to_json())
+                                                delete(p for p in Roles if p.RoleID == int(data["RoleID"]))
+                                                commit()
+                                                message = "Success"
+                                                InsertInfoLog('delete', 'role', 'Roles', j, str(data["RoleID"]))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('role', 'delete')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -87,16 +101,22 @@ def EditRole():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Roles", "Update"):
                                 with db_session:
-                                        data = request.get_json()
-                                        role = Roles[int(data['RoleID'])]
-                                        role.set(RoleTitle = data['RoleTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                         with db.set_perms_for(Roles):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                role = Roles[int(data['RoleID'])]
+                                                role.set(RoleTitle = data['RoleTitle'], Description = data['Description'], LatestUpdateDate = datetime.now())
+                                                commit()
+                                                j = json.loads(role.to_json())
+                                                InsertInfoLog('update', 'role', 'Roles', j,str(data["RoleID"]))
+                                                message = "Success"
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('role', 'update')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -141,21 +161,27 @@ def SetRoleAccesses():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Role Accesses", "Update"):
                                 with db_session:
-                                        data = request.get_json()
-                                        Accesses = data["Accesses"]
-                                        for item in Accesses:
-                                                query = RoleAccesses.select(lambda u: u.RoleID.RoleID == int(item['roleId']) and u.AppFormID.AppFormID == int(item['formId']))
-                                                mylist = list(query)
-                                                if len(mylist) > 0:
-                                                        roleAccess = RoleAccesses[mylist[0].RoleAccessID]
-                                                        roleAccess.set(CreateGrant = bool(item["create"]), ReadGrant = bool(item["read"]), UpdateGrant = bool(item["update"]), DeleteGrant = bool(item["delete"]), PrintGrant = bool(item["print"]), LatestUpdateDate = datetime.now() )
-                                                else:
-                                                        RoleAccesses(RoleID = int(item["roleId"]), AppFormID = int(item["formId"]), CreateGrant = bool(item["create"]), ReadGrant = bool(item["read"]), UpdateGrant = bool(item["update"]), DeleteGrant = bool(item["delete"]), PrintGrant = bool(item["print"]), LatestUpdateDate = datetime.now() )
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                         with db.set_perms_for(RoleAccesses):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                Accesses = data["Accesses"]
+                                                for item in Accesses:
+                                                        query = RoleAccesses.select(lambda u: u.RoleID.RoleID == int(item['roleId']) and u.AppFormID.AppFormID == int(item['formId']))
+                                                        mylist = list(query)
+                                                        if len(mylist) > 0:
+                                                                roleAccess = RoleAccesses[mylist[0].RoleAccessID]
+                                                                roleAccess.set(CreateGrant = bool(item["create"]), ReadGrant = bool(item["read"]), UpdateGrant = bool(item["update"]), DeleteGrant = bool(item["delete"]), PrintGrant = bool(item["print"]), LatestUpdateDate = datetime.now() )
+                                                        else:
+                                                                RoleAccesses(RoleID = int(item["roleId"]), AppFormID = int(item["formId"]), CreateGrant = bool(item["create"]), ReadGrant = bool(item["read"]), UpdateGrant = bool(item["update"]), DeleteGrant = bool(item["delete"]), PrintGrant = bool(item["print"]), LatestUpdateDate = datetime.now() )
+                                                commit()
+                                                j = json.loads(Accesses.to_json())
+                                                InsertInfoLog('update', 'role accesses', 'RoleAccesses', j,str(data["RoleAccessID"]))
+                                                message = "Success"
+                                                return jsonify({'message': message})
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('role accesses', 'update')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -164,13 +190,15 @@ def SetRoleAccesses():
 def user_page():
         if session.get("user_id") is not None and session.get("fullname") is not None:
                 if CheckAccess("Users", "Read"):
-                        with db_session:
-                                search = False
-                                page = request.args.get(get_page_parameter(), type=int, default=1)
-                                users = Users.select()
-                                roles = Roles.select()
-                                pagination = Pagination(page=page, total=users.count(), search=search, record_name='users', css_framework='bootstrap4')
-                                return render_template('UserManagement/users.html', users = users.page(page, 10), pagination = pagination, roles = roles, formAccess = GetFormAccessControl("Users"))
+                        with db.set_perms_for(Users):
+                                perm('edit create delete view', group='anybody')
+                                with db_session:
+                                        search = False
+                                        page = request.args.get(get_page_parameter(), type=int, default=1)
+                                        users = Users.select()
+                                        roles = Roles.select()
+                                        pagination = Pagination(page=page, total=users.count(), search=search, record_name='users', css_framework='bootstrap4')
+                                        return render_template('UserManagement/users.html', users = users.page(page, 10), pagination = pagination, roles = roles, formAccess = GetFormAccessControl("Users"))
                 else:
                         return redirect("/AccessDenied", code=302)
         else:
@@ -183,18 +211,24 @@ def CreateUser():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Users", "Create"):
-                                with db_session:
-                                        data = request.get_json()
-                                        print(data['Password'])
-                                        password = hashlib.sha512(str(data['Password']).encode('utf-8')).hexdigest()
-                                        Users(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), Password=password, RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), ManagerID=str(data['ManagerID']), IsActive=True, LatestUpdateDate = datetime.now() )
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                with db.set_perms_for(Users):
+                                        perm('edit create delete view', group='anybody')
+                                        with db_session:
+                                                data = request.get_json()
+                                                print(data['Password'])
+                                                password = hashlib.sha512(str(data['Password']).encode('utf-8')).hexdigest()
+                                                user = Users(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), Password=password, RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), ManagerID=str(data['ManagerID']), IsActive=True, LatestUpdateDate = datetime.now() )
+                                                message = "Success"
+                                                commit()
+                                                j = json.loads(user.to_json())
+                                                InsertInfoLog('create', 'user', 'Users', j,str(data["UserID"]))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('user', 'create')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -224,16 +258,23 @@ def DeleteUser():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Users", "Delete"):
-                                with db_session:
-                                        data = request.get_json()
-                                        delete(p for p in Users if p.UserID == int(data["UserID"]))
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                with db.set_perms_for(Users):
+                                        perm('edit create delete view', group='anybody')
+                                        with db_session:
+                                                data = request.get_json()
+                                                user =Users.select(lambda u: u.UserID == int(data["UserID"]))
+                                                j = json.loads(user.to_json())
+                                                delete(p for p in Users if p.UserID == int(data["UserID"]))
+                                                commit()
+                                                InsertInfoLog('delete', 'user', 'Users', j,str(data["UserID"]))
+                                                message = "Success"
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('user', 'delete')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -244,17 +285,23 @@ def EditUser():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Users", "Update"):
-                                with db_session:
-                                        data = request.get_json()
-                                        user = Users[int(data['UserID'])]
-                                        user.set(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), ManagerID=str(data['ManagerID']), IsActive=True, LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                with db.set_perms_for(Users):
+                                        perm('edit create delete view', group='anybody')
+                                        with db_session:
+                                                data = request.get_json()
+                                                user = Users[int(data['UserID'])]
+                                                user.set(FirstName = str(data['FirstName']), LastName =str(data['LastName']), Username=str(data['Username']), RoleID=int(data['RoleID']), PersonelCode=str(data['PersonelCode']), ManagerID=str(data['ManagerID']), IsActive=True, LatestUpdateDate = datetime.now())
+                                                message = "Success"
+                                                commit()
+                                                j = json.loads(user.to_json())
+                                                InsertInfoLog('update', 'user', 'Users', j,str(data["UserID"]))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('user', 'update')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -265,20 +312,26 @@ def UserActivation():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Users", "Update"):
-                                with db_session:
-                                        data = request.get_json()
-                                        user = Users[int(data['UserID'])]
-                                        if user.IsActive:
-                                                user.set(IsActive=False, LatestUpdateDate = datetime.now())
-                                        else:
-                                                user.set(IsActive=True, LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                with db.set_perms_for(Users):
+                                        perm('edit create delete view', group='anybody')
+                                        with db_session:
+                                                data = request.get_json()
+                                                user = Users[int(data['UserID'])]
+                                                if user.IsActive:
+                                                        user.set(IsActive=False, LatestUpdateDate = datetime.now())
+                                                else:
+                                                        user.set(IsActive=True, LatestUpdateDate = datetime.now())
+                                                message = "Success"
+                                                commit()
+                                                j = json.loads(user.to_json())
+                                                InsertInfoLog('update', 'user', 'Users', j,str(data["UserID"]))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('user', 'user activation')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -287,21 +340,27 @@ def UserActivation():
 def ChangePasswordByUser():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
-                        with db_session:
-                                data = request.get_json()
-                                user = Users[int(data['UserID'])]
-                                oldPassword = hashlib.sha512(str(data['OldPassword']).encode('utf-8')).hexdigest()
-                                message = ""
-                                if user.Password == oldPassword:
-                                        newPassword = hashlib.sha512(str(data['NewPassword']).encode('utf-8')).hexdigest()
-                                        user.set(Password = newPassword, LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                else:
-                                        message = "The old password is not correct"
-                                return jsonify({'message': message})
+                        with db.set_perms_for(Users):
+                                perm('edit create delete view', group='anybody')
+                                with db_session:
+                                        data = request.get_json()
+                                        user = Users[int(data['UserID'])]
+                                        oldPassword = hashlib.sha512(str(data['OldPassword']).encode('utf-8')).hexdigest()
+                                        message = ""
+                                        if user.Password == oldPassword:
+                                                newPassword = hashlib.sha512(str(data['NewPassword']).encode('utf-8')).hexdigest()
+                                                user.set(Password = newPassword, LatestUpdateDate = datetime.now())
+                                                message = "Success"
+                                        else:
+                                                message = "The old password is not correct"
+                                        commit()
+                                        j = json.loads(user.to_json())
+                                        InsertInfoLog('update', 'user', 'Users', j,str(data["UserID"]))
+                                        return jsonify({'message': message})
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('user', 'change password user')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -312,17 +371,23 @@ def ChangePasswordByAdmin():
         try:
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Users", "Update"):
-                                with db_session:
-                                        data = request.get_json()
-                                        user = Users[int(data['UserID'])]
-                                        newPassword = hashlib.sha512(str(data['Password']).encode('utf-8')).hexdigest()
-                                        user.set(Password = newPassword, LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                with db.set_perms_for(Users):
+                                        perm('edit create delete view', group='anybody')
+                                        with db_session:
+                                                data = request.get_json()
+                                                user = Users[int(data['UserID'])]
+                                                newPassword = hashlib.sha512(str(data['Password']).encode('utf-8')).hexdigest()
+                                                user.set(Password = newPassword, LatestUpdateDate = datetime.now())
+                                                message = "Success"
+                                                commit()
+                                                j = json.loads(user.to_json())
+                                                InsertInfoLog('update', 'user', 'Users', j,str(data["UserID"]))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('user', 'change password admin')
                 message = str(e)
                 return jsonify({'message': message})

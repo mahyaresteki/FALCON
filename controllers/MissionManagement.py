@@ -10,6 +10,7 @@ import hashlib
 from datetime import datetime
 import numpy as np
 from controllers.Security import CheckAccess, GetFormAccessControl
+from ConfigLogging import *
 
 @App.app.route('/MissionManagement/Missions')
 def mission_page():
@@ -58,21 +59,27 @@ def CreateMission():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Intra City Mission", "Create"):
                                 with db_session:
-                                        data = request.get_json()
-                                        latitude = float(data['Latitude']) if data['Latitude']!='' else None
-                                        longitude = float(data['Longitude']) if data['Longitude']!='' else None
-                                        wentPayment = float(data['WentPayment']) if data['WentPayment']!='' else None
-                                        returnPayment = float(data['ReturnPayment']) if data['ReturnPayment']!='' else None
-                                        transportTypeWentID = int(data['TransportTypeWentID']) if data['TransportTypeWentID']!='' else None
-                                        transportTypeReturnID = float(data['TransportTypeReturnID']) if data['TransportTypeReturnID']!='' else None
-                                        Missions(UserID = int(session.get("user_id")), MissionTitle = str(data['MissionTitle']), StartDate = datetime.strptime(data['StartDate'], '%Y-%m-%d %H:%M'), EndDate = datetime.strptime(data['EndDate'], '%Y-%m-%d %H:%M'), Latitude = latitude, Longitude = longitude, TransportTypeWentID = transportTypeWentID, WentPayment = wentPayment, TransportTypeReturnID = transportTypeReturnID, ReturnPayment = returnPayment,  LatestUpdateDate = datetime.now())
-                                        message = "Success"
-                                        return jsonify({'message': message})
+                                        with db.set_perms_for(Missions):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                latitude = float(data['Latitude']) if data['Latitude']!='' else None
+                                                longitude = float(data['Longitude']) if data['Longitude']!='' else None
+                                                wentPayment = float(data['WentPayment']) if data['WentPayment']!='' else None
+                                                returnPayment = float(data['ReturnPayment']) if data['ReturnPayment']!='' else None
+                                                transportTypeWentID = int(data['TransportTypeWentID']) if data['TransportTypeWentID']!='' else None
+                                                transportTypeReturnID = float(data['TransportTypeReturnID']) if data['TransportTypeReturnID']!='' else None
+                                                mission = Missions(UserID = int(session.get("user_id")), MissionTitle = str(data['MissionTitle']), StartDate = datetime.strptime(data['StartDate'], '%Y-%m-%d %H:%M'), EndDate = datetime.strptime(data['EndDate'], '%Y-%m-%d %H:%M'), Latitude = latitude, Longitude = longitude, TransportTypeWentID = transportTypeWentID, WentPayment = wentPayment, TransportTypeReturnID = transportTypeReturnID, ReturnPayment = returnPayment,  LatestUpdateDate = datetime.now())
+                                                commit()
+                                                message = "Success"
+                                                j = json.loads(mission.to_json())
+                                                InsertInfoLog('create', 'mission', 'Missions', j,str(data["MissionID"]))
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('mission', 'create')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -107,24 +114,30 @@ def DeleteMission():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Intra City Mission", "Delete"):
                                 with db_session:
-                                        data = request.get_json()
-                                        print(int(data["MissionID"]))
-                                        query = list(Missions.select(lambda m: m.MissionID == int(data['MissionID'])))
-                                        message = ""
-                                        if int(query[0].UserID.UserID) ==  int(session.get("user_id")):
-                                                if query[0].ApprovedBy is None:
-                                                        delete(m for m in Missions if m.MissionID == int(data["MissionID"]))
-                                                        message = "Success"
+                                        with db.set_perms_for(Missions):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                print(int(data["MissionID"]))
+                                                query = list(Missions.select(lambda m: m.MissionID == int(data['MissionID'])))
+                                                j = json.loads(query.to_json())
+                                                message = ""
+                                                if int(query[0].UserID.UserID) ==  int(session.get("user_id")):
+                                                        if query[0].ApprovedBy is None:
+                                                                delete(m for m in Missions if m.MissionID == int(data["MissionID"]))
+                                                                commit()
+                                                                message = "Success"
+                                                                InsertInfoLog('delete', 'mission', 'Missions', j,str(data["MissionID"]))
+                                                        else:
+                                                                message = "Approval is submitted on this mission."
                                                 else:
-                                                        message = "Approval is submitted on this mission."
-                                        else:
-                                                message = "This mission is not related to logged in user."
-                                        return jsonify({'message': message})
+                                                        message = "This mission is not related to logged in user."
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('mission', 'delete')
                 message = str(e)
                 return jsonify({'message': message})
 
@@ -135,29 +148,35 @@ def EditMission():
                 if session.get("user_id") is not None and session.get("fullname") is not None:
                         if CheckAccess("Intra City Mission", "Update"):
                                 with db_session:
-                                        data = request.get_json()
-                                        query = list(Missions.select(lambda m: m.MissionID == int(data['MissionID'])))
-                                        message = ""
-                                        if int(query[0].UserID.UserID) ==  int(session.get("user_id")):
-                                                if query[0].ApprovedBy is None:
-                                                        latitude = float(data['Latitude']) if data['Latitude']!='' else None
-                                                        longitude = float(data['Longitude']) if data['Longitude']!='' else None
-                                                        wentPayment = float(data['WentPayment']) if data['WentPayment']!='' else None
-                                                        returnPayment = float(data['ReturnPayment']) if data['ReturnPayment']!='' else None
-                                                        transportTypeWentID = int(data['TransportTypeWentID']) if data['TransportTypeWentID']!='' else None
-                                                        transportTypeReturnID = float(data['TransportTypeReturnID']) if data['TransportTypeReturnID']!='' else None
-                                                        mission = Missions[int(data['MissionID'])]
-                                                        mission.set(MissionTitle = str(data['MissionTitle']), StartDate = datetime.strptime(data['StartDate'], '%Y-%m-%d %H:%M'), EndDate = datetime.strptime(data['EndDate'], '%Y-%m-%d %H:%M'), Latitude = latitude, Longitude = longitude, TransportTypeWentID = transportTypeWentID, WentPayment = wentPayment, TransportTypeReturnID = transportTypeReturnID, ReturnPayment = returnPayment,  LatestUpdateDate = datetime.now())
-                                                        message = "Success"
+                                        with db.set_perms_for(Missions):
+                                                perm('edit create delete view', group='anybody')
+                                                data = request.get_json()
+                                                query = list(Missions.select(lambda m: m.MissionID == int(data['MissionID'])))
+                                                message = ""
+                                                if int(query[0].UserID.UserID) ==  int(session.get("user_id")):
+                                                        if query[0].ApprovedBy is None:
+                                                                latitude = float(data['Latitude']) if data['Latitude']!='' else None
+                                                                longitude = float(data['Longitude']) if data['Longitude']!='' else None
+                                                                wentPayment = float(data['WentPayment']) if data['WentPayment']!='' else None
+                                                                returnPayment = float(data['ReturnPayment']) if data['ReturnPayment']!='' else None
+                                                                transportTypeWentID = int(data['TransportTypeWentID']) if data['TransportTypeWentID']!='' else None
+                                                                transportTypeReturnID = float(data['TransportTypeReturnID']) if data['TransportTypeReturnID']!='' else None
+                                                                mission = Missions[int(data['MissionID'])]
+                                                                mission.set(MissionTitle = str(data['MissionTitle']), StartDate = datetime.strptime(data['StartDate'], '%Y-%m-%d %H:%M'), EndDate = datetime.strptime(data['EndDate'], '%Y-%m-%d %H:%M'), Latitude = latitude, Longitude = longitude, TransportTypeWentID = transportTypeWentID, WentPayment = wentPayment, TransportTypeReturnID = transportTypeReturnID, ReturnPayment = returnPayment,  LatestUpdateDate = datetime.now())
+                                                                commit()
+                                                                j = json.loads(mission.to_json())
+                                                                message = "Success"
+                                                                InsertInfoLog('update', 'mission', 'Missions', j,str(data["MissionID"]))
+                                                        else:
+                                                                message = "Approval is submitted on this mission."
                                                 else:
-                                                        message = "Approval is submitted on this mission."
-                                        else:
-                                                message = "This mission is not related to logged in user."
-                                        return jsonify({'message': message})
+                                                        message = "This mission is not related to logged in user."
+                                                return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
                 else:
                         return redirect("/", code=302)
         except Exception as e:
+                InsertErrorLog('mission', 'update')
                 message = str(e)
                 return jsonify({'message': message})
