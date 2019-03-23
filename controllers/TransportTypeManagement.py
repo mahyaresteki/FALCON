@@ -10,9 +10,12 @@ import hashlib
 from datetime import datetime
 from controllers.Security import CheckAccess, GetFormAccessControl
 from ConfigLogging import *
-from io import BytesIO
+from io import BytesIO, StringIO
 import pandas as pd
 import numpy as np
+import csv
+from werkzeug.datastructures import Headers
+from werkzeug.wrappers import Response
 
 @App.app.route('/TransportTypeManagement/TransportTypes')
 def transporttype_page():
@@ -120,30 +123,53 @@ def EditTransportType():
                 message = str(e)
                 return jsonify({'message': message})
 
-@App.app.route('/TransportTypeManagement/ExportExcel', methods=['GET', 'POST'])
-def ExportExcel():
+@App.app.route('/TransportTypeManagement/ExportReport', methods=['GET', 'POST'])
+def ExportReport():
         if session.get("user_id") is not None and session.get("fullname") is not None:
                 if CheckAccess("Transport Types", "Print"):
                         with db_session:
-                                output = BytesIO()
-                                writer = pd.ExcelWriter(output, engine='xlsxwriter')
-                                workbook = writer.book
-                                worksheet = workbook.add_worksheet()
-                                bold = workbook.add_format({'bold': True})
-                                worksheet.write('A1', 'No.', bold)
-                                worksheet.write('B1', 'Transport Type Title', bold)
-                                worksheet.write('C1', 'Description', bold)
-                                row = 1
-                                col = 0
-                                transportTypes = TransportTypes.select()
-                                for item in transportTypes:
-                                        worksheet.write(row, col, row)
-                                        worksheet.write(row, col + 1, item.TransportTypeTitle)
-                                        worksheet.write(row, col + 2, item.Description)
-                                        row += 1
-                                writer.close()
-                                output.seek(0)
-                                return send_file(output, attachment_filename="TransportTypes-"+datetime.now().strftime("%Y%m%d%H%M%S")+".xlsx", as_attachment=True)
+                                if request.form["reportType"] == 'Excel':
+                                        output = BytesIO()
+                                        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+                                        workbook = writer.book
+                                        worksheet = workbook.add_worksheet()
+                                        bold = workbook.add_format({'bold': True})
+                                        worksheet.write('A1', 'No.', bold)
+                                        worksheet.write('B1', 'Transport Type Title', bold)
+                                        worksheet.write('C1', 'Description', bold)
+                                        row = 1
+                                        col = 0
+                                        transportTypes = TransportTypes.select()
+                                        for item in transportTypes:
+                                                worksheet.write(row, col, row)
+                                                worksheet.write(row, col + 1, item.TransportTypeTitle)
+                                                worksheet.write(row, col + 2, item.Description)
+                                                row += 1
+                                        writer.close()
+                                        output.seek(0)
+                                        return send_file(output, attachment_filename="TransportTypes-"+datetime.now().strftime("%Y%m%d%H%M%S")+".xlsx", as_attachment=True)
+                                elif request.form["reportType"] == 'CVS':
+                                        def generate():
+                                                with db_session:
+                                                        output = StringIO()
+                                                        writer = csv.writer(output)
+                                                        writer.writerow(('Title', 'Description'))
+                                                        yield output.getvalue()
+                                                        output.seek(0)
+                                                        output.truncate(0)
+                                                        transportTypes = TransportTypes.select()
+                                                        for item in transportTypes:
+                                                                writer.writerow((item.TransportTypeTitle,item.Description))
+                                                                yield output.getvalue()
+                                                                output.seek(0)
+                                                                output.truncate(0)
+                                        headers = Headers()
+                                        headers.set('Content-Disposition', 'attachment', filename="TransportTypes-"+datetime.now().strftime("%Y%m%d%H%M%S")+".cvs")
+
+                                        return Response(
+                                                        stream_with_context(generate()),
+                                                        mimetype='text/csv', headers=headers
+                                        )
                 else:
                         return redirect("/AccessDenied", code=302)
         else:
