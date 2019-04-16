@@ -72,7 +72,7 @@ def CreateMission():
                                                 commit()
                                                 message = "Success"
                                                 j = json.loads(mission.to_json())
-                                                InsertInfoLog('create', 'mission', 'Missions', j,str(data["MissionID"]))
+                                                InsertInfoLog('create', 'mission', 'Missions', j,str(mission.MissionID))
                                                 return jsonify({'message': message})
                         else:
                                 return redirect("/AccessDenied", code=302)
@@ -118,8 +118,9 @@ def DeleteMission():
                                                 perm('edit create delete view', group='anybody')
                                                 data = request.get_json()
                                                 print(int(data["MissionID"]))
-                                                query = list(Missions.select(lambda m: m.MissionID == int(data['MissionID'])))
+                                                query = Missions.select(lambda m: m.MissionID == int(data['MissionID']))
                                                 j = json.loads(query.to_json())
+                                                query = list(query)
                                                 message = ""
                                                 if int(query[0].UserID.UserID) ==  int(session.get("user_id")):
                                                         if query[0].ApprovedBy is None:
@@ -180,3 +181,5 @@ def EditMission():
                 InsertErrorLog('mission', 'update')
                 message = str(e)
                 return jsonify({'message': message})
+
+

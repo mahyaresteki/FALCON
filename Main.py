@@ -14,12 +14,14 @@ try:
     import xlsxwriter
     import pandas
     from pony.orm import *
+    from PollyReports import *
     import psycopg2
     import pymysql
+    import reportlab
     pymysql.install_as_MySQLdb()
     
 except ImportError:
-    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2', 'pymysql', 'numpy', 'flask-paginate', 'XlsxWriter', 'pandas'])
+    pipmain(['install', 'flask', 'pony', 'flask-cors', 'psycopg2', 'pymysql', 'numpy', 'flask-paginate', 'XlsxWriter', 'pandas', 'PollyReports', 'reportlab'])
 
 import configparser
 import random, threading, webbrowser

@@ -16,6 +16,9 @@ import numpy as np
 import csv
 from werkzeug.datastructures import Headers
 from werkzeug.wrappers import Response
+from PollyReports import *
+from reportlab.pdfgen.canvas import Canvas
+from collections import namedtuple
 
 @App.app.route('/TransportTypeManagement/TransportTypes')
 def transporttype_page():
@@ -124,7 +127,7 @@ def EditTransportType():
                 return jsonify({'message': message})
 
 @App.app.route('/TransportTypeManagement/ExportReport', methods=['GET', 'POST'])
-def ExportReport():
+def TransportTypeExportReport():
         if session.get("user_id") is not None and session.get("fullname") is not None:
                 if CheckAccess("Transport Types", "Print"):
                         with db_session:
@@ -170,6 +173,44 @@ def ExportReport():
                                                         stream_with_context(generate()),
                                                         mimetype='text/csv', headers=headers
                                         )
+                                elif request.form["reportType"] == 'PDF':
+                                        with db_session:
+                                                with db.set_perms_for(TransportTypes):
+                                                        currentDateTime = datetime.now()
+                                                        perm('edit create delete view', group='anybody')
+                                                        transportTypes = namedtuple("TransportTypes", "TransportTypeID TransportTypeTitle Description")
+                                                        transportTypes = select(tt for tt in TransportTypes)[:]
+                                                        result = {'data': [{"TransportTypeID": p.TransportTypeID, "TransportTypeTitle": p.TransportTypeTitle, "Description": p.Description} for p in transportTypes]}
+                                                        rpt = Report(result["data"])
+                                                        rpt.detailband = Band([
+                                                                Element((36, 0), ("Helvetica", 11), key = "TransportTypeTitle"),
+                                                                Element((300, 0), ("Helvetica", 11), key = "Description"),
+                                                        ])
+
+                                                        rpt.pageheader = Band([
+                                                                Element((36, 0), ("Helvetica-Bold", 20), text = "Transport Type List"),
+                                                                Element((36, 24), ("Helvetica", 12), text = "Title"),
+                                                                Element((300, 24), ("Helvetica", 12), text = "Description"),
+                                                                Rule((36, 42), 6.5*72, thickness = 2),
+                                                        ])
+
+                                                        rpt.pagefooter = Band([
+                                                                Element((72*7, 0), ("Helvetica-Bold", 14), text = currentDateTime.strftime("%Y/%m/%d %H:%M:%S"), align = "right"),
+                                                                Element((36, 16), ("Helvetica-Bold", 12), sysvar = "pagenumber", format = lambda x: "Page %d" % x),
+                                                        ])
+                                                        
+                                                        filename = "TransportTypes-"+currentDateTime.strftime("%Y%m%d%H%M%S")+".pdf"
+                                                        output = BytesIO()
+                                                        canvas = Canvas(output, (72*8.5, 72*11))
+                                                        rpt.generate(canvas)
+                                                        canvas.showPage()
+                                                        canvas.save()
+                                                        pdf_out = output.getvalue()
+                                                        output.close()
+                                                        response = make_response(pdf_out)
+                                                        response.headers['Content-Disposition'] = "attachment; filename="+filename
+                                                        response.mimetype = 'application/pdf'
+                                                        return response
                 else:
                         return redirect("/AccessDenied", code=302)
         else:

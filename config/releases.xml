@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Releases>
-    <Release version="0.9.26">
+    <Release version="0.9.27">
+        <Change>Exporting Reports in CVS, PDF and Excel Formats</Change>
         <Change>Providing Logging System</Change>
         <Change>Paging for Grids (Lazy Loading)</Change>
     </Release>

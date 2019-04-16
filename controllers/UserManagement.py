@@ -10,6 +10,15 @@ import hashlib
 from datetime import datetime
 from controllers.Security import CheckAccess, GetFormAccessControl
 from ConfigLogging import *
+from io import BytesIO, StringIO
+import pandas as pd
+import numpy as np
+import csv
+from werkzeug.datastructures import Headers
+from werkzeug.wrappers import Response
+from PollyReports import *
+from reportlab.pdfgen.canvas import Canvas
+from collections import namedtuple
 
 @App.app.route('/UserManagement/Roles')
 def role_page():
@@ -391,3 +400,119 @@ def ChangePasswordByAdmin():
                 InsertErrorLog('user', 'change password admin')
                 message = str(e)
                 return jsonify({'message': message})
+
+@App.app.route('/UserManagement/ExportReport', methods=['GET', 'POST'])
+def UserExportReport():
+        if session.get("user_id") is not None and session.get("fullname") is not None:
+                if CheckAccess("Users", "Print"):
+                        with db_session:
+                                if request.form["reportType"] == 'Excel':
+                                        output = BytesIO()
+                                        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+                                        workbook = writer.book
+                                        worksheet = workbook.add_worksheet()
+                                        bold = workbook.add_format({'bold': True})
+                                        worksheet.write('A1', 'No.', bold)
+                                        worksheet.write('B1', 'First Name', bold)
+                                        worksheet.write('C1', 'Last Name', bold)
+                                        worksheet.write('D1', 'Username', bold)
+                                        worksheet.write('E1', 'Role Title', bold)
+                                        worksheet.write('F1', 'Personel Code', bold)
+                                        worksheet.write('G1', 'Manager', bold)
+                                        worksheet.write('H1', 'Is Active?', bold)
+                                        row = 1
+                                        col = 0
+                                        users = Users.select()
+                                        for item in users:
+                                                worksheet.write(row, col, row)
+                                                worksheet.write(row, col + 1, item.FirstName)
+                                                worksheet.write(row, col + 2, item.LastName)
+                                                worksheet.write(row, col + 3, item.Username)
+                                                worksheet.write(row, col + 4, item.RoleID.RoleTitle)
+                                                worksheet.write(row, col + 5, item.PersonelCode)
+                                                if item.ManagerID is not None:
+                                                        worksheet.write(row, col + 6, item.ManagerID.FirstName+' '+item.ManagerID.LastName)
+                                                else:
+                                                        worksheet.write(row, col + 6, None)
+                                                worksheet.write(row, col + 7, item.IsActive)
+                                                row += 1
+                                        writer.close()
+                                        output.seek(0)
+                                        return send_file(output, attachment_filename="Users-"+datetime.now().strftime("%Y%m%d%H%M%S")+".xlsx", as_attachment=True)
+                                elif request.form["reportType"] == 'CVS':
+                                        def generate():
+                                                with db_session:
+                                                        output = StringIO()
+                                                        writer = csv.writer(output)
+                                                        writer.writerow(('First Name', 'Last Name', 'Username', 'Role Title', 'Personel Code', 'Manager', 'Is Active'))
+                                                        yield output.getvalue()
+                                                        output.seek(0)
+                                                        output.truncate(0)
+                                                        users = Users.select()
+                                                        for item in users:
+                                                                manager = None
+                                                                if item.ManagerID is not None:
+                                                                        manager = item.ManagerID.FirstName+' '+item.ManagerID.LastName
+                                                                writer.writerow((item.FirstName,item.LastName,item.Username,item.RoleID.RoleTitle,item.PersonelCode,manager,item.IsActive))
+                                                                yield output.getvalue()
+                                                                output.seek(0)
+                                                                output.truncate(0)
+                                        headers = Headers()
+                                        headers.set('Content-Disposition', 'attachment', filename="Users-"+datetime.now().strftime("%Y%m%d%H%M%S")+".cvs")
+
+                                        return Response(
+                                                        stream_with_context(generate()),
+                                                        mimetype='text/csv', headers=headers
+                                        )
+                                elif request.form["reportType"] == 'PDF':
+                                        with db_session:
+                                                with db.set_perms_for(Users):
+                                                        currentDateTime = datetime.now()
+                                                        perm('edit create delete view', group='anybody')
+                                                        users = namedtuple("Users", "UserID FirstName LastName Username RoleID PersonelCode ManagerID IsActive")
+                                                        users = select(u for u in Users)[:]
+                                                        result = {'data': [{"UserID": p.UserID, "FirstName": p.FirstName, "LastName": p.LastName, "Username": p.Username, "RoleTitle": p.RoleID.RoleTitle, "PersonelCode": p.PersonelCode, "Manager": p.ManagerID.FirstName+' '+p.ManagerID.FirstName if p.ManagerID is not None else '', "IsActive": p.IsActive} for p in users]}
+                                                        rpt = Report(result["data"])
+                                                        rpt.detailband = Band([
+                                                                Element((36, 0), ("Helvetica", 11), key = "FirstName"),
+                                                                Element((130, 0), ("Helvetica", 11), key = "LastName"),
+                                                                Element((230, 0), ("Helvetica", 11), key = "Username"),
+                                                                Element((330, 0), ("Helvetica", 11), key = "RoleTitle"),
+                                                                Element((430, 0), ("Helvetica", 11), key = "PersonelCode"),
+                                                                Element((530, 0), ("Helvetica", 11), key = "Manager"),
+                                                                Element((630, 0), ("Helvetica", 11), key = "IsActive"),
+                                                        ])
+
+                                                        rpt.pageheader = Band([
+                                                                Element((36, 0), ("Helvetica-Bold", 20), text = "Users List"),
+                                                                Element((36, 24), ("Helvetica", 12), text = "First Name"),
+                                                                Element((130, 24), ("Helvetica", 12), text = "Last Name"),
+                                                                Element((230, 24), ("Helvetica", 12), text = "Username"),
+                                                                Element((330, 24), ("Helvetica", 12), text = "Role Title"),
+                                                                Element((430, 24), ("Helvetica", 12), text = "Personel Code"),
+                                                                Element((530, 24), ("Helvetica", 12), text = "Manager"),
+                                                                Element((630, 24), ("Helvetica", 12), text = "Is Active?"),
+                                                                Rule((36, 42), 9*72, thickness = 2),
+                                                        ])
+
+                                                        rpt.pagefooter = Band([
+                                                                Element((72*9.5, 0), ("Helvetica-Bold", 14), text = currentDateTime.strftime("%Y/%m/%d %H:%M:%S"), align = "right"),
+                                                                Element((36, 16), ("Helvetica-Bold", 12), sysvar = "pagenumber", format = lambda x: "Page %d" % x),
+                                                        ])
+                                                        
+                                                        filename = "Users-"+currentDateTime.strftime("%Y%m%d%H%M%S")+".pdf"
+                                                        output = BytesIO()
+                                                        canvas = Canvas(output, (72*11, 72*8.5))
+                                                        rpt.generate(canvas)
+                                                        canvas.showPage()
+                                                        canvas.save()
+                                                        pdf_out = output.getvalue()
+                                                        output.close()
+                                                        response = make_response(pdf_out)
+                                                        response.headers['Content-Disposition'] = "attachment; filename="+filename
+                                                        response.mimetype = 'application/pdf'
+                                                        return response
+                else:
+                        return redirect("/AccessDenied", code=302)
+        else:
+                return redirect("/", code=302)
