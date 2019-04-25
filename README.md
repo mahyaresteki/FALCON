@@ -1,5 +1,5 @@
-# FALCON: Leave Management System
-FALCON is super light information system to manage history of leaves and missions in any type of company. It is so simple and easy to install, config and use.
+# OOPHAGA: Leave Management System
+OOPHAGA is super light information system to manage history of leaves and missions in any type of company. It is so simple and easy to install, config and use. This project will be developed based on "Software Metamorphosis Theory".
 
 # Most Advanced Feature
 <ul>
@@ -13,7 +13,7 @@ FALCON is super light information system to manage history of leaves and mission
 </ul>
 
 # License
-FALCON follows GNU General Public License v3.0. It is completely free to use, change the code and republish for anyone.
+OOPHAGA follows GNU General Public License v3.0. It is completely free to use, change the code and republish for anyone.
 
 # Architecture
 The project is design based on Model-View-Controller (MVC) architecture. 
