@@ -51,7 +51,7 @@ $(document).on("click", "#newLeave", function () {
 $(document).on("click", "#CreateEditModal .btn-primary", function () {
     if($("#CreateEditModal #selectedID").val()=='')
     {
-        CreateLeave($('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal StartDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
+        CreateLeave($('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
     }
     else
     {

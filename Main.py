@@ -40,7 +40,7 @@ import controllers.SettingsManagement
 
 if __name__ == "__main__":
     app.debug = False
-    app.secret_key = 'falcon'
+    app.secret_key = 'oophaga'
     app.config['SESSION_TYPE'] = 'filesystem'
     config = configparser.ConfigParser()
     config.sections()
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     if config['DEFAULT']['server'] == 'NotSet' or config['DEFAULT']['port'] == 'NotSet':
         print('')
-        print('Falcon Leave Management Server')
+        print('OOPHAGA Leave Management Server')
         print('Application Installation Step')
         print('==================================')
         server = input('Please insert server IP address: ')

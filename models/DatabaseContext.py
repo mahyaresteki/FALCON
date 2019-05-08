@@ -85,6 +85,7 @@ class Missions(db.Entity):
     EndDate = Required(datetime)
     Latitude = Optional(float)
     Longitude = Optional(float)
+    IsIntraCityMission = Required(bool)
     TransportTypeWentID = Optional(TransportTypes, reverse="MissionTransportWent")
     WentPayment = Optional(float)
     TransportTypeReturnID = Optional(TransportTypes, reverse="MissionTransportReturn")

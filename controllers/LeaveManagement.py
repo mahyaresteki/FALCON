@@ -167,7 +167,7 @@ def EditLeave():
 @App.app.route('/LeaveManagement/LeaveExportReport', methods=['GET', 'POST'])
 def LeaveExportReport():
         if session.get("user_id") is not None and session.get("fullname") is not None:
-                if CheckAccess("Users", "Print"):
+                if CheckAccess("Leaves", "Print"):
                         with db_session:
                                 if request.form["reportType"] == 'Excel':
                                         output = BytesIO()
@@ -242,9 +242,9 @@ def LeaveExportReport():
                                                         ])
 
                                                         rpt.pageheader = Band([
-                                                                Element((36, 0), ("Helvetica-Bold", 20), text = "Staff Leave List"),
+                                                                Element((36, 0), ("Helvetica-Bold", 20), text = "Staff's Leave List"),
                                                                 Element((36, 30), ("Helvetica", 9), text = "Staff Name"),
-                                                                Element((130, 30), ("Helvetica", 9), text = "StartDate"),
+                                                                Element((130, 30), ("Helvetica", 9), text = "Start Date"),
                                                                 Element((230, 30), ("Helvetica", 9), text = "End Date"),
                                                                 Element((330, 30), ("Helvetica", 9), text = "Reason"),
                                                                 Element((430, 30), ("Helvetica", 9), text = "Approve Result"),
@@ -259,6 +259,119 @@ def LeaveExportReport():
                                                         ])
                                                         
                                                         filename = "Leaves-"+currentDateTime.strftime("%Y%m%d%H%M%S")+".pdf"
+                                                        output = BytesIO()
+                                                        canvas = Canvas(output, (72*11, 72*8.5))
+                                                        rpt.generate(canvas)
+                                                        canvas.showPage()
+                                                        canvas.save()
+                                                        pdf_out = output.getvalue()
+                                                        output.close()
+                                                        response = make_response(pdf_out)
+                                                        response.headers['Content-Disposition'] = "attachment; filename="+filename
+                                                        response.mimetype = 'application/pdf'
+                                                        return response
+                else:
+                        return redirect("/AccessDenied", code=302)
+        else:
+                return redirect("/", code=302)
+
+
+
+@App.app.route('/LeaveManagement/HourOffExportReport', methods=['GET', 'POST'])
+def HourOffExportReport():
+        if session.get("user_id") is not None and session.get("fullname") is not None:
+                if CheckAccess("Hour Off Leave", "Print"):
+                        with db_session:
+                                if request.form["reportType"] == 'Excel':
+                                        output = BytesIO()
+                                        writer = pd.ExcelWriter(output, engine='xlsxwriter')
+                                        workbook = writer.book
+                                        worksheet = workbook.add_worksheet()
+                                        bold = workbook.add_format({'bold': True})
+                                        date_format = workbook.add_format({'num_format': 'yyyy/mm/dd hh:mm'})
+                                        worksheet.write('A1', 'No.', bold)
+                                        worksheet.write('B1', 'Staff Name', bold)
+                                        worksheet.write('C1', 'Start Date', bold)
+                                        worksheet.write('D1', 'End Date', bold)
+                                        worksheet.write('E1', 'Reason', bold)
+                                        worksheet.write('F1', 'Approval Result', bold)
+                                        worksheet.write('G1', 'Approved By', bold)
+                                        worksheet.write('H1', 'Approve Date', bold)
+                                        row = 1
+                                        col = 0
+                                        leaves = Leaves.select(lambda l: l.UserID.UserID == int(session.get("user_id") and l.StartDate.date() == l.EndDate.date()))
+                                        for item in leaves:
+                                                worksheet.write(row, col, row)
+                                                worksheet.write(row, col + 1, item.UserID.FirstName+' '+item.UserID.LastName)
+                                                worksheet.write(row, col + 2, item.StartDate, date_format)
+                                                worksheet.write(row, col + 3, item.EndDate, date_format)
+                                                worksheet.write(row, col + 4, item.Reason)
+                                                worksheet.write(row, col + 5, 'Approved' if item.IsApproved else 'Rejected' if item.IsApproved==False else 'Not Answered')
+                                                worksheet.write(row, col + 6, item.ApprovedBy.FirstName+' '+item.ApprovedBy.LastName if item.ApprovedBy is not None else None)
+                                                worksheet.write(row, col + 7, item.ApproveDate if item.ApproveDate is not None else None)
+                                                row += 1
+                                        writer.close()
+                                        output.seek(0)
+                                        return send_file(output, attachment_filename="HourOffLeaves-"+datetime.now().strftime("%Y%m%d%H%M%S")+".xlsx", as_attachment=True)
+                                elif request.form["reportType"] == 'CVS':
+                                        def generate():
+                                                with db_session:
+                                                        output = StringIO()
+                                                        writer = csv.writer(output)
+                                                        writer.writerow(('Staff Name', 'Start Date', 'End Date', 'Reason', 'Approve Result', 'Approved By', 'Approve Date'))
+                                                        yield output.getvalue()
+                                                        output.seek(0)
+                                                        output.truncate(0)
+                                                        leaves = Leaves.select(lambda l: l.UserID.UserID == int(session.get("user_id")) and l.StartDate.date() == l.EndDate.date())
+                                                        for item in leaves:
+                                                                writer.writerow((item.UserID.FirstName+' '+item.UserID.LastName,item.StartDate,item.EndDate,item.Reason,'Approved' if item.IsApproved else 'Rejected' if item.IsApproved==False else 'Not Answered', item.ApprovedBy.FirstName+' '+item.ApprovedBy.LastName if item.ApprovedBy is not None else None, item.ApproveDate if item.ApproveDate is not None else None))
+                                                                yield output.getvalue()
+                                                                output.seek(0)
+                                                                output.truncate(0)
+                                        headers = Headers()
+                                        headers.set('Content-Disposition', 'attachment', filename="HourOffLeaves-"+datetime.now().strftime("%Y%m%d%H%M%S")+".cvs")
+
+                                        return Response(
+                                                        stream_with_context(generate()),
+                                                        mimetype='text/csv', headers=headers
+                                        )
+                                elif request.form["reportType"] == 'PDF':
+                                        with db_session:
+                                                with db.set_perms_for(Users):
+                                                        currentDateTime = datetime.now()
+                                                        perm('edit create delete view', group='anybody')
+                                                        leaves = namedtuple("Leaves", "LeaveID StaffName StartDate EndDate Reason ApproveResult ApprovedBy ApproveDate")
+                                                        leaves = select(l for l in Leaves if l.UserID.UserID == int(session.get("user_id")) and l.StartDate.date()== l.EndDate.date())[:]
+                                                        result = {'data': [{"LeaveID": p.LeaveID, "StaffName": p.UserID.FirstName+' '+p.UserID.LastName, "StartDate": p.StartDate, "EndDate": p.EndDate, "Reason": p.Reason, "ApproveResult": 'Approved' if p.IsApproved else 'Rejected' if p.IsApproved == False else 'Not Answered', "ApprovedBy":  p.ApprovedBy.FirstName+' '+p.ApprovedBy.LastName if p.ApprovedBy is not None else None, "ApproveDate": p.ApproveDate if p.ApproveDate is not None else None} for p in leaves]}
+                                                        rpt = Report(result["data"])
+                                                        rpt.detailband = Band([
+                                                                Element((36, 0), ("Helvetica", 9), key = "StaffName"),
+                                                                Element((130, 0), ("Helvetica", 9), key = "StartDate"),
+                                                                Element((230, 0), ("Helvetica", 9), key = "EndDate"),
+                                                                Element((330, 0), ("Helvetica", 9), key = "Reason"),
+                                                                Element((430, 0), ("Helvetica", 9), key = "ApproveResult"),
+                                                                Element((500, 0), ("Helvetica", 9), key = "ApprovedBy"),
+                                                                Element((600, 0), ("Helvetica", 9), key = "ApproveDate"),
+                                                        ])
+
+                                                        rpt.pageheader = Band([
+                                                                Element((36, 0), ("Helvetica-Bold", 20), text = "Staff's Hour Off Leave List"),
+                                                                Element((36, 30), ("Helvetica", 9), text = "Staff Name"),
+                                                                Element((130, 30), ("Helvetica", 9), text = "Start Date"),
+                                                                Element((230, 30), ("Helvetica", 9), text = "End Date"),
+                                                                Element((330, 30), ("Helvetica", 9), text = "Reason"),
+                                                                Element((430, 30), ("Helvetica", 9), text = "Approve Result"),
+                                                                Element((500, 30), ("Helvetica", 9), text = "Approved By"),
+                                                                Element((600, 30), ("Helvetica", 9), text = "Approve Date"),
+                                                                Rule((36, 42), 9*72, thickness = 2),
+                                                        ])
+
+                                                        rpt.pagefooter = Band([
+                                                                Element((72*9.5, 0), ("Helvetica-Bold", 14), text = currentDateTime.strftime("%Y/%m/%d %H:%M:%S"), align = "right"),
+                                                                Element((36, 16), ("Helvetica-Bold", 12), sysvar = "pagenumber", format = lambda x: "Page %d" % x),
+                                                        ])
+                                                        
+                                                        filename = "HourOffLeaves-"+currentDateTime.strftime("%Y%m%d%H%M%S")+".pdf"
                                                         output = BytesIO()
                                                         canvas = Canvas(output, (72*11, 72*8.5))
                                                         rpt.generate(canvas)

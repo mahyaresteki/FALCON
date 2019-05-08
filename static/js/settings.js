@@ -9,7 +9,7 @@ $(document).on("click", "#btnSave", function () {
 });
 
 var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-var osmAttrib='Falcon Leave Management System';
+var osmAttrib='OOPHAGA Leave Management System';
 var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
 var mymap = new L.Map('mapid').addLayer(osm).setView([parseFloat($('#Latitude').val()), parseFloat($('#Longitude').val())], 18);
 var osmGeocoder = new L.Control.OSMGeocoder();

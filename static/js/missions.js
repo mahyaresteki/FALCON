@@ -1,7 +1,7 @@
 var result = {};
 
 var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-    var osmAttrib='Falcon Leave Management System';
+    var osmAttrib='OOPHAGA Leave Management System';
     var osm = new L.TileLayer(osmUrl, {attribution: osmAttrib});
     var osm2 = new L.TileLayer(osmUrl, {attribution: osmAttrib});
     var osm3 = new L.TileLayer(osmUrl, {attribution: osmAttrib});
@@ -202,7 +202,8 @@ function CreateMission(StartDate, EndDate, MissionTitle, Latitude, Longitude, Tr
         "TransportTypeWentID": TransportTypeWentID,
         "WentPayment": WentPayment,
         "TransportTypeReturnID": TransportTypeReturnID,
-        "ReturnPayment": ReturnPayment
+        "ReturnPayment": ReturnPayment,
+        "IsIntraCityMission": 'True'
     };
     var a = JSON.stringify(jsondata);
 
