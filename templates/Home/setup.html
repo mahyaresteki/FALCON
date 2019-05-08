@@ -89,11 +89,11 @@
        }
 
        $("#btnSetDatabase").click(function () {
-            setDatabase($('#host').val(),$('#database').val(),$('#user').val(), $('#pass').val());
+            setDatabase($('#provider').val(),$('#host').val(),$('#database').val(),$('#user').val(), $('#pass').val());
         });
 
         $("#btnSetAdministrator").click(function () {
-            setAdministrator($('#provider').val(),$('#FirstName').val(),$('#LastName').val(),$('#Username').val(), $('#UserPassword').val(), $('#PersonelCode').val());
+            setAdministrator($('#FirstName').val(),$('#LastName').val(),$('#Username').val(), $('#UserPassword').val(), $('#PersonelCode').val());
         });
     </script>
 </body>
