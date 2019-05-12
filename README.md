@@ -32,19 +32,24 @@ The project is design based on Model-View-Controller (MVC) architecture.
 The leadership of the project is follow "<a href="https://en.wikipedia.org/wiki/Benevolent_dictator_for_life">benevolent dictator for life</a>" method and the leader is an Iranian developer named Mahyar Esteki.
 
 # Getting Started
-<h2>Setp 1: Install Python</h2>
+<h2>Setp 1: Installing Python</h2>
 Download python 3.7.2 form the following link and install on your app server.
 <br/>
 https://www.python.org/downloads/
 
-<h2>Setp 2: Install PostgresSQL</h2>
+<h2>Setp 2: Installing PostgresSQL</h2>
 Download PostgreSQL RDBMS from the follwing system on install it on your database server.
 <br/>
 https://www.postgresql.org/download/
 <br/><br/>
 Note: Mybe app server and database server will be install on same machine
 
-<h2>Setp 3: Upgrade PIP</h2>
+<h2>Setp 3: Upgrading PIP</h2>
 Get latest version of PIP by the following code.
 <br/>
 pip install --upgrade pip
+
+<h2>Setp 3: Running the application</h2>
+Open a terminal or command prompt on your OS. Then go to the root directory of the application and run the application by the following code.
+<br/>
+python Main.py
