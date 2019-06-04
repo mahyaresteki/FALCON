@@ -62,6 +62,10 @@ if __name__ == "__main__":
         threading.Timer(1.25, lambda: webbrowser.open(url) ).start()
     else:
         db.generate_mapping(create_tables=True)
+        mainurl = "http://{0}:{1}/".format(config['DEFAULT']['server'],config['DEFAULT']['port'])
+        threading.Timer(1.25, lambda: webbrowser.open_new(mainurl) ).start()
 
     app.run(host=config['DEFAULT']['server'], port=config['DEFAULT']['port'])
+    
+
     

@@ -3,74 +3,87 @@
     <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/bootstrap/css/bootstarp.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/jquery-ui/css/jquery-ui.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/normalize.css') }}" />
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/demo.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/component.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/fontawesome/css/all.css') }}" />
     
     <script src="{{ url_for('static', filename='lib/popper/js/popper.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/jquery/js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/jquery-ui/js/jquery-ui.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/modernizr.custom.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/fontawesome/js/all.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
     {% block header %}{% endblock %}
 </head>
 <body>
-        <div class="container1">
-                <ul id="gn-menu" class="gn-menu-main">
-                    <li class="gn-trigger">
-                        <a class="gn-icon gn-icon-menu"><span>Menu</span></a>
-                        <nav class="gn-menu-wrapper">
-                            <div class="gn-scroller">
-                                <ul class="gn-menu">
-                                    <li><a class="gn-icon gn-icon-dashboard" href="/Dashboard">Dashboard</a></li>
-                                    {% if session['menu_access']['Roles'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-role" href="/UserManagement/Roles">Roles</a></li>
-                                    {% endif %}
-                                    {% if session['menu_access']['Role Accesses'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-roleaccess"  href="/UserManagement/RoleAccesses">Role Accesses</a></li>
-                                    {% endif %}
-                                    {% if session['menu_access']['Users'] == 'True' %}
-                                        <li><a class="gn-icon gn-icon-user" href="/UserManagement/Users">Users</a></li>
-                                    {% endif %}
-                                    {% if session['menu_access']['Transport Types'] == 'True' %}
-                                        <li><a class="gn-icon gn-icon-bus" href="/TransportTypeManagement/TransportTypes">Transport Types</a></li>
-                                    {% endif %}
-                                    {% if session['menu_access']['Roles'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-running" href="/LeaveManagement/Leaves">Leaves</a></li>
-                                    {% endif %}
-                                    {% if session['menu_access']['Intra City Mission'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-suitecase" href="/MissionManagement/Missions">Intra City Mission</a></li>
-                                    {% endif %}
-                                    {% if session['menu_access']['Out of City Mission'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-plane" href="/MissionManagement/OutOfCityMission">Out of City Mission</a></li>
-                                    {% endif %}
-                                    {% if session['menu_access']['Hour Off Leave'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-stopwatch" href="/LeaveManagement/HourOff">Hour Off Laeve</a></li>
-                                    {% endif %}
-                                    {% if session['menu_access']['Settings'] == 'True' %}
-                                    <li><a class="gn-icon gn-icon-cog" href="/SettingsManagement/Settings">Settings</a></li>
-                                    {% endif %}
-                                    <li><a class="gn-icon gn-icon-help" href="/About">About</a></li>
-                                </ul>
-                            </div><!-- /gn-scroller -->
-                        </nav>
-                    </li>
-                    <li><span class="logo">OOPHAGA</span></li>
-                    <li><a class="codrops-icon codrops-icon-power" href="/logout"><span>Sign Out</span></a></li>
-                    
-                </ul>
-                <div class="content1">
-                    {% block content %}{% endblock %}
-                </div>
-            </div><!-- /container -->
+    <div id="responsive-admin-menu">
+        <div id="responsive-menu">
+            <div class="menuicon">≡</div>
+        </div>
+                
+        <div id="logo">
+                    <img src="{{ url_for('static', filename='img/oophaga-logo-white.png') }}"/>
+        </div>
             
-            <script src="{{ url_for('static', filename='js/classie.js') }}"></script>
-            <script src="{{ url_for('static', filename='js/gnmenu.js') }}"></script>
-            <script>
-                new gnMenu( document.getElementById( 'gn-menu' ) );
-            </script>
-    
+        <!--Menu-->
+        <div id="menu">
+            <a href="/Dashboard" title="Dashboard"><i class="fa fa-tachometer-alt"></i><span> Dashboard</span></a>
+            <a href="" title="Current User" class="submenu" name="user-sub"><i class="fa fa-user"></i><span> Current User</span></a>
+            <!-- User Sub Menu -->
+            <div id="user-sub" style="display: none;">
+                <a href="" title="User Profile"><i class="fa fa-id-card"></i><span> User Profile</span></a>
+                <a href="/About" title="Help"><i class="fa fa-question-circle"></i><span> Help</span></a>
+                <a href="/logout" title="Help"><i class="fa fa-power-off"></i><span> Signout</span></a>
+            </div>
+            <!-- User Sub Menu -->
+            <a href="" title="Administration" class="submenu" name="administration-sub"><i class="fa fa-cogs"></i><span> Administration</span></a>
+            <!-- Administration Sub Menu -->
+            <div id="administration-sub" style="display: none;">
+                {% if session['menu_access']['Roles'] == 'True' %}
+                <a href="/UserManagement/Roles" title="Roles"><i class="fa fa-mask"></i><span> Roles</span></a>
+                {% endif %}
+                {% if session['menu_access']['Role Accesses'] == 'True' %}
+                <a href="/UserManagement/RoleAccesses" title="Role Access"><i class="fa fa-key"></i><span> Role Access</span></a>
+                {% endif %}
+                {% if session['menu_access']['Users'] == 'True' %}
+                <a href="/UserManagement/Users" title="Users"><i class="fa fa-users"></i><span> Users</span></a>
+                {% endif %}
+                {% if session['menu_access']['Settings'] == 'True' %}
+                <a href="/SettingsManagement/Settings" title="Settings"><i class="fa fa-cog"></i><span> Settings</span></a>
+                {% endif %}
+            </div>
+            <!-- Administration Sub Menu -->
+            <a href="" title="Leaves" class="submenu" name="leave-sub"><i class="fa fa-walking"></i><span> Leaves</span></a>
+            <!-- Media Sub Menu -->
+            <div id="leave-sub" style="display: none;">
+                {% if session['menu_access']['Leaves'] == 'True' %}
+                <a href="/LeaveManagement/Leaves" title="Normal Leave"><i class="fa fa-running"></i><span> Normal Leave</span></a>
+                {% endif %}
+                {% if session['menu_access']['Hour Off Leave'] == 'True' %}
+                <a href="/LeaveManagement/HourOff" title="Hour-off"><i class="fa fa-stopwatch"></i><span> Hour-off</span></a>
+                {% endif %}
+                <a href="" title="Approval"><i class="fa fa-check-square"></i><span> Approval</span></a>
+            </div>
+            <!-- Media Sub Menu -->
+            <a href="" title="Missions" class="submenu" name="mission-sub"><i class="fa fa-train"></i><span> Missions</span></a>
+            <!-- Media Sub Menu -->
+            <div id="mission-sub" style="display: none;">
+                {% if session['menu_access']['Transport Types'] == 'True' %}
+                <a href="/TransportTypeManagement/TransportTypes" title="Transportation Types"><i class="fa fa-bus"></i><span> Transportation Types</span></a>
+                {% endif %}
+                {% if session['menu_access']['Intra City Mission'] == 'True' %}
+                <a href="/MissionManagement/Missions" title="Intra-city Mission"><i class="fa fa-suitcase"></i><span> Intra-city Mission</span></a>
+                {% endif %}
+                {% if session['menu_access']['Out of City Mission'] == 'True' %}
+                <a href="/MissionManagement/OutOfCityMission" title="Out of City Mission"><i class="fa fa-plane"></i><span> Out of City Mission</span></a>
+                {% endif %}
+                <a href="" title="Approval"><i class="fa fa-check-square"></i><span> Approval</span></a>
+            </div>
+            <!-- Media Sub Menu -->
+        </div>
+        <!--Menu-->        
+    </div>
+    <div id="content-wrapper">
+        {% block content %}{% endblock %}
+    </div>
 </body>
 </html>

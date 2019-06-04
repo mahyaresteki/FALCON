@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Releases>
+    <Release version="0.9.30">
+        <Change>Changing Style</Change>
+        <Change>Changing Logo and Name of the Project</Change>
+        <Change>Providing New Main Menu</Change>
+    </Release>
     <Release version="0.9.27">
         <Change>Exporting Reports in CVS, PDF and Excel Formats</Change>
         <Change>Providing Logging System</Change>

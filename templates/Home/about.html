@@ -4,37 +4,44 @@
 <title>About</title>
 {% endblock %}
 {% block content %}
-<h2>Application Information</h2>
-<table class="table">
-    <tr>
-        <th>Name:</th>
-        <td>{{ appinfo.name }}</td>
-    </tr>
-    <tr>
-        <th>Description:</th>
-        <td>{{ appinfo.description }}</td>
-    </tr>
-    <tr>
-        <th>Publisher:</th>
-        <td>{{ appinfo.publisher }}</td>
-    </tr>
-    <tr>
-        <th>Version:</th>
-        <td>{{ appinfo.version }}</td>
-    </tr>
-    <tr>
-        <th>License:</th>
-        <td>{{ appinfo.license }}</td>
-    </tr>
-</table>
-<h2>Detail of Releases</h2>
-{% for release in releases %}
-<h3>Version: {{ release.attrib['version'] }}</h3>
-<ul>
-    {% for change in release %}
-        <li>{{ change.text }}</li>
-    {% endfor %}
-</ul>
-{% endfor %}
-<br/>
-{% endblock %}
+<div class="content-area">
+		<div class="content-area-header">
+            About
+        </div>
+		<div class="content-area-text">
+                <h3>Application Information</h3>
+                <table class="table">
+                    <tr>
+                        <th>Name:</th>
+                        <td>{{ appinfo.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description:</th>
+                        <td>{{ appinfo.description }}</td>
+                    </tr>
+                    <tr>
+                        <th>Publisher:</th>
+                        <td>{{ appinfo.publisher }}</td>
+                    </tr>
+                    <tr>
+                        <th>Version:</th>
+                        <td>{{ appinfo.version }}</td>
+                    </tr>
+                    <tr>
+                        <th>License:</th>
+                        <td>{{ appinfo.license }}</td>
+                    </tr>
+                </table>
+                <h3>Detail of Releases</h3>
+                {% for release in releases %}
+                <h4>Version: {{ release.attrib['version'] }}</h4>
+                <ul>
+                    {% for change in release %}
+                        <li>{{ change.text }}</li>
+                    {% endfor %}
+                </ul>
+                {% endfor %}
+                <br/>
+                {% endblock %}		
+        </div>
+</div>

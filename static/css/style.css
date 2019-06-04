@@ -1,0 +1,311 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+	/* body	*/
+	html, body {
+		margin: 0;
+		padding: 0;
+		font-family: "Open Sans", Helvetica, sans-serif;
+		background-color: #404040;
+		height: 100%;
+		overflow: hidden;
+	}
+	/* body	*/
+
+
+#responsive-admin-menu {
+	float: left;
+	width: 200px;
+	background-color: #404040;
+	height: 100vh;
+	position: relative;
+	left: 0px;
+	min-height: 500px;
+}
+
+
+
+#content-wrapper {
+	width: auto;
+	margin-left: 200px;
+	background-color: #ffffff;
+	height: 100vh;
+	scrollbar-color: #404040 #777;
+	scrollbar-width: thin;
+	overflow-y: scroll;
+	padding: 15px;
+	
+}
+
+#content-wrapper::-webkit-scrollbar {
+	width: 7px;
+	height: 30px;
+}
+
+#content-wrapper::-webkit-scrollbar-track-piece  {
+	background-color: #777;
+}
+
+#content-wrapper::-webkit-scrollbar-thumb:vertical {
+	height: 30px;
+	background-color: #404040;
+}
+
+#responsive-admin-menu #responsive-menu {
+	height: 50px;
+	display: none;
+	line-height: 50px;
+	cursor: pointer;
+	color: #ffffff;
+	text-indent: 10px;
+}
+
+
+
+
+#responsive-admin-menu #responsive-menu .menuicon {
+	color: #ffffff;
+	font-size: 24px;
+	position: absolute;
+	right: 10px;
+	top: 0px;
+}
+#responsive-admin-menu #logo {
+	background-position: -0px -36px;
+	width: 174px;
+	height: 100px;
+	margin: 10px;
+  background: url('https://assets.codepen.io/assets/footer/codepen-logo-midgray.svg') no-repeat;
+  -webkit-background-size: 146.66667px 25.83333px;
+  background-size: 146.66667px 25.83333px;
+}
+
+#responsive-admin-menu #logo img {
+	width: 100px;
+	height: 100px;
+	margin: 0px 37px;
+}
+
+/* Menu Styles */
+#responsive-admin-menu #menu {
+	width: 100%;
+	height: calc(100vh - 100px);
+}
+
+#responsive-admin-menu #menu {
+	scrollbar-color: #404040 #777;
+	scrollbar-width: none;
+	overflow-y: scroll;
+}
+
+#responsive-admin-menu #menu::-webkit-scrollbar {
+	width: 0px;
+	height: 0px;
+}
+
+#responsive-admin-menu #menu::-webkit-scrollbar-track-piece  {
+	background-color: #404040;
+}
+
+#responsive-admin-menu #menu::-webkit-scrollbar-thumb:vertical {
+	height: 30px;
+	background-color: #404040;
+}
+
+#responsive-admin-menu #menu a {
+	border-bottom: 1px dotted #52535a;
+	font-size: 14px;
+	text-decoration: none;
+	display: block;
+	padding: 12px;
+	color: #FFFFFF;
+	position: relative;
+	font-weight: 400;
+	overflow: hidden;
+}
+#responsive-admin-menu #menu a:hover {
+	color: #52535a;
+	background-color:#fcfcfc;
+}
+#responsive-admin-menu #menu i {
+	width: 16px;
+	padding-right: 4px;
+}
+#responsive-admin-menu #menu div {
+	display: none;
+	width: 100%;
+	background-color: #5c5d64;
+}
+#responsive-admin-menu #menu div a {
+	color: #c0c0c0;
+}
+#responsive-admin-menu #menu div a:hover {
+	color: #888888;
+}
+#responsive-admin-menu #menu a.submenu:before {
+	font-family: 'fontawesome';
+	content: "\f054";
+}
+#responsive-admin-menu #menu a.downarrow:before {
+	font-family: 'fontawesome';
+	content: "\f078";
+}
+#responsive-admin-menu #menu a.submenu:before {
+	font-size: 14px;
+	position: absolute;
+	right: 15px;
+	top: 17px;
+}
+/* Menu Styles */
+
+@media screen and (max-width: 960px) {
+	#responsive-admin-menu #responsive-menu {
+		display: none;
+	}
+	#responsive-admin-menu #menu a span {
+		display: inline-block;
+	}
+}
+
+@media screen and (max-width: 800px) {
+	#responsive-admin-menu #menu a span {
+		display: none;
+	}
+	#responsive-admin-menu {
+		float: left;
+		width: 40px;
+		position: relative;
+	}
+
+	#responsive-admin-menu #menu{
+		height: calc(100vh - 60px);
+	}
+	#responsive-admin-menu {
+		height: 100%;
+	}
+	#content-wrapper {
+		margin-left: 40px;
+	}
+	
+	#responsive-admin-menu #menu a.submenu:before {
+		font-size: 6px;
+		right: 5px;
+	}
+	#responsive-admin-menu #logo img {
+		width: 29px;
+		height: 29px;
+		margin: 0px;
+	}
+	#responsive-admin-menu #logo {
+		background: url('../images/logo.png');
+		background-position: -0px -0px;
+		width: 29px;
+		height: 29px;
+		margin: 10px 10px 10px 5px;
+	}
+}
+@media screen and (max-width: 480px) {
+	#responsive-admin-menu {
+		min-height: 50px;
+		float: left;
+		width: 100%;
+		background-color: #404040;
+		height: auto;
+		position: static;
+		top: 0;
+	}
+	#responsive-admin-menu #logo {
+		display: none;
+	}
+	#responsive-admin-menu #menu a span {
+		display: inline-block;
+	}
+	#content-wrapper {
+		margin-left: 0;
+		padding-top: 60px;
+	}
+	#responsive-admin-menu #responsive-menu {
+		display: block;
+	}
+	#responsive-admin-menu #menu {
+		display: none;
+	}
+	#responsive-admin-menu #menu a {
+		color: #FFFFFF;
+	}
+	#responsive-admin-menu #menu a.submenu:before {
+		font-size: 14px;
+		right: 15px;
+	}
+}
+
+.content-area{
+	border:1px #e8e8e8 solid;
+	margin:0px 0px 10px 0px;
+}
+
+.content-area-header{
+	border-bottom:1px #e8e8e8 solid;
+	background-color:#f3f3f3;
+	padding:8px;
+	font-size:13px;
+	font-weight:700;
+	color:#45484d;
+}
+
+.content-area-text{
+	padding:10px;
+	font-size:13px;
+}
+/*!
+ *  Font Awesome 3.0.2
+ *  the iconic font designed for use with Twitter Bootstrap
+ *  -------------------------------------------------------
+ *  The full suite of pictographic icons, examples, and documentation
+ *  can be found at: https://fortawesome.github.com/Font-Awesome/
+ *
+ *  License
+ *  -------------------------------------------------------
+ *  - The Font Awesome font is licensed under the SIL Open Font License - http://scripts.sil.org/OFL
+ *  - Font Awesome CSS, LESS, and SASS files are licensed under the MIT License -
+ *    https://opensource.org/licenses/mit-license.html
+ *  - The Font Awesome pictograms are licensed under the CC BY 3.0 License - http://creativecommons.org/licenses/by/3.0/
+ *  - Attribution is no longer required in Font Awesome 3.0, but much appreciated:
+ *    "Font Awesome by Dave Gandy - https://fortawesome.github.com/Font-Awesome"
+
+ *  Contact
+ *  -------------------------------------------------------
+ *  Email: dave@davegandy.com
+ *  Twitter: https://twitter.com/fortaweso_me
+ *  Work: Lead Product Designer @ http://kyruus.com
+ */
+
+ :after,
+ *::before {
+		 -webkit-box-sizing: border-box;
+		 -moz-box-sizing: border-box;
+		 box-sizing: border-box;
+ }
+ 
+ @font-face {
+		 font-weight: normal;
+		 font-style: normal;
+		 font-family: 'fa-barnds-400';
+		 src: url("../webfonts/fa-brands-400.eot");
+		 src: url("../webfonts/fa-brands-400.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-brands-400.woff") format("woff"), url("../webfonts/fa-brands-400.ttf") format("truetype"), url("../webfonts/fa-brands-400.svg") format("svg");
+ }
+ 
+ @font-face {
+	 font-weight: normal;
+	 font-style: normal;
+	 font-family: 'fontawesome';
+	 src: url("../webfonts/fa-regular-400.eot");
+	 src: url("../webfonts/fa-regular-400.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-regular-400.woff") format("woff"), url("../webfonts/fa-regular-400.ttf") format("truetype"), url("../webfonts/fa-regular-400.svg") format("svg");
+ }
+ 
+ @font-face {
+	 font-weight: normal;
+	 font-style: normal;
+	 font-family: 'fontawesome';
+	 src: url("../webfonts/fa-solid-900.eot");
+	 src: url("../webfonts/fa-solid-900.eot?#iefix") format("embedded-opentype"), url("../webfonts/fa-solid-900.woff") format("woff"), url("../webfonts/fa-solid-900.ttf") format("truetype"), url("../webfonts/fa-solid-900.svg") format("svg");
+ }
