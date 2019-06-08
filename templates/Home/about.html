@@ -35,13 +35,14 @@
                 <h3>Detail of Releases</h3>
                 {% for release in releases %}
                 <h4>Version: {{ release.attrib['version'] }}</h4>
+                <h5>Release Date: {{ release.attrib['date'] }}</h5>
                 <ul>
                     {% for change in release %}
                         <li>{{ change.text }}</li>
                     {% endfor %}
                 </ul>
                 {% endfor %}
-                <br/>
-                {% endblock %}		
+                <br/>	
         </div>
 </div>
+{% endblock %}

@@ -4,85 +4,92 @@
 <title>Users</title>
 {% endblock %}
 {% block content %}
-<div class="form-group row">
-    {% if formAccess["Create"] == 'True' %}
-        <div class="col-md-2" style="padding-bottom:5px;" >
-            <div class="col-md-12 row">
-                <div class="col-md-6">
-                    <input id='newUser' type="button" class="btn btn-primary" value="New User" data-toggle="modal" data-target="#CreateEditModal"/>
+<div class="content-area">
+    <div class="content-area-header">
+        Users
+    </div>
+    <div class="content-area-text">
+        <div class="form-group row">
+            {% if formAccess["Create"] == 'True' %}
+                <div class="col-md-2" style="padding-bottom:5px;" >
+                    <div class="col-md-12 row">
+                        <div class="col-md-6">
+                            <input id='newUser' type="button" class="btn btn-primary" value="New User" data-toggle="modal" data-target="#CreateEditModal"/>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    {% endif %}
-    {% if formAccess["Print"] == 'True' %}
-        <div class="col-md-8" style="padding-bottom:5px;">
-            <form class="col-md-12 row" action="/UserManagement/ExportReport" method="POST">
-                <div class="col-md-6" >
-                    <select id="reportType" name="reportType" class="form-control">
-                        <option value="Excel">Excel</option>
-                        <option value="CVS">CVS</option>
-                        <option value="PDF">PDF</option>
-                    </select>
+            {% endif %}
+            {% if formAccess["Print"] == 'True' %}
+                <div class="col-md-8" style="padding-bottom:5px;">
+                    <form class="col-md-12 row" action="/UserManagement/ExportReport" method="POST">
+                        <div class="col-md-6" >
+                            <select id="reportType" name="reportType" class="form-control">
+                                <option value="Excel">Excel</option>
+                                <option value="CVS">CVS</option>
+                                <option value="PDF">PDF</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" >
+                            <input id="exportReport" type="submit" class="btn btn-default" value="Export"/>
+                        </div>  
+                    </form>
                 </div>
-                <div class="col-md-6" >
-                    <input id="exportReport" type="submit" class="btn btn-default" value="Export"/>
-                </div>  
-            </form>
+            {% endif %}
         </div>
-    {% endif %}
+        {{ pagination.info }}
+        <div class="table-responsive-sm">
+            <table class="table table-striped">
+                <tr class="thead-dark">
+                    <th>#</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Username</th>
+                    <th>Role Title</th>
+                    <th>Personel Code</th>
+                    <th>Is Active?</th>
+                    <th>Manager</th>
+                    <th></th>
+                </tr>
+                {% for user in users %}
+                <tr>
+                    <td>{{ loop.index + pagination.skip }}</td>
+                    <td>{{ user.FirstName }}</td>
+                    <td>{{ user.LastName }}</td>
+                    <td>{{ user.Username }}</td>
+                    <td>{{ user.RoleID.RoleTitle }}</td>
+                    <td>{{ user.PersonelCode }}</td>
+                    <td>{{ user.IsActive }}</td>
+                    <td>
+                        {% if user.ManagerID %} 
+                            {{ user.ManagerID.FirstName + ' ' + user.ManagerID.LastName }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="fa fa-file-alt" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                        {% if formAccess["Update"] == 'True' %}
+                            <a class="fa fa-edit" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                        {% endif %}
+                        {% if formAccess["Delete"] == 'True' %}
+                            <a class="fa fa-trash-alt" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+                        {% endif %}
+                        {% if formAccess["Update"] == 'True' %}
+                            <a class="fa fa-key" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#ChangePasswordModal"></a>
+                            {% if user.IsActive %}
+                                <a class="fa fa-user-alt-slas" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#UserActivateModal"></a>
+                            {% else %}
+                                <a class="fa fa-user-check" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#UserActivateModal"></a>
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="9">No entries yet. Add some!</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+        {{ pagination.links }}
+    </div>
 </div>
-{{ pagination.info }}
-<div class="table-responsive-sm">
-    <table class="table table-striped">
-        <tr class="thead-dark">
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Username</th>
-            <th>Role Title</th>
-            <th>Personel Code</th>
-            <th>Is Active?</th>
-            <th>Manager</th>
-            <th></th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ loop.index + pagination.skip }}</td>
-            <td>{{ user.FirstName }}</td>
-            <td>{{ user.LastName }}</td>
-            <td>{{ user.Username }}</td>
-            <td>{{ user.RoleID.RoleTitle }}</td>
-            <td>{{ user.PersonelCode }}</td>
-            <td>{{ user.IsActive }}</td>
-            <td>
-                {% if user.ManagerID %} 
-                    {{ user.ManagerID.FirstName + ' ' + user.ManagerID.LastName }}
-                {% endif %}
-            </td>
-            <td>
-                <a class="gn-icon gn-icon-detail" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#DetailModal"></a>
-                {% if formAccess["Update"] == 'True' %}
-                    <a class="gn-icon gn-icon-edit" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
-                {% endif %}
-                {% if formAccess["Delete"] == 'True' %}
-                    <a class="gn-icon gn-icon-delete" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#DeleteModal"></a>
-                {% endif %}
-                {% if formAccess["Update"] == 'True' %}
-                    <a class="gn-icon gn-icon-change-password" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#ChangePasswordModal"></a>
-                    {% if user.IsActive %}
-                        <a class="gn-icon gn-icon-user-deactivate" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#UserActivateModal"></a>
-                    {% else %}
-                        <a class="gn-icon gn-icon-user-activate" href="#" data-id="{{ user.UserID }}" data-toggle="modal" data-target="#UserActivateModal"></a>
-                    {% endif %}
-                {% endif %}
-            </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="9">No entries yet. Add some!</td></tr>
-        {% endfor %}
-    </table>
-</div>
-{{ pagination.links }}
 
 {% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">

@@ -69,12 +69,12 @@
             </td>
             <td>{{ leave.ApproveDate }}</td>
             <td>
-                <a class="gn-icon gn-icon-detail" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                <a class="fa fa-file-alt" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DetailModal"></a>
                 {% if formAccess["Update"] == 'True' %}
-                    <a class="gn-icon gn-icon-edit" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                    <a class="fa fa-edit" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
                 {% endif %}
                 {% if formAccess["Delete"] == 'True' %}
-                    <a class="gn-icon gn-icon-delete" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+                    <a class="fa fa-trash-alt" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DeleteModal"></a>
                 {% endif %}
             </td>
         </tr>

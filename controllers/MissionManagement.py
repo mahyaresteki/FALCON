@@ -34,7 +34,7 @@ def mission_page():
                                 mymissions = Missions.select(lambda l: l.UserID.UserID == int(session.get("user_id")) and l.IsIntraCityMission == True)
                                 transporttypes = TransportTypes.select()
                                 pagination = Pagination(page=page, total=mymissions.count(), search=search, record_name='intra city missions', css_framework='bootstrap4')
-                                return render_template('MissionManagement/Missions.html', mymissions = mymissions.page(page, 10), pagination = pagination, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Intra City Mission"))
+                                return render_template('MissionManagement/missions.html', mymissions = mymissions.page(page, 10), pagination = pagination, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Intra City Mission"))
                 else:
                         return redirect("/AccessDenied", code=302)
         else:
@@ -54,7 +54,18 @@ def out_of_city_mission_page():
                                 mymissions = Missions.select(lambda l: l.UserID.UserID == int(session.get("user_id")) and l.IsIntraCityMission == False)
                                 transporttypes = TransportTypes.select()
                                 pagination = Pagination(page=page, total=mymissions.count(), search=search, record_name='out of city missions', css_framework='bootstrap4')
-                                return render_template('MissionManagement/OutOfCityMission.html', mymissions = mymissions.page(page, 10), pagination = pagination, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Out of City Mission"))
+                                return render_template('MissionManagement/outofcitymissions.html', mymissions = mymissions.page(page, 10), pagination = pagination, transporttypes = transporttypes, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Out of City Mission"))
+                else:
+                        return redirect("/AccessDenied", code=302)
+        else:
+                return redirect("/", code=302)
+
+@App.app.route('/MissionManagement/MissionApproval')
+def mission_approval_page():
+        if session.get("user_id") is not None and session.get("fullname") is not None:
+                if CheckAccess("Mission Approval", "Read"):
+                        with db_session:
+                                return render_template('MissionManagement/missionapproval.html')
                 else:
                         return redirect("/AccessDenied", code=302)
         else:

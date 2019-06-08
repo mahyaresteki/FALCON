@@ -71,12 +71,14 @@ def SetDatabase():
         AppForms(AppFormTitle='Roles')
         AppForms(AppFormTitle='Role Accesses')
         AppForms(AppFormTitle='Users')
-        AppForms(AppFormTitle='Transport Types')
+        AppForms(AppFormTitle='Settings')
         AppForms(AppFormTitle='Leaves')
+        AppForms(AppFormTitle='Hour Off Leave')
+        AppForms(AppFormTitle='Leave Approval')
+        AppForms(AppFormTitle='Transport Types')
         AppForms(AppFormTitle='Intra City Mission')
         AppForms(AppFormTitle='Out of City Mission')
-        AppForms(AppFormTitle='Hour Off Leave')
-        AppForms(AppFormTitle='Settings')
+        AppForms(AppFormTitle='Mission Approval')
     message = "Success"
     return jsonify({'message': message})
 

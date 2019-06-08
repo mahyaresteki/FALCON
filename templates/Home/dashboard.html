@@ -1,0 +1,22 @@
+{% extends 'shared/layout.html'%}
+
+{% block header %}
+<title>Dashboard</title>
+{% endblock %}
+{% block content %}
+<div>
+    <div id="tabs">
+        <ul>
+            <li><a href="#tabs-1">Leave Statistics</a></li>
+            <li><a href="#tabs-2">Mission Statistics</a></li>
+        </ul>
+        <div id="tabs-1">
+            <h2>Leave Statistics</h2>
+        </div>
+        <div id="tabs-2">
+            <h2>Mission Statistics</h2>
+        </div>
+    </div>
+</div>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}
