@@ -1,6 +1,6 @@
 var result = {};
 
-$(document).on("click", ".table .gn-icon-edit", function () {
+$(document).on("click", ".table .fa-edit", function () {
     $('#CreateEditModal #gridSystemModalLabel').html("Edit Leave");
     var id = $(this).data('id');
     $("#CreateEditModal #selectedID").val(id);
@@ -16,7 +16,7 @@ $(document).on("click", ".table .gn-icon-edit", function () {
     }, 500);
 });
 
-$(document).on("click", ".table .gn-icon-delete", function () {
+$(document).on("click", ".table .fa-trash-alt", function () {
     var id = $(this).data('id');
     $("#DeleteModal #selectedID").val(id);
 
@@ -28,7 +28,7 @@ $(document).on("click", ".table .gn-icon-delete", function () {
     }, 500);
 });
 
-$(document).on("click", ".table .gn-icon-detail", function () {
+$(document).on("click", ".table .fa-file-alt", function () {
     var id = $(this).data('id');
     $("#DetailModal #selectedID").val(id);
 

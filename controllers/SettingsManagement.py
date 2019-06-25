@@ -22,7 +22,7 @@ def settings_page():
             config.read('config/conf.ini')
             settings = SettingsModel(config['DEFAULT']['server'], config['DEFAULT']['port'], config['ConnectionString']['user'], config['ConnectionString']['password'], config['ConnectionString']['database'], config['ConnectionString']['host'], config['OrganizationInfo']['name'], config['OrganizationInfo']['latitude'], config['OrganizationInfo']['longitude']) 
             with db_session:
-                return render_template('SettingsManagement/Settings.html', settings = settings, hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Settings"))
+                return render_template('SettingsManagement/settings.html', settings = settings, hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Settings"))
         else:
             return redirect("/AccessDenied", code=302)
     else:

@@ -55,11 +55,40 @@ def leave_approval_page():
         if session.get("user_id") is not None and session.get("fullname") is not None:
                 if CheckAccess("Leave Approval", "Read"):
                         with db_session:
-                                return render_template('LeaveManagement/leaveapproval.html')
+                                myleaves = Leaves.select(lambda l: l.UserID.ManagerID.UserID == int(session.get("user_id")) and l.ApprovedBy is None)
+                                return render_template('LeaveManagement/leaveapproval.html', myleaves = myleaves, formAccess = GetFormAccessControl("Leave Approval"))
                 else:
                         return redirect("/AccessDenied", code=302)
         else:
                 return redirect("/", code=302)
+
+@App.app.route('/LeaveManagement/ApproveLeaves', methods=['Get','POST'])
+def approve_leaves_page():
+        try:
+                if session.get("user_id") is not None and session.get("fullname") is not None:
+                        if CheckAccess("Leave Approval", "Update"):
+                                with db_session:
+                                        leaves = request.form.getlist('leaves')
+                                        isApproved = False
+                                        if request.form['submit_approval'] == 'Approve':
+                                                isApproved=True
+                                        elif request.form['submit_approval'] == 'Reject':
+                                                isApproved=False
+                                        for l in leaves:
+                                                leave = Leaves[int(l)]
+                                                leave.set(ApprovedBy = int(session.get("user_id")), IsApproved = isApproved, ApproveDate = datetime.now(), LatestUpdateDate = datetime.now())
+                                        commit()
+                                        j = json.dumps(leaves)
+                                        InsertInfoLog('update', 'leave approval', None, j, None)
+                                        return redirect("/LeaveManagement/LeaveApproval")
+                        else:
+                                return redirect("/AccessDenied", code=302)
+                else:
+                        return redirect("/", code=302)
+        except Exception as e:
+                InsertErrorLog('leave approval', 'update')
+                message = str(e)
+                return jsonify({'message': message})
 
 @App.app.route('/LeaveManagement/CreateLeave', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)

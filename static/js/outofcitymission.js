@@ -63,7 +63,7 @@ var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
     mymap.on('click', onMapClick);
 
-    $(document).on("click", ".table .gn-icon-edit", function () {
+    $(document).on("click", ".table .fa-edit", function () {
         $('#CreateEditModal #gridSystemModalLabel').html("Edit Out of City Mission");
         var id = $(this).data('id');
         $("#CreateEditModal #selectedID").val(id);
@@ -88,7 +88,7 @@ var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         }, 500);
     });
 
-    $(document).on("click", ".table .gn-icon-delete", function () {
+    $(document).on("click", ".table .fa-trash-alt", function () {
         var id = $(this).data('id');
         $("#DeleteModal #selectedID").val(id);
 
@@ -108,7 +108,7 @@ var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         }, 500);
     });
 
-    $(document).on("click", ".table .gn-icon-detail", function () {
+    $(document).on("click", ".table .fa-file-alt", function () {
         var id = $(this).data('id');
         $("#DetailModal #selectedID").val(id);
 

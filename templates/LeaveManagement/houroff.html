@@ -4,86 +4,93 @@
 <title>Hour Off Leave</title>
 {% endblock %}
 {% block content %}
-<div class="form-group row">
-    {% if formAccess["Create"] == 'True' %}
-    <div class="col-md-2" style="padding-bottom:5px;" >
-        <div class="col-md-12 row">
-            <div class="col-md-6">
-                <input id='newLeave' type="button" class="btn btn-primary" value="New Hour Off Leave" data-toggle="modal" data-target="#CreateEditModal"/>
-            </div>
-        </div>
+<div class="content-area">
+    <div class="content-area-header">
+        Hour Off Leaves
     </div>
-    {% endif %}
-
-    {% if formAccess["Print"] == 'True' %}
-    <div class="col-md-8" style="padding-bottom:5px;">
-            <form class="col-md-12 row" action="/LeaveManagement/HourOffExportReport" method="POST">
-                <div class="col-md-6" >
-                    <select id="reportType" name="reportType" class="form-control">
-                        <option value="Excel">Excel</option>
-                        <option value="CVS">CVS</option>
-                        <option value="PDF">PDF</option>
-                    </select>
+    <div class="content-area-text">
+        <div class="form-group row">
+            {% if formAccess["Create"] == 'True' %}
+            <div class="col-md-2" style="padding-bottom:5px;" >
+                <div class="col-md-12 row">
+                    <div class="col-md-6">
+                        <input id='newLeave' type="button" class="btn btn-primary" value="New Hour Off Leave" data-toggle="modal" data-target="#CreateEditModal"/>
+                    </div>
                 </div>
-                <div class="col-md-6" >
-                    <input id="exportReport" type="submit" class="btn btn-default" value="Export"/>
-                </div>  
-            </form>
-    </div>
-    {% endif %}
-</div>
-{{ pagination.info }}
-<div class="table-responsive-sm">
-    <table class="table table-striped">
-        <tr class="thead-dark">
-            <th>#</th>
-            <th>User Fullname</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Reason</th>
-            <th>Approval Result</th>
-            <th>Approved By</th>
-            <th>Approve Date</th>
-            <th></th>
-        </tr>
-        {% for leave in myleaves %}
-        <tr>
-            <td>{{ loop.index + pagination.skip }}</td>
-            <td>{{ leave.UserID.FirstName +' '+leave.UserID.LastName }}</td>
-            <td>{{ leave.StartDate }}</td>
-            <td>{{ leave.EndDate }}</td>
-            <td>{{ leave.Reason }}</td>
-            <td>
-                {% if leave.IsApproved %} 
-                    Approved
-                {% elif leave.IsApproved == false %}
-                    Rejected
+            </div>
+            {% endif %}
+
+            {% if formAccess["Print"] == 'True' %}
+            <div class="col-md-8" style="padding-bottom:5px;">
+                    <form class="col-md-12 row" action="/LeaveManagement/HourOffExportReport" method="POST">
+                        <div class="col-md-6" >
+                            <select id="reportType" name="reportType" class="form-control">
+                                <option value="Excel">Excel</option>
+                                <option value="CVS">CVS</option>
+                                <option value="PDF">PDF</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" >
+                            <input id="exportReport" type="submit" class="btn btn-default" value="Export"/>
+                        </div>  
+                    </form>
+            </div>
+            {% endif %}
+        </div>
+        {{ pagination.info }}
+        <div class="table-responsive-sm">
+            <table class="table table-striped">
+                <tr class="thead-dark">
+                    <th>#</th>
+                    <th>User Fullname</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Reason</th>
+                    <th>Approval Result</th>
+                    <th>Approved By</th>
+                    <th>Approve Date</th>
+                    <th></th>
+                </tr>
+                {% for leave in myleaves %}
+                <tr>
+                    <td>{{ loop.index + pagination.skip }}</td>
+                    <td>{{ leave.UserID.FirstName +' '+leave.UserID.LastName }}</td>
+                    <td>{{ leave.StartDate }}</td>
+                    <td>{{ leave.EndDate }}</td>
+                    <td>{{ leave.Reason }}</td>
+                    <td>
+                        {% if leave.IsApproved %} 
+                            Approved
+                        {% elif leave.IsApproved == false %}
+                            Rejected
+                        {% else %}
+                            Not Anwsered
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if leave.ApprovedBy %} 
+                            {{ leave.ApprovedBy.FirstName + ' ' + leave.ApprovedBy.LastName }}
+                        {% endif %}
+                    </td>
+                    <td>{{ leave.ApproveDate }}</td>
+                    <td>
+                        <a class="fa fa-file-alt" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                        {% if formAccess["Update"] == 'True' %}
+                            <a class="fa fa-edit" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                        {% endif %}
+                        {% if formAccess["Delete"] == 'True' %}
+                            <a class="fa fa-trash-alt" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+                        {% endif %}
+                    </td>
+                </tr>
                 {% else %}
-                    Not Anwsered
-                {% endif %}
-            </td>
-            <td>
-                {% if leave.ApprovedBy %} 
-                    {{ leave.ApprovedBy.FirstName + ' ' + leave.ApprovedBy.LastName }}
-                {% endif %}
-            </td>
-            <td>{{ leave.ApproveDate }}</td>
-            <td>
-                <a class="fa fa-file-alt" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DetailModal"></a>
-                {% if formAccess["Update"] == 'True' %}
-                    <a class="fa fa-edit" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
-                {% endif %}
-                {% if formAccess["Delete"] == 'True' %}
-                    <a class="fa fa-trash-alt" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DeleteModal"></a>
-                {% endif %}
-            </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="9">No entries yet. Add some!</td></tr>
-        {% endfor %}
-    </table>
+                <tr><td colspan="9">No entries yet. Add some!</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+        {{ pagination.links }}
+    </div>
 </div>
-{{ pagination.links }}
 {% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">

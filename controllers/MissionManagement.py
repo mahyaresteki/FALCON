@@ -60,16 +60,51 @@ def out_of_city_mission_page():
         else:
                 return redirect("/", code=302)
 
+
 @App.app.route('/MissionManagement/MissionApproval')
 def mission_approval_page():
         if session.get("user_id") is not None and session.get("fullname") is not None:
                 if CheckAccess("Mission Approval", "Read"):
                         with db_session:
-                                return render_template('MissionManagement/missionapproval.html')
+                                hometownarea = np.loadtxt('config/hometownarea.txt', dtype=np.object)
+                                config = configparser.ConfigParser()
+                                config.sections()
+                                config.read('config/conf.ini')
+                                mymissions = Missions.select(lambda l: l.UserID.ManagerID.UserID == int(session.get("user_id")) and l.ApprovedBy is None)
+                                return render_template('MissionManagement/missionapproval.html', mymissions = mymissions, orglat = config['OrganizationInfo']['latitude'], orglong = config['OrganizationInfo']['longitude'], hometown = hometownarea.tolist(), formAccess = GetFormAccessControl("Intra City Mission"))
                 else:
                         return redirect("/AccessDenied", code=302)
         else:
                 return redirect("/", code=302)
+
+@App.app.route('/MissionManagement/ApproveMissions', methods=['Get','POST'])
+def approve_missions_page():
+        try:
+                if session.get("user_id") is not None and session.get("fullname") is not None:
+                        if CheckAccess("Mission Approval", "Update"):
+                                with db_session:
+                                        missions = request.form.getlist('missions')
+                                        print(missions)
+                                        isApproved = False
+                                        if request.form['submit_approval'] == 'Approve':
+                                                isApproved=True
+                                        elif request.form['submit_approval'] == 'Reject':
+                                                isApproved=False
+                                        for m in missions:
+                                                mission = Missions[int(m)]
+                                                mission.set(ApprovedBy = int(session.get("user_id")), IsApproved = isApproved, ApproveDate = datetime.now(), LatestUpdateDate = datetime.now())
+                                        commit()
+                                        j = json.dumps(missions)
+                                        InsertInfoLog('update', 'mission approval', None, j, None)
+                                        return redirect("/MissionManagement/MissionApproval")
+                        else:
+                                return redirect("/AccessDenied", code=302)
+                else:
+                        return redirect("/", code=302)
+        except Exception as e:
+                InsertErrorLog('mission approval', 'update')
+                message = str(e)
+                return jsonify({'message': message})
 
 @App.app.route('/MissionManagement/CreateMission', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
@@ -111,7 +146,6 @@ def GetMission():
                 if CheckAccess("Intra City Mission", "Read"):
                         with db_session:
                                 data = request.get_json()
-                                print(data['MissionID'])
                                 query= Missions.select(lambda m: m.MissionID == int(data['MissionID']))
                                 mylist = list(query)
                                 transportTypeWentID = mylist[0].TransportTypeWentID.TransportTypeID if mylist[0].TransportTypeWentID is not None else ''

@@ -4,65 +4,73 @@
 <title>Transport Types</title>
 {% endblock %}
 {% block content %}
-
-<div class="form-group row">
-    {% if formAccess["Create"] == 'True' %}
-    <div class="col-md-2" style="padding-bottom:5px;" >
-        <div class="col-md-12 row">
-            <div class="col-md-6">
-                <input id='newTransportType' type="button" class="btn btn-primary" value="New Transport Type" data-toggle="modal" data-target="#CreateEditModal"/>
-            </div>
-        </div>
+<div class="content-area">
+    <div class="content-area-header">
+        Transport Types
     </div>
-    {% endif %}
-    {% if formAccess["Print"] == 'True' %}
-    
-    <div class="col-md-8" style="padding-bottom:5px;">
-            <form class="col-md-12 row" action="/TransportTypeManagement/ExportReport" method="POST">
-                <div class="col-md-6" >
-                    <select id="reportType" name="reportType" class="form-control">
-                        <option value="Excel">Excel</option>
-                        <option value="CVS">CVS</option>
-                        <option value="PDF">PDF</option>
-                    </select>
+    <div class="content-area-text">
+        <div class="form-group row">
+            {% if formAccess["Create"] == 'True' %}
+            <div class="col-md-2" style="padding-bottom:5px;" >
+                <div class="col-md-12 row">
+                    <div class="col-md-6">
+                        <input id='newTransportType' type="button" class="btn btn-primary" value="New Transport Type" data-toggle="modal" data-target="#CreateEditModal"/>
+                    </div>
                 </div>
-                <div class="col-md-6" >
-                    <input id="exportReport" type="submit" class="btn btn-default" value="Export"/>
-                </div>  
-            </form>
-    </div>
-    
-    {% endif %}
-</div>
+            </div>
+            {% endif %}
+            {% if formAccess["Print"] == 'True' %}
+            
+            <div class="col-md-8" style="padding-bottom:5px;">
+                    <form class="col-md-12 row" action="/TransportTypeManagement/ExportReport" method="POST">
+                        <div class="col-md-6" >
+                            <select id="reportType" name="reportType" class="form-control">
+                                <option value="Excel">Excel</option>
+                                <option value="CVS">CVS</option>
+                                <option value="PDF">PDF</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" >
+                            <input id="exportReport" type="submit" class="btn btn-default" value="Export"/>
+                        </div>  
+                    </form>
+            </div>
+            
+            {% endif %}
+        </div>
 
-{{ pagination.info }}
-<table class="table table-striped">
-    <tr class="thead-dark">
-        <th>#</th>
-        <th>Transport Type Title</th>
-        <th>Description</th>
-        <th></th>
-    </tr>
-    {% for entry in transportTypes %}
-    <tr>
-        <td>{{ loop.index + pagination.skip }}</td>
-        <td>{{ entry.TransportTypeTitle }}</td>
-        <td>{{ entry.Description }}</td>
-        <td>
-            <a class="gn-icon gn-icon-detail" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DetailModal"></a>
-            {% if formAccess["Update"] == 'True' %}
-                <a class="gn-icon gn-icon-edit" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
-            {% endif %}
-            {% if formAccess["Delete"] == 'True' %}
-                <a class="gn-icon gn-icon-delete" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DeleteModal"></a>
-            {% endif %}
-        </td>
-    </tr>
-    {% else %}
-    <tr><td colspan="4">No entries yet. Add some!</td></tr>
-    {% endfor %}
-</table>
-{{ pagination.links }}
+        {{ pagination.info }}
+        <div class="table-responsive-sm">
+            <table class="table table-striped">
+                <tr class="thead-dark">
+                    <th>#</th>
+                    <th>Transport Type Title</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                {% for entry in transportTypes %}
+                <tr>
+                    <td>{{ loop.index + pagination.skip }}</td>
+                    <td>{{ entry.TransportTypeTitle }}</td>
+                    <td>{{ entry.Description }}</td>
+                    <td>
+                        <a class="gn-icon gn-icon-detail" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                        {% if formAccess["Update"] == 'True' %}
+                            <a class="gn-icon gn-icon-edit" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                        {% endif %}
+                        {% if formAccess["Delete"] == 'True' %}
+                            <a class="gn-icon gn-icon-delete" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">No entries yet. Add some!</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+        {{ pagination.links }}
+    </div>
+</div>
 {% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;">
     <div class="modal-dialog" role="document">

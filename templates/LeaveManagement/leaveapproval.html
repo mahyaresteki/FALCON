@@ -4,11 +4,112 @@
 <title>Leave Approval</title>
 {% endblock %}
 {% block content %}
-    <div class="content-area">
-        <div class="content-area-header">
-            Leave Approval
-        </div>
-        <div class="content-area-text">
-        </div>
+<div class="content-area">
+    <div class="content-area-header">
+        Leave Approval
     </div>
+    <div class="content-area-text">
+        <form action="/LeaveManagement/ApproveLeaves" method="POST">
+            {% if formAccess["Update"] == 'True' %}
+            <div class="form-group row">
+                <div class="col-md-3" style="padding-bottom:5px;" >
+                    <div class="col-md-12 row">
+                        <div class="col-md-6">
+                            <input name='submit_approval' type="submit" class="btn btn-primary" value="Approve"/>
+                        </div>
+                        <div class="col-md-6">
+                            <input name='submit_approval' type="submit" class="btn btn-primary" value="Reject"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            <div class="table-responsive-sm">
+                <table class="table table-striped">
+                    <tr class="thead-dark">
+                        <th><input type="checkbox" name="selectAll" id="selectAll"/></th>
+                        <th>User Fullname</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Reason</th>
+                        <th>Approval Result</th>
+                        <th>Approved By</th>
+                        <th>Approve Date</th>
+                        <th></th>
+                    </tr>
+                    {% for leave in myleaves %}
+                    <tr>
+                        <td><input type="checkbox" name="leaves" id="leaves" class='checkbox' value="{{ leave.LeaveID }}"/></td>
+                        <td>{{ leave.UserID.FirstName +' '+leave.UserID.LastName }}</td>
+                        <td>{{ leave.StartDate }}</td>
+                        <td>{{ leave.EndDate }}</td>
+                        <td>{{ leave.Reason }}</td>
+                        <td>
+                            {% if leave.IsApproved %} 
+                                Approved
+                            {% elif leave.IsApproved == false %}
+                                Rejected
+                            {% else %}
+                                Not Anwsered
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if leave.ApprovedBy %} 
+                                {{ leave.ApprovedBy.FirstName + ' ' + leave.ApprovedBy.LastName }}
+                            {% endif %}
+                        </td>
+                        <td>{{ leave.ApproveDate }}</td>
+                        <td>
+                            <a class="fa fa-file-alt" href="#" data-id="{{ leave.LeaveID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="9">No leave request yet.</td></tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="gridSystemModalLabel">Leave Info</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+                <div class="modal-body">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <input type="hidden" id="selectedID"/>
+                            </div>
+                            <div class="form-group row">
+                                    <label class="control-label col-md-3">Start Date</label>
+                                    <div class="col-md-6" >
+                                        <label id="StartDate"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-3">End Date</label>
+                                    <div class="col-md-6" >
+                                        <label id="EndDate"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-3">Reason</label>
+                                    <div class="col-md-6" >
+                                        <label id="Reason"></label>
+                                    </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/leaves.js') }}"></script>
+<script src="{{ url_for('static', filename='js/leaveapproval.js') }}"></script>
 {% endblock %}

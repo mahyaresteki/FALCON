@@ -2,6 +2,9 @@
 
 {% block header %}
 <title>MissionS Approval</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='lib/leafletmap/leaflet.css') }}"/>
+<script src="{{ url_for('static', filename='lib/leafletmap/leaflet.js') }}"></script>
+<script src="{{ url_for('static', filename='lib/leafletmap/Control.OSMGeocoder.js') }}"></script>
 {% endblock %}
 {% block content %}
     <div class="content-area">
@@ -9,6 +12,139 @@
             Mission Approval
         </div>
         <div class="content-area-text">
+            <form action="/MissionManagement/ApproveMissions" method="POST">
+                {% if formAccess["Update"] == 'True' %}
+                <div class="form-group row">
+                    <div class="col-md-3" style="padding-bottom:5px;" >
+                        <div class="col-md-12 row">
+                            <div class="col-md-6">
+                                <input name='submit_approval' type="submit" class="btn btn-primary" value="Approve"/>
+                            </div>
+                            <div class="col-md-6">
+                                <input name='submit_approval' type="submit" class="btn btn-primary" value="Reject"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                <div class="table-responsive-sm">
+                    <table class="table table-striped">
+                        <tr class="thead-dark">
+                            <th><input type="checkbox" name="selectAll" id="selectAll"/></th>
+                            <th>User Fullname</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Mission Title</th>
+                            <th>Approval Result</th>
+                            <th>Approved By</th>
+                            <th>Approve Date</th>
+                            <th></th>
+                        </tr>
+                        {% for mission in mymissions %}
+                        <tr>
+                            <td><input type="checkbox" name="missions" id="missions" class='checkbox' value="{{ mission.MissionID }}"/></td>
+                            <td>{{ mission.UserID.FirstName +' '+mission.UserID.LastName }}</td>
+                            <td>{{ mission.StartDate }}</td>
+                            <td>{{ mission.EndDate }}</td>
+                            <td>{{ mission.MissionTitle }}</td>
+                            <td>
+                                {% if mission.IsApproved %} 
+                                    Approved
+                                {% elif mission.IsApproved == false %}
+                                    Rejected
+                                {% else %}
+                                    Not Anwsered
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if mission.ApprovedBy %} 
+                                    {{ mission.ApprovedBy.FirstName + ' ' + mission.ApprovedBy.LastName }}
+                                {% endif %}
+                            </td>
+                            <td>{{ mission.ApproveDate }}</td>
+                            <td>
+                                <a class="fa fa-file-alt" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="9">No mission request yet.</td></tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </form>
         </div>
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="DetailModal" style="overflow:hidden;" style="width:95%;">
+            <div class="modal-dialog modal-lg" role="document" style="width:95%;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="gridSystemModalLabel">Intra City Mission Info</h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                            <div class="form-horizontal">
+                                <input type="hidden" id="selectedID"/>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-2">Start Date</label>
+                                    <div class="col-md-5" >
+                                        <label id="StartDate"></label>
+                                    </div>
+                                    <label class="control-label col-md-2">End Date</label>
+                                    <div class="col-md-5" >
+                                        <label id="EndDate"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-3">Mission Title</label>
+                                    <div class="col-md-9" >
+                                        <label id="MissionTitle"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3" >
+                                        <labe>Went Transport</label>
+                                    </div>
+                                    <div class="col-md-3" >
+                                        <label id="TransportTypeWentTitle"></label>
+                                    </div>
+                                    <div class="col-md-3" >
+                                        <label>Went Payment</label>
+                                    </div>
+                                    <div class="col-md-3" >
+                                        <label id="WentPayment"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3" >
+                                            <label>Return Transport</label>
+                                    </div>
+                                    <div class="col-md-3" >
+                                        <label id="TransportTypeReturnTitle"></label>
+                                    </div>
+                                    <div class="col-md-3" >
+                                        <label>Return Payment</label>
+                                    </div>
+                                    <div class="col-md-3" >
+                                        <label id="ReturnPayment"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-12" >
+                                        <div id="mapid3" style="width: 100%; height: 200px;"></div>
+                                    </div>
+                                </div> 
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <script>
+        var hometownArea = {{ hometown|tojson|safe }};
+        var orglat = parseFloat('{{ orglat }}');
+        var orglng = parseFloat('{{ orglong }}');
+    </script>
+    <script src="{{ url_for('static', filename='js/missionapproval.js') }}"></script>
 {% endblock %}

@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Releases>
-    <Release version="0.9.30">
+    <Release version="0.9.34" date="2019/06/16">
+        <Change>Bug fixs to match the system with new templates and Linux servers rules</Change>
+        <Change>Providing Mission Approval</Change>
+        <Change>Providing Leave Approval</Change>
+        <Change>Adding Release Date Property to Release Details at "About" page</Change>
+    </Release>
+    <Release version="0.9.30" date="2019/06/06">
         <Change>Changing Style</Change>
         <Change>Changing Logo and Name of the Project</Change>
         <Change>Providing New Main Menu</Change>
-    </Release>
-    <Release version="0.9.27">
         <Change>Exporting Reports in CVS, PDF and Excel Formats</Change>
         <Change>Providing Logging System</Change>
         <Change>Paging for Grids (Lazy Loading)</Change>
     </Release>
-    <Release version="0.9.24">
+    <Release version="0.9.24" date="2019/05/08">
         <Change>Applying Pagination on Grids</Change>
         <Change>Hour Off Leave Management</Change>
         <Change>Out of City Mission Management</Change>
     </Release>
-    <Release version="0.9.21">
+    <Release version="0.9.21" date="2019/05/05">
         <Change>Applying Role Access on Buttons</Change>
         <Change>Applying Role Access on Forms, Menus and Actions </Change>
         <Change>Moving all JavaScript codes from views to JS files. (Infrastructure)</Change>
     </Release>
-    <Release version="0.9.18">
+    <Release version="0.9.18" date="2019/05/01">
         <Change>Controlling Selected Point is inside Hometown Area in Intra City Mission</Change>
         <Change>Selecting Hometown Area in Settings</Change>
     </Release>
-    <Release version="0.9.16">
+    <Release version="0.9.16" date="2019/02/25">
         <Change>Support MySQL Database</Change>
-    </Release>
-    <Release version="0.9.15">
         <Change>Get Organization Location in First Load of Mission Page</Change>
         <Change>Organization Profile in Settings</Change>
     </Release>
-    <Release version="0.9.13">
+    <Release version="0.9.13" date="2019/02/17">
         <Change>Presenting Details of Releases in About Page</Change>
-    </Release>
-    <Release version="0.9.12">
         <Change>Providing Infrastructure</Change>
         <Change>Login Page</Change>
         <Change>Role Management</Change>

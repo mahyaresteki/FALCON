@@ -1,92 +1,99 @@
 {% extends 'shared/layout.html'%}
 
 {% block header %}
-<title>Intra City Missions</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='lib/leafletMap/leaflet.css') }}""/>
-<script src="{{ url_for('static', filename='lib/leafletMap/leaflet.js') }}"></script>
-<script src="{{ url_for('static', filename='lib/leafletMap/Control.OSMGeocoder.js') }}"></script>
+    <title>Intra City Missions</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='lib/leafletmap/leaflet.css') }}"/>
+    <script src="{{ url_for('static', filename='lib/leafletmap/leaflet.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/leafletmap/Control.OSMGeocoder.js') }}"></script>
 {% endblock %}
 {% block content %}
-<div class="form-group row">
-    {% if formAccess["Create"] == 'True' %}
-    <div class="col-md-2" style="padding-bottom:5px;" >
-        <div class="col-md-12 row">
-            <div class="col-md-6">
-                <input id='newMission' type="button" class="btn btn-primary" value="New Mission" data-toggle="modal" data-target="#CreateEditModal"/>
+<div class="content-area">
+    <div class="content-area-header">
+        Intra City Missions
+    </div>
+    <div class="content-area-text">
+        <div class="form-group row">
+            {% if formAccess["Create"] == 'True' %}
+            <div class="col-md-2" style="padding-bottom:5px;" >
+                <div class="col-md-12 row">
+                    <div class="col-md-6">
+                        <input id='newMission' type="button" class="btn btn-primary" value="New Mission" data-toggle="modal" data-target="#CreateEditModal"/>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    {% endif %}
+            {% endif %}
 
-    {% if formAccess["Print"] == 'True' %}
-    <div class="col-md-8" style="padding-bottom:5px;">
-    <form class="col-md-12 row" action="/MissionManagement/MissionExportReport" method="POST">
-        <div class="col-md-6" >
-            <select id="reportType" name="reportType" class="form-control">
-                <option value="Excel">Excel</option>
-                <option value="CVS">CVS</option>
-                <option value="PDF">PDF</option>
-            </select>
+            {% if formAccess["Print"] == 'True' %}
+            <div class="col-md-8" style="padding-bottom:5px;">
+            <form class="col-md-12 row" action="/MissionManagement/MissionExportReport" method="POST">
+                <div class="col-md-6" >
+                    <select id="reportType" name="reportType" class="form-control">
+                        <option value="Excel">Excel</option>
+                        <option value="CVS">CVS</option>
+                        <option value="PDF">PDF</option>
+                    </select>
+                </div>
+                <div class="col-md-6" >
+                    <input id="exportReport" type="submit" class="btn btn-default" value="Export"/>
+                </div>  
+            </form>
+            </div>
+            {% endif %}
         </div>
-        <div class="col-md-6" >
-            <input id="exportReport" type="submit" class="btn btn-default" value="Export"/>
-        </div>  
-    </form>
-    </div>
-    {% endif %}
-</div>
-{{ pagination.info }}
-<div class="table-responsive-sm">
-    <table class="table table-striped">
-        <tr class="thead-dark">
-            <th>#</th>
-            <th>User Fullname</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Mission Title</th>
-            <th>Approval Result</th>
-            <th>Approved By</th>
-            <th>Approve Date</th>
-            <th></th>
-        </tr>
-        {% for mission in mymissions %}
-        <tr>
-            <td>{{ loop.index + pagination.skip }}</td>
-            <td>{{ mission.UserID.FirstName +' '+mission.UserID.LastName }}</td>
-            <td>{{ mission.StartDate }}</td>
-            <td>{{ mission.EndDate }}</td>
-            <td>{{ mission.MissionTitle }}</td>
-            <td>
-                {% if mission.IsApproved %} 
-                    Approved
-                {% elif mission.IsApproved == false %}
-                    Rejected
+        {{ pagination.info }}
+        <div class="table-responsive-sm">
+            <table class="table table-striped">
+                <tr class="thead-dark">
+                    <th>#</th>
+                    <th>User Fullname</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Mission Title</th>
+                    <th>Approval Result</th>
+                    <th>Approved By</th>
+                    <th>Approve Date</th>
+                    <th></th>
+                </tr>
+                {% for mission in mymissions %}
+                <tr>
+                    <td>{{ loop.index + pagination.skip }}</td>
+                    <td>{{ mission.UserID.FirstName +' '+mission.UserID.LastName }}</td>
+                    <td>{{ mission.StartDate }}</td>
+                    <td>{{ mission.EndDate }}</td>
+                    <td>{{ mission.MissionTitle }}</td>
+                    <td>
+                        {% if mission.IsApproved %} 
+                            Approved
+                        {% elif mission.IsApproved == false %}
+                            Rejected
+                        {% else %}
+                            Not Anwsered
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if mission.ApprovedBy %} 
+                            {{ mission.ApprovedBy.FirstName + ' ' + mission.ApprovedBy.LastName }}
+                        {% endif %}
+                    </td>
+                    <td>{{ mission.ApproveDate }}</td>
+                    <td>
+                        <a class="fa fa-file-alt" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                        {% if formAccess["Update"] == 'True' %}
+                            <a class="fa fa-edit" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                        {% endif %}
+                        {% if formAccess["Delete"] == 'True' %}
+                            <a class="fa fa-trash-alt" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#DeleteModal"></a>
+                        {% endif %}
+                    </td>
+                </tr>
                 {% else %}
-                    Not Anwsered
-                {% endif %}
-            </td>
-            <td>
-                {% if mission.ApprovedBy %} 
-                    {{ mission.ApprovedBy.FirstName + ' ' + mission.ApprovedBy.LastName }}
-                {% endif %}
-            </td>
-            <td>{{ mission.ApproveDate }}</td>
-            <td>
-                <a class="fa fa-file-alt" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#DetailModal"></a>
-                {% if formAccess["Update"] == 'True' %}
-                    <a class="fa fa-edit" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
-                {% endif %}
-                {% if formAccess["Delete"] == 'True' %}
-                    <a class="fa fa-trash-alt" href="#" data-id="{{ mission.MissionID }}" data-toggle="modal" data-target="#DeleteModal"></a>
-                {% endif %}
-            </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="9">No entries yet. Add some!</td></tr>
-        {% endfor %}
-    </table>
+                <tr><td colspan="9">No entries yet. Add some!</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+        {{ pagination.links }}
+    </div>
 </div>
-{{ pagination.links }}
 {% if formAccess["Create"] == 'True' or formAccess["Update"] == 'True' %}
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel" id="CreateEditModal" style="overflow:hidden;" style="width:95%;">
     <div class="modal-dialog modal-lg" role="document" style="width:95%;">

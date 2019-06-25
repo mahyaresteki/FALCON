@@ -9,10 +9,11 @@
     <script src="{{ url_for('static', filename='lib/popper/js/popper.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/jquery/js/jquery.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/bootstrap/js/bootstrap.js') }}"></script>
+    {% block header %}{% endblock %}
     <script src="{{ url_for('static', filename='lib/jquery-ui/js/jquery-ui.js') }}"></script>
     <script src="{{ url_for('static', filename='lib/fontawesome/js/all.js') }}"></script>
     <script src="{{ url_for('static', filename='js/shared.js') }}"></script>
-    {% block header %}{% endblock %}
+    
 </head>
 <body>
     <div id="responsive-admin-menu">
