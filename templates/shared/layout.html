@@ -56,6 +56,9 @@
             <a href="" title="Leaves" class="submenu" name="leave-sub"><i class="fa fa-walking"></i><span> Leaves</span></a>
             <!-- Media Sub Menu -->
             <div id="leave-sub" style="display: none;">
+                {% if session['menu_access']['Leave Types'] == 'True' %}
+                <a href="/LeaveManagement/LeaveTypes" title="Leave Types"><i class="fa fa-walking"></i><span>Leave Types</span></a>
+                {% endif %}
                 {% if session['menu_access']['Leaves'] == 'True' %}
                 <a href="/LeaveManagement/Leaves" title="Normal Leave"><i class="fa fa-running"></i><span> Normal Leave</span></a>
                 {% endif %}

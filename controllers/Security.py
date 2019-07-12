@@ -72,6 +72,7 @@ def SetDatabase():
         AppForms(AppFormTitle='Role Accesses')
         AppForms(AppFormTitle='Users')
         AppForms(AppFormTitle='Settings')
+        AppForms(AppFormTitle='Leave Types')
         AppForms(AppFormTitle='Leaves')
         AppForms(AppFormTitle='Hour Off Leave')
         AppForms(AppFormTitle='Leave Approval')

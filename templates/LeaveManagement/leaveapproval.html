@@ -31,6 +31,7 @@
                         <th>User Fullname</th>
                         <th>Start Date</th>
                         <th>End Date</th>
+                        <th>Leave Type</th>
                         <th>Reason</th>
                         <th>Approval Result</th>
                         <th>Approved By</th>
@@ -43,6 +44,7 @@
                         <td>{{ leave.UserID.FirstName +' '+leave.UserID.LastName }}</td>
                         <td>{{ leave.StartDate }}</td>
                         <td>{{ leave.EndDate }}</td>
+                        <td>{{ leave.LeaveTypeID.LeaveTypeTitle }}</td>
                         <td>{{ leave.Reason }}</td>
                         <td>
                             {% if leave.IsApproved %} 
@@ -93,6 +95,12 @@
                                     <label class="control-label col-md-3">End Date</label>
                                     <div class="col-md-6" >
                                         <label id="EndDate"></label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="control-label col-md-3">Leave Type</label>
+                                    <div class="col-md-6" >
+                                        <label id="LeaveTypeTitle"></label>
                                     </div>
                                 </div>
                                 <div class="form-group row">

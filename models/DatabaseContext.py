@@ -55,12 +55,20 @@ class Users(db.Entity):
     MissionRequester = Set("Missions", reverse="UserID")
     MissionApproval = Set("Missions", reverse="ApprovedBy")
 
+class LeaveTypes(db.Entity):
+    LeaveTypeID = PrimaryKey(int, auto=True)
+    LeaveTypeTitle = Required(str)
+    SalaryRatio = Required(float)
+    Description = Optional(str)
+    LeaveType = Set("Leaves", reverse="LeaveTypeID")
+    LatestUpdateDate = Required(datetime)
 
 class Leaves(db.Entity):
     LeaveID = PrimaryKey(int, auto=True)
     UserID = Required(Users, reverse="LeaveRequester")
     StartDate = Required(datetime)
     EndDate = Required(datetime)
+    LeaveTypeID = Required(LeaveTypes, reverse="LeaveType")
     IsApproved = Optional(bool)
     ApprovedBy = Optional(Users, reverse="LeaveApproval")
     ApproveDate = Optional(datetime)

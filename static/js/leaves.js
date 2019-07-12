@@ -11,6 +11,7 @@ $(document).on("click", ".table .fa-edit", function () {
         $('#CreateEditModal #StartTime').val(result['StartTime']);
         $('#CreateEditModal #EndDate').val(result['EndDate']);
         $('#CreateEditModal #EndTime').val(result['EndTime']);
+        $('#CreateEditModal #LeaveTypeID').val(result['LeaveTypeID']);
         $('#CreateEditModal #Reason').val(result['Reason']);
         $('#CreateEditModal #Description').val(result['Description']);
     }, 500);
@@ -24,6 +25,7 @@ $(document).on("click", ".table .fa-trash-alt", function () {
     setTimeout(function(){
         $('#DeleteModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
         $('#DeleteModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
+        $('#DeleteModal #LeaveTypeTitle').html(result['LeaveTypeTitle']);
         $('#DeleteModal #Reason').html(result['Reason']);
     }, 500);
 });
@@ -36,6 +38,7 @@ $(document).on("click", ".table .fa-file-alt", function () {
     setTimeout(function(){
         $('#DetailModal #StartDate').html(result['StartDate']+' '+result['StartTime']);
         $('#DetailModal #EndDate').html(result['EndDate']+' '+result['EndTime']);
+        $('#DeleteModal #LeaveTypeTitle').html(result['LeaveTypeTitle']);
         $('#DetailModal #Reason').html(result['Reason']);
     }, 500);
 });
@@ -48,16 +51,17 @@ $(document).on("click", "#newLeave", function () {
     $('#CreateEditModal #EndDate').val('');
     $('#CreateEditModal #EndTime').val('');
     $('#CreateEditModal #Reason').val('');
+    $('#CreateEditModal #LeaveTypeID').val('');
 });
 
 $(document).on("click", "#CreateEditModal .btn-primary", function () {
     if($("#CreateEditModal #selectedID").val()=='')
     {
-        CreateLeave($('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
+        CreateLeave($('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val(),  $('#CreateEditModal #LeaveTypeID').val());
     }
     else
     {
-        EditLeave($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val());
+        EditLeave($("#CreateEditModal #selectedID").val(), $('#CreateEditModal #StartDate').val()+' '+$('#CreateEditModal #StartTime').val(), $('#CreateEditModal #EndDate').val()+' '+$('#CreateEditModal #EndTime').val(),  $('#CreateEditModal #Reason').val(),  $('#CreateEditModal #LeaveTypeID').val());
     }
 });
 
@@ -65,7 +69,7 @@ $(document).on("click", "#DeleteModal .btn-primary", function () {
     DeleteLeave($('#DeleteModal #selectedID').val());
 });
 
-function CreateLeave(StartDate, EndDate, Reason)
+function CreateLeave(StartDate, EndDate, Reason, LeaveTypeID)
 {
     $.ajaxSetup({
         type: "POST",
@@ -81,6 +85,7 @@ function CreateLeave(StartDate, EndDate, Reason)
     var jsondata =	{
         "StartDate": StartDate,
         "EndDate": EndDate,
+        "LeaveTypeID": LeaveTypeID,
         "Reason": Reason
     };
     var a = JSON.stringify(jsondata);
@@ -103,6 +108,7 @@ function CreateLeave(StartDate, EndDate, Reason)
                 $('#CreateEditModal #StartTime').val('');
                 $('#CreateEditModal #EndDate').val('');
                 $('#CreateEditModal #EndTime').val('');
+                $('#CreateEditModal #LeaveTypeID').val('');
                 $('#CreateEditModal #Reason').val('');
                 $('#CreateEditModal #selectedID').val('');
                 location.reload();
@@ -191,6 +197,7 @@ function DeleteLeave(LeaveID)
                 $('#DeleteModal').hide();
                 $('#DeleteModal #StartDate').html('');
                 $('#DeleteModal #EndDate').html('');
+                $('#DeleteModal #LeaveTypeID').val('');
                 $('#DeleteModal #Reason').html('');
                 $('#DeleteModal #selectedID').val('');
                 location.reload();
@@ -206,7 +213,7 @@ function DeleteLeave(LeaveID)
     });
 }
 
-function EditLeave(LeaveID,StartDate, EndDate, Reason)
+function EditLeave(LeaveID,StartDate, EndDate, Reason, LeaveTypeID)
 {
     $.ajaxSetup({
         type: "POST",
@@ -223,6 +230,7 @@ function EditLeave(LeaveID,StartDate, EndDate, Reason)
         "LeaveID": LeaveID,
         "StartDate": StartDate,
         "EndDate": EndDate,
+        "LeaveTypeID": LeaveTypeID,
         "Reason": Reason
     };
     var a = JSON.stringify(jsondata);
@@ -245,6 +253,7 @@ function EditLeave(LeaveID,StartDate, EndDate, Reason)
                 $('#CreateEditModal #EndDate').val('');
                 $('#CreateEditModal #StartTime').val('');
                 $('#CreateEditModal #EndTime').val('');
+                $('#CreateEditModal #LeaveTypeID').val('');
                 $('#CreateEditModal #Reason').val('');
                 $('#CreateEditModal #selectedID').val('');
                 location.reload();

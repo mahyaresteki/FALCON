@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Releases>
-    <Release version="0.9.34" date="2019/06/16">
+    <Release version="0.9.35" date="2019/06/16">
+        <Change>Adding Leave Type Feature</Change>
         <Change>Bug fixs to match the system with new templates and Linux servers rules</Change>
         <Change>Providing Mission Approval</Change>
         <Change>Providing Leave Approval</Change>
