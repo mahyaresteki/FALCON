@@ -20,7 +20,7 @@ $(document).on("click", ".table .fa-trash-alt", function () {
     GetLeaveType(id);
     setTimeout(function(){
         $('#DeleteModal #LeaveTypeTitle').html(result['LeaveTypeTitle']);
-        $('#DeleteModal #SalaryRatio').val(result['SalaryRatio']);
+        $('#DeleteModal #SalaryRatio').html(result['SalaryRatio']);
         $('#DeleteModal #Description').html(result['Description']);
     }, 500);
     
@@ -34,7 +34,7 @@ $(document).on("click", ".table .fa-file-alt", function () {
     GetLeaveType(id);
     setTimeout(function(){
         $('#DetailModal #LeaveTypeTitle').html(result['LeaveTypeTitle']);
-        $('#DetailModal #SalaryRatio').val(result['SalaryRatio']);
+        $('#DetailModal #SalaryRatio').html(result['SalaryRatio']);
         $('#DetailModal #Description').html(result['Description']);
     }, 500);
     

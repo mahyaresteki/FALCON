@@ -31,6 +31,7 @@ from App import *
 import controllers.Security
 import controllers.Home
 import controllers.UserManagement
+import controllers.LeaveTypeManagement
 import controllers.LeaveManagement
 import controllers.TransportTypeManagement
 import controllers.MissionManagement

@@ -54,9 +54,9 @@
                     <td>{{ entry.TransportTypeTitle }}</td>
                     <td>{{ entry.Description }}</td>
                     <td>
-                        <a class="gn-icon gn-icon-detail" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DetailModal"></a>
+                        <a class="fa fa-file-alt" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DetailModal"></a>
                         {% if formAccess["Update"] == 'True' %}
-                            <a class="gn-icon gn-icon-edit" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
+                            <a class="fa fa-edit" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#CreateEditModal"></a>
                         {% endif %}
                         {% if formAccess["Delete"] == 'True' %}
                             <a class="gn-icon gn-icon-delete" href="#" data-id="{{ entry.TransportTypeID }}" data-toggle="modal" data-target="#DeleteModal"></a>

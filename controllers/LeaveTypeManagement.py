@@ -45,7 +45,7 @@ def CreateLeaveType():
                                         perm('edit create delete view', group='anybody')
                                         with db_session:
                                                 data = request.get_json()
-                                                leaveTypes = LeaveTypes(TransportTypeTitle = data['LeaveTypeTitle'], SalaryRatio = float(data['SalaryRatio']), Description = data['Description'], LatestUpdateDate = datetime.now())
+                                                leaveTypes = LeaveTypes(LeaveTypeTitle = data['LeaveTypeTitle'], SalaryRatio = float(data['SalaryRatio']), Description = data['Description'], LatestUpdateDate = datetime.now())
                                                 commit()
                                                 message = "Success"
                                                 j = json.loads(leaveTypes.to_json())
